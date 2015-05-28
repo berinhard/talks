@@ -160,7 +160,7 @@
         <section data-markdown>
             ## Exemplo Python
 
-            ```
+            ```python
             from datetime import date
 
             class Ticket(object):
@@ -201,7 +201,7 @@
 
         <section data-markdown>
             ## Primeiro o teste
-            ```
+            ```python
             class Ticket(TestCase):
 
                 def test_3_returns_fizz(self):
@@ -211,7 +211,7 @@
 
         <section data-markdown>
             ## Primeira implementação
-            ```
+            ```python
             def foo(number):
                 return "fizz"
 
@@ -249,7 +249,7 @@
 
         <section data-markdown>
             ## Sem Evidência do Design
-            ```
+            ```python
             class TestTicketManager(TestCase):
 
                 def test_expire_ticket(self):
@@ -313,7 +313,7 @@
 
         <section data-markdown>
             ## Entry Point
-            ```
+            ```python
             class TestTicketManager(TestCase):
 
                 def test_expire_ticket(self):
@@ -324,7 +324,7 @@
 
         <section data-markdown>
             ## Recuperar Ingresso
-            ```
+            ```python
             from mock import Mock
 
             class TestTicketManager(TestCase):
@@ -341,7 +341,7 @@
         </section>
 
         <section data-markdown>
-            ```
+            ```python
             class TicketManager(object):
 
                 def __init__(self, tickets_repository):
@@ -363,7 +363,7 @@
 
         <section data-markdown>
             ## Expirar Ingresso
-            ```
+            ```python
             from mock import Mock
 
             class TestTicketManager(TestCase):
@@ -382,7 +382,7 @@
         </section>
 
         <section data-markdown>
-            ```
+            ```python
             class TicketManager(object):
 
                 def __init__(self, tickets_repository):
@@ -407,7 +407,7 @@
 
         <section data-markdown>
             ## Notificar Usuário
-            ```
+            ```python
             from mock import Mock
 
             class TestTicketManager(TestCase):
@@ -428,7 +428,7 @@
         </section>
 
         <section data-markdown>
-            ```
+            ```python
             class TicketManager(object):
 
                 def __init__(self, tickets_repository, notificator):
