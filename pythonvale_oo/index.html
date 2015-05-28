@@ -99,6 +99,59 @@
             <h2><p><a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a></p></h2>
         </section>
 
+        <section data-markdown class="fragments without_ul_style">
+          ## Básicos de Orientação a Objetos (OO)
+          - ### O que é um **objeto**?
+          - ### Definições **variam** por linguagem
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Em Python
+          - ### Pode ser referenciado a uma **variável**
+          - ### Pode ser utilizado como **parâmetro em funções**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Em Python
+          - ### **Tudo** é um objeto
+        </section>
+
+        <section data-markdown>
+          ## Um inteiro é um objeto
+          ```python
+          In [1]: a = 4
+
+          In [2]: a.__sub__(3)
+          Out[2]: 1
+
+          In [3]: print dir(a)
+          ['__abs__', '__add__', '__and__', '__class__', '__cmp__', '__coerce__', '__delattr__', '__div__', '__divmod__', '__doc__', '__float__', '__floordiv__', '__format__', '__getattribute__', '__getnewargs__', '__hash__', '__hex__', '__index__', '__init__', '__int__', '__invert__', '__long__', '__lshift__', '__mod__', '__mul__', '__neg__', '__new__', '__nonzero__', '__oct__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdiv__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'bit_length', 'conjugate', 'denominator', 'imag', 'numerator', 'real']
+
+          In [4]: a.__class__
+          Out[4]: int
+          ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Objetos no Conceito de OO
+          - ### **Abstrações de entidades** que surgiram na discussão do domínio (Paciente)
+          - ### **Estruturas lógicas** para auxiliar operações do domínio (Conexão com o BD)
+          - ### Definem a estratégia de **design** do sistema
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Como Determinar um Objeto
+          - ### Conjunto de valores associados a ele (**Estado**)
+          - ### Ações que o objeto pode desempenhar (**Comportamento**)
+          - ### Um objeto possui Estado **e/ou** Comportamento
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Como Determinar um Objeto
+          - ### Conjunto de valores associados a ele (**Estado**)
+          - ### Ações que o objeto pode desempenhar (**Comportamento**)
+          - ### Um objeto possui Estado **e/ou** Comportamento
+        </section>
         <section data-markdown>
           ## Dúvidas?
         </section>
