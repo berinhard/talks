@@ -152,6 +152,150 @@
           - ### Ações que o objeto pode desempenhar (**Comportamento**)
           - ### Um objeto possui Estado **e/ou** Comportamento
         </section>
+
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Encapsulando o Estado
+            - ### **Públicos**: atributos que podem ser utilizados por qualquer outro objeto
+            - ### **Privados**: atributos só podem ser utilizados no contexto interno da classe
+        </section>
+
+        <section data-markdown class="fragments">
+            ## Exemplo em Python
+            ```python
+            class Pessoa(object):
+                opcoes_sexo = ('m', 'f')  # atributo de classe
+
+                def __init__(self, nome, sexo, nascimento):
+                    self.nome = nome  # atributo
+                    self.sexo = sexo  # atributos de instância públicos
+                    self.__nascimento = nascimento  # atributo de instância privado
+            ```
+        </section>
+
+        <section data-markdown class="fragments">
+            ## Exemplo em Python
+            ```python
+            In [3]: Pessoa.opcoes_sexo
+            Out[3]: ('m', 'f')
+
+            In [4]: bernardo = Pessoa(nome='Bernardo', sexo='m', nascimento=date(1988, 9, 22))
+
+            In [5]: print bernardo.nome, bernardo.sexo
+            Bernardo m
+
+            In [6]: print bernardo.__nascimento
+            ---------------------------------------------------------------------------
+            AttributeError                            Traceback (most recent call last)
+            <ipython-input-6-1d99028a35e5> in <module>()
+            ----> 1 print bernardo.__nascimento
+
+            AttributeError: 'Pessoa' object has no attribute '__nascimento'
+            ```
+        </section>
+
+        <section data-markdown class="fragments">
+            ## Fluxo de Construção
+            ```python
+            Pessoa(nome='Bernardo', sexo='m', nascimento=date(1988, 9, 22))  # chamada ao construtor
+
+            Pessoa.__new__()  # responsável pela alocação de recursos
+
+            Pessoa.__init__(nome, sexo, nascimento)  # faz a inicialização do objeto
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Definindo o Comportamento do Objeto
+            - ### Métodos que executam **operações** sobre a instância
+            - ### Respeitam as mesmas regras de **encapsulamento**
+        </section>
+
+        <section data-markdown class="fragments">
+            ## Exemplo em Python
+            ```python
+            class Pessoa(object):
+                opcoes_sexo = ('m', 'f')
+
+                def __init__(self, nome, sexo, nascimento):
+                    self.nome = nome
+                    self.sexo = sexo
+                    self.__nascimento = nascimento
+
+                def calcula_idade(self):
+                    # dumb way
+                    hoje = date.today()
+                    return hoje.year - self.__nascimento.year
+
+            #####
+
+            In [35]: bernardo.calcula_idade()
+            Out[35]: 26
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Lidando com Encapsulamento Pythonicamente
+          - ### O **conceito** de getter/setter é válido, o problema é o **como**
+          - ### Python **properties**!
+          - ### Regra: o sistema não aceita atualizar nascimentos para antes de 1980
+        </section>
+
+        <section data-markdown>
+            ## Exemplo em Python
+            ```python
+            class Pessoa(object):
+                opcoes_sexo = ('m', 'f')
+
+                def __init__(self, nome, sexo, nascimento):
+                    self.nome = nome
+                    self.sexo = sexo
+                    self.__nascimento = nascimento
+
+                def calcula_idade(self):
+                    hoje = date.today()
+                    return hoje.year - self.__nascimento.year
+
+                @property
+                def nascimento(self):
+                    return self.__nascimento
+
+                @nascimento.setter
+                def nascimento(self, data):
+                    if data.year < 1980: #>
+                       raise ValueError("Data antes de 1980.")
+                    self.__nascimento = data
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Exemplo em Python
+            ```python
+            In [43]: bernardo = Pessoa(nome='Bernardo', sexo='m', nascimento=date(1988, 9, 22))
+
+            In [44]: bernardo.nascimento
+            Out[44]: datetime.date(1988, 9, 22)
+
+            In [45]: bernardo.nascimento = date(1990, 1, 1)
+
+            In [46]: bernardo.nascimento
+            Out[46]: datetime.date(1990, 1, 1)
+
+            In [47]: bernardo.nascimento = date(1970, 1, 1)
+            ---------------------------------------------------------------------------
+            ValueError                                Traceback (most recent call last)
+            <ipython-input-47-1a29391ac73a> in <module>()
+            ----> 1 bernardo.nascimento = date(1970, 1, 1)
+
+            <ipython-input-42-45a464f6ce98> in nascimento(self, data)
+                 18     def nascimento(self, data):
+                 19         if data.year < 1980:
+            ---> 20             raise ValueError("Data antes de 1980.")
+                 21         self.__nascimento = data
+
+            ValueError: Data antes de 1980.
+            ```
+        </section>
         <section data-markdown>
           ## Dúvidas?
         </section>
