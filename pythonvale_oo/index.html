@@ -153,6 +153,38 @@
           - ### Um objeto possui Estado **e/ou** Comportamento
         </section>
 
+        <section data-markdown class="fragments without_ul_style">
+          ## Apresentando as Classes
+          - ### **Descrevem** como definir o estado e os comportamentos de um objetos
+          - ### Criam **instâncias de objetos**
+        </section>
+
+        <section data-markdown class="fragments">
+            ## Exemplo em Python
+            ```python
+            class Pessoa(object):  # object não necessário em Python 3
+                pass
+
+            ###
+
+            In [55]: bernardo = Pessoa()
+
+            In [56]: bernardo.__class__
+            Out[56]: __main__.Pessoa
+
+            In [57]: Pessoa.__base__
+            Out[57]: object
+
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Definindo o Estado
+            - ### Avaliação do **conjunto de valores** de atributos de um objeto
+            - ### De **instância**: armazenam dados da instância em questão
+            - ### De **classe**: armazenam dados da classe que são comuns para todas as instâncias
+        </section>
+
 
         <section data-markdown class="fragments without_ul_style">
             ## Encapsulando o Estado
@@ -296,6 +328,202 @@
             ValueError: Data antes de 1980.
             ```
         </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Definindo o Comportamento da Classe
+            - ### Podemos definir métodos que podem ser executados **sem instâncias** das classes
+            - ### Métodos de **classe**: recebem a classe como parâmetro
+            - ### Métodos de **estáticos**: não recebem a classe como parâmetro
+        </section>
+
+        <section data-markdown>
+            ## Exemplo em Python
+            ```python
+            class Pessoa(object):
+                opcoes_sexo = ('m', 'f')
+
+                ## Código antigo
+
+                @classmethod
+                def novo_homem(cls, nome, nascimento):
+                    return cls(nome, cls.opcoes_sexo[0], nascimento)
+
+                @staticmethod
+                def exemplo():
+                    pass
+            ###
+
+            In [51]: bernardo = Pessoa.novo_homem(nome='Bernardo', nascimento=date(1988, 9, 22))
+
+            In [52]: bernardo.sexo
+            Out[52]: 'm'
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Outros 3 Pontos Sobre OO
+            - ### Sobrecarga de Operadores
+            - ### Sistema de Herança
+            - ### Polimorfismo
+        </section>
+
+        <section>
+            <h2>Sobrecarga de Operadores</h2>
+            <h3>Métodos que definem como os objetos vão se comportar quando <b>aplicados a operadores</b> (-, +, /, > ect)</h3>
+        </section>
+
+        <section data-markdown>
+            ## Exemplo em Python
+            ```python
+            class Data(object):
+
+                def __init__(self, dia, mes, ano):
+                    self.dia = dia
+                    self.mes = mes
+                    self.ano = ano
+
+                def __eq__(self, other):
+                    return self.dia == other.dia and self.mes == other.mes and self.ano == other.ano
+
+                def __repr__(self):
+                    return "{dia}/{mes}/{ano}".format(**self.__dict__)
+            ####
+
+            In [3]: aniversario = Data(22, 9, 1988)
+
+            In [4]: nascimento = Data(22, 9, 1988)
+
+            In [5]: print aniversario == nascimento
+            True
+
+            In [6]: print aniversario
+            22/9/1988
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Sistema de Heranças
+            - ### Utilização de uma classe como **base** para uma classe que a herda para **adicionar comportamento**
+            - ### Respeito ao **contrato** da classe pai
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## No Python
+            - ### Herança Simples
+            - ### Herança Múltipla
+            - ### Classes Abstratas
+            - ### Não suporta Interfaces
+        </section>
+
+        <section data-markdown >
+            ## Herança Simples
+            ```python
+            class Animal(object):
+
+                def __init__(self, especie):
+                    self.especie = especie
+
+            class Cao(Animal):
+
+                def __init__(self):
+                    super(Cao, self).__init__('Canis lupus familiaris')
+
+                def latir(self):
+                    print 'au'
+
+            ###
+            In [27]: gato = Animal('Felis catus')
+
+            In [28]: gato.especie
+            Out[28]: 'Felis catus'
+
+            In [29]: gato.latir()
+            ---------------------------------------------------------------------------
+            AttributeError                            Traceback (most recent call last)
+            <ipython-input-29-d693bac8728f> in <module>()
+            ----> 1 gato.latir()
+
+            AttributeError: 'Animal' object has no attribute 'latir'
+
+            In [30]: cao = Cao()
+
+            In [31]: cao.especie
+            Out[31]: 'Canis lupus familiaris'
+
+            In [32]: cao.latir()
+            au
+
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Herança Múltipla
+            - ### **MRO**: Method Resolution Name
+            - ### [Django Class-Based Views](https://github.com/django/django/tree/master/django/views/generic)
+            - ```python
+            class UpdateView(SingleObjectTemplateResponseMixin, BaseUpdateView):
+                """
+                View for updating an object,
+                with a response rendered by template.
+                """
+                template_name_suffix = '_form'
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Classes Abstratas
+            - ### **Classes bases** que definem **métodos obrigatórios** a serem implementadas pelas classes filho
+            - ### Em Python, prefiro **Duck Typing**: preocupação com a semântica ao invés de herança ([referência](https://stackoverflow.com/questions/17028722/is-this-duck-typing-in-python))
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Classes Abstratas (módulo abc)
+            ```python
+            from abc import ABCMeta, abstractmethod
+
+            class Animal(object):
+                __metaclass__ = ABCMeta
+
+                @abstractmethod
+                def faz_barulho(self):
+                    pass
+
+            class Cao(Animal):
+                def faz_barulho(self):
+                    return "au au"
+
+            class Gato(Animal):
+                pass
+
+            #####
+
+            In [34]: cao = Cao()
+
+            In [35]: cao.faz_barulho()
+            Out[35]: 'au au'
+
+            In [36]: gato = Gato()
+            ---------------------------------------------------------------------------
+            TypeError                                 Traceback (most recent call last)
+            <ipython-input-37-6ac9056c09f5> in <module>()
+            ----> 1 gato = Gato()
+
+            TypeError: Can't instantiate abstract class Gato with abstract methods faz_barulho
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Quem aqui sabe fazer Orientação a Objetos?
+            - ### Eu **não sabia**
+            - ### Saber as ferramentas não é saber OO
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Responsabilidades dos Objetos
+          - ### Alterar seu próprio estado --> **Encapsulamento**
+          - ### Colaboração com outros objetos através da **troca de mensagens**
+        </section>
+
         <section data-markdown>
           ## Dúvidas?
         </section>
