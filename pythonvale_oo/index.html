@@ -100,7 +100,7 @@
         </section>
 
         <section data-markdown class="fragments without_ul_style">
-          ## Básicos de Orientação a Objetos (OO)
+          ## Orientação a Objetos (OO)
           - ### O que é um **objeto**?
           - ### Definições **variam** por linguagem
         </section>
@@ -147,13 +147,6 @@
         </section>
 
         <section data-markdown class="fragments without_ul_style">
-          ## Como Determinar um Objeto
-          - ### Conjunto de valores associados a ele (**Estado**)
-          - ### Ações que o objeto pode desempenhar (**Comportamento**)
-          - ### Um objeto possui Estado **e/ou** Comportamento
-        </section>
-
-        <section data-markdown class="fragments without_ul_style">
           ## Apresentando as Classes
           - ### **Descrevem** como definir o estado e os comportamentos de um objetos
           - ### Criam **instâncias de objetos**
@@ -185,6 +178,11 @@
             - ### De **classe**: armazenam dados da classe que são comuns para todas as instâncias
         </section>
 
+        <section data-markdown class="fragments without_ul_style">
+            ## Encapsulamento
+            - ### Detalhes **internos da classe** permanecem **ocultos** para o mundo externo
+            - ### Mais garantia sobre o **estado válido** do objeto
+        </section>
 
         <section data-markdown class="fragments without_ul_style">
             ## Encapsulando o Estado
@@ -240,7 +238,8 @@
         <section data-markdown class="fragments without_ul_style">
             ## Definindo o Comportamento do Objeto
             - ### Métodos que executam **operações** sobre a instância
-            - ### Respeitam as mesmas regras de **encapsulamento**
+            - ### Podem **alterar o estado do objeto** sempre levando a um outro estado válido
+            - ### Possuem as mesmas regras de **encapsulamento**
         </section>
 
         <section data-markdown class="fragments">
@@ -350,8 +349,12 @@
 
                 @staticmethod
                 def exemplo():
-                    pass
+                    print "static method"
+
             ###
+
+            In [50]: Pessoa.exemplo()
+            static method
 
             In [51]: bernardo = Pessoa.novo_homem(nome='Bernardo', nascimento=date(1988, 9, 22))
 
@@ -400,6 +403,12 @@
             22/9/1988
             ```
         </section>
+
+        <section>
+            <h2>Python's Magic Methods</h2>
+            <a href="http://www.rafekettler.com/magicmethods.html" target = "_blank"><img height="580px" src="images/magic_methods.png"></a>
+        </section>
+
 
         <section data-markdown class="fragments without_ul_style">
             ## Sistema de Heranças
@@ -542,7 +551,7 @@
         </section>
 
         <section data-markdown class="fragments without_ul_style">
-            ## Quem aqui sabe fazer Orientação a Objetos?
+            ## Agora, quem aqui já sabe fazer Orientação a Objetos?
             - ### Eu **não sabia**
             - ### Saber as ferramentas **não é** saber OO
         </section>
