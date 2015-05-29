@@ -477,7 +477,7 @@
         </section>
 
         <section data-markdown class="fragments without_ul_style">
-            ## Classes Abstratas (módulo abc)
+            ## Módulo abc
             ```python
             from abc import ABCMeta, abstractmethod
 
@@ -509,6 +509,35 @@
             ----> 1 gato = Gato()
 
             TypeError: Can't instantiate abstract class Gato with abstract methods faz_barulho
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Polimorfismo
+            - ### Classes que descrevem métodos com **mesmo contrato** mas com **comportamentos diferentes**
+            - ### Vantagem: não precisamos nos preocupar com **quem** estamos falando, mas apenas se o objeto sabe responder **como** queremos
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Exemplo Python
+            ```python
+            In [2]: dict_obj = {'nome': 'bernardo', 'idade': 26}
+
+            In [3]: list_obj = ['pedra', 'papel', 'tesoura']
+
+            In [4]: tuple_obj = (9, 3)
+
+            In [6]: dict_obj.__len__(), list_obj.__len__(), tuple_obj.__len__()
+            Out[6]: (2, 3, 2)
+
+            In [7]: len(dict_obj), len(list_obj), len(tuple_obj)
+            Out[7]: (2, 3, 2)
+
+            In [8]: dict_obj.__getitem__('nome'), list_obj.__getitem__(1), tuple_obj.__getitem__(0)
+            Out[8]: ('bernardo', 'papel', 9)
+
+            In [9]: dict_obj['nome'], list_obj[1], tuple_obj[0]
+            Out[9]: ('bernardo', 'papel', 9)
             ```
         </section>
 
