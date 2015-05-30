@@ -365,9 +365,38 @@
 
         <section data-markdown class="fragments without_ul_style">
             ## Outros 3 Pontos Sobre OO
+            - ### Polimorfismo
             - ### Sobrecarga de Operadores
             - ### Sistema de Herança
-            - ### Polimorfismo
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Polimorfismo
+            - ### Classes que descrevem métodos com **mesmo contrato** mas com **comportamentos diferentes**
+            - ### Vantagem: não precisamos nos preocupar com **quem** estamos falando, mas apenas se o objeto sabe responder **como** queremos
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Exemplo Python
+            ```python
+            In [2]: dict_obj = {'nome': 'bernardo', 'idade': 26}
+
+            In [3]: list_obj = ['pedra', 'papel', 'tesoura']
+
+            In [4]: tuple_obj = (9, 3)
+
+            In [6]: dict_obj.__len__(), list_obj.__len__(), tuple_obj.__len__()
+            Out[6]: (2, 3, 2)
+
+            In [7]: len(dict_obj), len(list_obj), len(tuple_obj)
+            Out[7]: (2, 3, 2)
+
+            In [8]: dict_obj.__getitem__('nome'), list_obj.__getitem__(1), tuple_obj.__getitem__(0)
+            Out[8]: ('bernardo', 'papel', 9)
+
+            In [9]: dict_obj['nome'], list_obj[1], tuple_obj[0]
+            Out[9]: ('bernardo', 'papel', 9)
+            ```
         </section>
 
         <section>
@@ -414,6 +443,8 @@
             ## Sistema de Heranças
             - ### Utilização de uma classe como **base** para uma classe que a herda para **adicionar comportamento**
             - ### Respeito ao **contrato** da classe pai
+            - ### Viabiliza **reutilização de código**
+            - ### Estratégia **polimórfica**
         </section>
 
         <section data-markdown class="fragments without_ul_style">
@@ -424,44 +455,83 @@
             - ### Não suporta Interfaces
         </section>
 
-        <section data-markdown >
+        <section data-markdown class="fragments without_ul_style">
             ## Herança Simples
+            - ### [@turicas/rows](https://github.com/turicas/rows/)
+        </section>
+
+        <section data-markdown >
+            ## DecimalField
             ```python
-            class Animal(object):
+            class DecimalField(Field):
+                TYPE = Decimal
 
-                def __init__(self, especie):
-                    self.especie = especie
+                @classmethod
+                def serialize(cls, value, *args, **kwargs):
+                    if value is None:
+                       return ''
 
-            class Cao(Animal):
+                    grouping = kwargs.get('grouping', None)
+                    value_as_string = str(value)
+                    has_decimal_places = value_as_string.find('.') != -1
+                    if not has_decimal_places:
+                       string_format = '%d'
+                    else:
+                       decimal_places = len(value_as_string.split('.')[1])
+                       string_format = '%.{}f'.format(decimal_places)
+                    return locale.format(string_format, value, grouping=grouping)
 
-                def __init__(self):
-                    super(Cao, self).__init__('Canis lupus familiaris')
+                @classmethod
+                def deserialize(cls, value, *args, **kwargs):
+                    if isinstance(value, cls.TYPE) or value is None:
+                       return value
 
-                def latir(self):
-                    print 'au'
+                    locale_vars = locale.localeconv()
+                    decimal_separator = locale_vars['decimal_point']
+                    interesting_vars = ['decimal_point', 'mon_decimal_point']
+                    chars = (locale_vars[x].replace('.', '\.').replace('-', '\-') for x in interesting_vars)
+                    interesting_chars = ''.join(set(chars))
+                    regexp = re.compile(r'[^0-9{} ]'.format(interesting_chars))
+                    if regexp.findall(value):
+                       raise ValueError("Can't be {}".format(cls.__name__))
 
-            ###
-            In [27]: gato = Animal('Felis catus')
+                    parts = [REGEXP_ONLY_NUMBERS.subn('', number)[0] for number in value.split(decimal_separator)]
+                    if len(parts) > 2:
+                       raise ValueError("Can't deserialize with this locale.")
+                    try:
+                       value = Decimal(parts[0])
+                       if len(parts) == 2:
+                          decimal_places = len(parts[1])
+                          value = value + (Decimal(parts[1]) / (10 ** decimal_places))
+                    except InvalidOperation:
+                       raise ValueError("Can't be {}".format(cls.__name__))
+                    return value
+            ```
+        </section>
 
-            In [28]: gato.especie
-            Out[28]: 'Felis catus'
+        <section data-markdown >
+            ## PercentField
+            ```python
+            class PercentField(DecimalField):
 
-            In [29]: gato.latir()
-            ---------------------------------------------------------------------------
-            AttributeError                            Traceback (most recent call last)
-            <ipython-input-29-d693bac8728f> in <module>()
-            ----> 1 gato.latir()
+                @classmethod
+                def serialize(cls, value, *args, **kwargs):
+                    if value is None:
+                       return ''
 
-            AttributeError: 'Animal' object has no attribute 'latir'
+                    grouping = kwargs.get('grouping', None)
+                    return super(PercentField, cls).serialize(value, grouping=grouping)
 
-            In [30]: cao = Cao()
+                @classmethod
+                def deserialize(cls, value, *args, **kwargs):
+                    # TODO: do it in all classes (and maybe use on serialize)
+                    if isinstance(value, cls.TYPE) or value is None:
+                       return value
 
-            In [31]: cao.especie
-            Out[31]: 'Canis lupus familiaris'
-
-            In [32]: cao.latir()
-            au
-
+                    if '%' not in value:
+                       raise ValueError("Can't be {}".format(cls.__name__))
+                    value = value.replace('%', '')
+                    return super(PercentField, cls).deserialize(value) / 100
             ```
         </section>
 
@@ -518,35 +588,6 @@
             ----> 1 gato = Gato()
 
             TypeError: Can't instantiate abstract class Gato with abstract methods faz_barulho
-            ```
-        </section>
-
-        <section data-markdown class="fragments without_ul_style">
-            ## Polimorfismo
-            - ### Classes que descrevem métodos com **mesmo contrato** mas com **comportamentos diferentes**
-            - ### Vantagem: não precisamos nos preocupar com **quem** estamos falando, mas apenas se o objeto sabe responder **como** queremos
-        </section>
-
-        <section data-markdown class="fragments without_ul_style">
-            ## Exemplo Python
-            ```python
-            In [2]: dict_obj = {'nome': 'bernardo', 'idade': 26}
-
-            In [3]: list_obj = ['pedra', 'papel', 'tesoura']
-
-            In [4]: tuple_obj = (9, 3)
-
-            In [6]: dict_obj.__len__(), list_obj.__len__(), tuple_obj.__len__()
-            Out[6]: (2, 3, 2)
-
-            In [7]: len(dict_obj), len(list_obj), len(tuple_obj)
-            Out[7]: (2, 3, 2)
-
-            In [8]: dict_obj.__getitem__('nome'), list_obj.__getitem__(1), tuple_obj.__getitem__(0)
-            Out[8]: ('bernardo', 'papel', 9)
-
-            In [9]: dict_obj['nome'], list_obj[1], tuple_obj[0]
-            Out[9]: ('bernardo', 'papel', 9)
             ```
         </section>
 
