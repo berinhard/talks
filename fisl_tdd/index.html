@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TDD com Mock e Orientação a Objetos com Python</title>
+
+    <meta name="description" content="TDD com Mock e Orientação a Objetos com Python">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h1>FISL 16</h1>
+          <h3>TDD com Mock e Orientação a Objetos com Python</h3>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>Porto Alegre/RS</h4>
+          <h4>10 de Julho de 2015</h4>
+        </section>
+
+        <section>
+          <h2>Só para dizer um oi!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://garimpo.fm/">garimpo.fm</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://elogroup.com.br/">
+              <img width="50%" src="images/Logo-EloGroup-fundo-claro.jpg">
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+          <br>
+          <h2>
+            <p>
+              <a target="_blank" href="">slideshare.net/bernardofontes</a>
+            </p>
+          </h2>
+          <br>
+        </section>
+
+        <section>
+            <h2>Avaliem, por favor</h2>
+            <img height="600px" src="images/makadu.jpg">
+        </section>
+
+        <section class="fragments" data-markdown>
+          # Roteiro
+
+          - ## Básicos de Orientação a Objetos
+          - ## Test-driven Development (TDD)
+          - ## TDD Com Mocks
+          - ## Dúvidas
+        </section>
+
+        <!-- ###ORIENTAÇÃO A OBJETOS###--!>
+        <section data-markdown class="fragments without_ul_style">
+          ## Básicos de Orientação a Objetos
+          - ### *Não é fazer getter e setter*
+        </section>
+
+        <section class="fragments" data-markdown>
+          # Orientação a Objetos?
+
+          - ## Estratégia de **Design**
+          - ## Definição de **Estado**
+          - ## **Encapsulamento**
+          - ## Colaboração com troca de **Mensagens**
+        </section>
+
+        <section>
+          <h2>Grafo de Dependência</h2>
+          <img src="images/oo_flow.png" alt="Fluxo de Objetos" />
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### **S**
+          - ### **O**
+          - ### **L**
+          - ### **I**
+          - ### **D**
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### **S**ingle Responsibility Principle
+          - ### **O**pen Closed Principle
+          - ### **L**iskov Substitution Principle
+          - ### **I**nterface Segregation Principle
+          - ### **D**ependency Inversion Principle
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Single Responsibility Principle
+          - ### Nunca deve exstir mais de **uma razão para modificar** algo em uma classe.
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Open Closed Principle
+          - ### Toda classe deve estar **aberta para extensão**, mas **fechada para modificação**
+        </section>
+
+        <section data-markdown>
+            ## Exemplo Python
+
+            ```python
+            from datetime import date
+
+            class Ticket(object):
+
+                def __init__(self, buyer, price, schedule_date):
+                    self.buyer = buyer
+                    self.price = price
+                    self.schedule_date = schedule_date
+
+                def has_expired(self):
+                    return date.today() > self.schedule_date
+
+            #############################
+
+            ticket = Ticket("Bernardo", 10, date(2015, 10, 10))
+            if not ticket.has_expired():
+                #processa ticket válido
+            ```
+        </section>
+
+        <section data-markdown>
+          ## Referências
+        </section>
+
+        <section>
+            <h2>Applying UML and Patterns</h2>
+            <a href="http://www.amazon.com/Applying-UML-Patterns-Introduction-Object-Oriented/dp/0131489062/" target = "_blank"><img height="580px" src="images/uml_pattenrs.jpg"></a>
+        </section>
+
+        <section>
+            <h2>Object Mentor</h2>
+            <a href="http://www.objectmentor.com/omSolutions/oops_what.html" target = "_blank"><img height="580px" src="images/object_mentor.png"></a>
+        </section>
+
+        <section>
+            <h2>Curso Objetos Pythônicos</h2>
+            <a href="https://adm.python.pro.br/cursos/objetos-pythonicos" target = "_blank"><img height="580px" src="images/objetos_python.png"></a>
+        </section>
+
+        <!-- ###TDD###--!>
+        <section data-markdown>
+          ## Test-driven Development (TDD)
+        </section>
+
+        <section>
+            <img src="images/tdd_flow.gif">
+        </section>
+
+        <section data-markdown>
+            ## Primeiro o teste
+            ```python
+            class Ticket(TestCase):
+
+                def test_3_returns_fizz(self):
+                    self.assertEqual("fizz", fizz(3))
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Primeira implementação
+            ```python
+            def foo(number):
+                return "fizz"
+
+            class Ticket(TestCase):
+
+                def test_3_returns_fizz(self):
+                    self.assertEqual("fizz", fizz(3))
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Refactoring
+            ### Refatoração é o processo de **modificar um sistema** de software para **melhorar a estrutura** interna do código **sem alterar seu comportamento** externo.
+        </section>
+
+
+        <section>
+          <h2>Coding Dojo!!!</h2>
+          <p><a target="_blank" href="http://dojorio.org/">DojoRio</a></p>
+          <p><a target="_blank" href="http://dojopuzzles.com/">DojoPuzzles</a></p>
+        </section>
+
+        <section>
+            <a href="https://www.youtube.com/watch?v=9gokU36gZTY" target = "_blank"><img src="images/coding_dojo.png"></a>
+        </section>
+
+        <section>
+          <h2>Processo de Design</h2>
+        </section>
+
+        <section>
+          <h2 style="text-decoration: line-through">Processo de Design</h2>
+          <h2>Processo que viabiliza Design</h2>
+        </section>
+
+        <section data-markdown>
+          ## Design Emergente
+
+          - Refatoração
+          - Remoção de Acoplamentos
+          - Duplicidade
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## **Exploração** e **Descoberta**
+          - ## cansativo...
+        </section>
+
+        <section data-markdown>
+            ## Sem Evidência do Design
+            ```python
+            class TestTicketManager(TestCase):
+
+                def test_expire_ticket(self):
+                    ticket = Ticket.objects.create(id=30)
+                    self.assertFalse(ticket.expired)
+
+                    manager = TicketManager()
+                    manager.expire_ticket(ticket_id=30)
+
+                    ticket = Ticket.objects.get(id=30)
+                    self.assertTrue(ticket.expired)
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Difícil de começar a testar no alto nível
+          - ### **Infra** vs **Domínio**
+        </section>
+
+        <section data-markdown>
+          ## Referências
+        </section>
+
+        <section>
+            <h2>Curso TDD - J. B. Rainsberger</h2>
+            <a href="http://online-training.jbrains.ca/courses/wbitdd-01/" target = "_blank"><img src="images/tdd.png"></a>
+        </section>
+
+        <!-- ###TDD com Mock###--!>
+        <section data-markdown>
+          ## TDD com Mock
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Mock
+          - ### **Simulam** funcionamento de objetos
+          - ### Respeitam **API** dos objetos
+          - ### Viabilizam maneira de fazer **asserções**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Foco do Domíno nas **Mensagens**
+          - ### Menos **Estado** e mais **Colaboração**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Need-Driven Development
+          - ### Código **criado** só se **necessário**
+        </section>
+
+        <section data-markdown>
+          ## Implementação de Testes Top-Down
+        </section>
+
+        <section data-markdown>
+          ## TODO List
+          - ### Recuperar Ingresso
+          - ### Expirá-lo
+          - ### Notificar Usuário
+        </section>
+
+        <section data-markdown>
+            ## Entry Point
+            ```python
+            class TestTicketManager(TestCase):
+
+                def test_expire_ticket(self):
+                    manager = TicketManager()
+                    manager.expire_ticket(ticket_id=30)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Recuperar Ingresso
+            ```python
+            from mock import Mock
+
+            class TestTicketManager(TestCase):
+
+                def test_expire_ticket(self):
+                    tickets_repository = Mock(TicketsRepository)
+                    tickets_repository.get_by_id.return_value = Ticket()
+
+                    manager = TicketManager(tickets_repository)
+                    manager.expire_ticket(ticket_id=30)
+
+                    tickets_repository.get_by_id.assert_called_once_with(30)
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            class TicketManager(object):
+
+                def __init__(self, tickets_repository):
+                    self.repository = tickets_repository
+
+                def expire_ticket(self, ticket_id):
+                    self.repository.get_by_id(ticket_id)
+
+            class Ticket(object):
+                pass
+
+            class TicketsRepository(object):
+
+                def get_by_id(self, id):
+                    "Must return a Ticket object"
+                    pass
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Expirar Ingresso
+            ```python
+            from mock import Mock
+
+            class TestTicketManager(TestCase):
+
+                def test_expire_ticket(self):
+                    ticket = Mock(Ticket)
+                    tickets_repository = Mock(TicketsRepository)
+                    tickets_repository.get_by_id.return_value = ticket
+
+                    manager = TicketManager(tickets_repository)
+                    manager.expire_ticket(ticket_id=30)
+
+                    tickets_repository.get_by_id.assert_called_once_with(30)
+                    ticket.expire.assert_called_once_with()
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            class TicketManager(object):
+
+                def __init__(self, tickets_repository):
+                    self.repository = tickets_repository
+
+                def expire_ticket(self, ticket_id):
+                    ticket = self.repository.get_by_id(ticket_id)
+                    ticket.expire()
+
+            class Ticket(object):
+
+                def expire(self):
+                    pass
+
+            class TicketsRepository(object):
+
+                def get_by_id(self, id):
+                    "Must return a Ticket object"
+                    pass
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Notificar Usuário
+            ```python
+            from mock import Mock
+
+            class TestTicketManager(TestCase):
+
+                def test_expire_ticket(self):
+                    ticket = Mock(Ticket)
+                    tickets_repository = Mock(TicketsRepository)
+                    tickets_repository.get_by_id.return_value = ticket
+                    notificator = Mock(TicketNotificator)
+
+                    manager = TicketManager(tickets_repository, notificator)
+                    manager.expire_ticket(ticket_id=30)
+
+                    tickets_repository.get_by_id.assert_called_once_with(30)
+                    ticket.expire.assert_called_once_with()
+                    notificator.notify_expired.assert_called_once_with(ticket)
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            class TicketManager(object):
+
+                def __init__(self, tickets_repository, notificator):
+                    self.repository = tickets_repository
+                    self.notificator = notificator
+
+                def expire_ticket(self, ticket_id):
+                    ticket = self.repository.get_by_id(ticket_id)
+                    ticket.expire()
+                    self.notificator.notify_expired(ticket)
+
+            class Ticket(object):
+
+                def expire(self):
+                    pass
+
+            class TicketsRepository(object):
+
+                def get_by_id(self, id):
+                    "Must return a Ticket object"
+                    pass
+
+            class TicketNotificator(object):
+
+                def notify_expired(self, ticket):
+                    pass
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Respeito ao contrato é **tudo**
+          - ### Comportamentos de **Entrada**
+          - ### Comportamentos de **Saída**
+        </section>
+
+        <section data-markdown>
+          ## Novos testes para garantir **contrato** e **funcionamento unitário** dos componentes
+        </section>
+
+        <section data-markdown>
+          ## Referências
+        </section>
+
+        <section>
+            <h2>Mock Roles, not Objects</h2>
+            <a href="http://www.jmock.org/oopsla2004.pdf" target = "_blank"><img height="580px" src="images/mocks.png"></a>
+        </section>
+
+        <section>
+            <h2>GOOS Guided By Tests</h2>
+            <a href="http://www.amazon.com/Growing-Object-Oriented-Software-Guided-Tests/dp/0321503627" target = "_blank"><img height="580px" src="images/goos.jpg"></a>
+        </section>
+
+        <section>
+            <h2>pip install mock</h2>
+            <a href="http://www.voidspace.org.uk/python/mock/mock.html" target = "_blank"><img src="images/mock_docs.png"></a>
+        </section>
+
+        <section>
+            <h2>11ª PythonBrasil</h2>
+            <a href="https://pythonbrasil.github.io/pythonbrasil11-site/" target = "_blank"><img src="images/python_br.png"></a>
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <p>Bernardo Fontes</p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://garimpo.fm/">garimpo.fm</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://elogroup.com.br/">
+              <img width="50%" src="images/Logo-EloGroup-fundo-claro.jpg">
+            </a>
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
