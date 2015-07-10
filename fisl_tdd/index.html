@@ -144,36 +144,41 @@
         </section>
 
         <section>
-          <h2>Grafo de Dependência</h2>
-          <img src="images/oo_flow.png" alt="Fluxo de Objetos" />
+          <img src="images/kaiser.jpg" alt="Fluxo de Objetos" />
         </section>
 
-        <section data-markdown class="without_ul_style">
-          ## Princípios de OO
-          - ### **S**
-          - ### **O**
-          - ### **L**
-          - ### **I**
-          - ### **D**
+        <section data-markdown class="fragments without_ul_style">
+          ## E se cerveja fosse um objeto?
+          - ### **Cervejada** seria um **atributo**
+          - ### **Gelada** seria um **estado**
+          - ### **Ser servida** seria um **comportamento**
         </section>
 
-        <section data-markdown class="without_ul_style">
-          ## Princípios de OO
-          - ### **S**ingle Responsibility Principle
-          - ### **O**pen Closed Principle
-          - ### **L**iskov Substitution Principle
-          - ### **I**nterface Segregation Principle
-          - ### **D**ependency Inversion Principle
-        </section>
+        <section data-markdown>
+            ## Exemplo Python
 
-        <section data-markdown class="without_ul_style">
-          ## Single Responsibility Principle
-          - ### Nunca deve exstir mais de **uma razão para modificar** algo em uma classe.
-        </section>
+            ```python
+            class Cerveja(object):
+                quantidade = 600
 
-        <section data-markdown class="without_ul_style">
-          ## Open Closed Principle
-          - ### Toda classe deve estar **aberta para extensão**, mas **fechada para modificação**
+                def __init__(self, temperatura, cervejada):
+                    self.temperatura = temperatura
+                    self.cervejada = cervejada
+
+                def esta_gelada(self):
+                    return self.temperatura < 5 #>
+
+                def servir(self, quantidade):
+                    if self.quantidade < quantidade: #>
+                      quantidade = self.quantidade
+                    self.quantidade -= quantidade
+
+            #############################
+
+            cerveja = Cerveja(temperatura=2, cervejada=True)
+            cerveja.esta_gelada()
+            cerveja.servir(150)
+            ```
         </section>
 
         <section data-markdown>
@@ -198,6 +203,39 @@
             if not ticket.has_expired():
                 #processa ticket válido
             ```
+        </section>
+
+        <section>
+          <h2>Grafo de Dependência</h2>
+          <img src="images/oo_flow.png" alt="Fluxo de Objetos" />
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Pensando o Design com OO
+          - ### **S**
+          - ### **O**
+          - ### **L**
+          - ### **I**
+          - ### **D**
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Pensando o Design com OO
+          - ### **S**ingle Responsibility Principle
+          - ### **O**pen Closed Principle
+          - ### **L**iskov Substitution Principle
+          - ### **I**nterface Segregation Principle
+          - ### **D**ependency Inversion Principle
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Single Responsibility Principle
+          - ### Nunca deve exstir mais de **uma razão para modificar** algo em uma classe.
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Open Closed Principle
+          - ### Toda classe deve estar **aberta para extensão**, mas **fechada para modificação**
         </section>
 
         <section data-markdown>
