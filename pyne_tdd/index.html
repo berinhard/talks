@@ -205,20 +205,20 @@
             class Ticket(TestCase):
 
                 def test_3_returns_fizz(self):
-                    self.assertEqual("fizz", fizz(3))
+                    self.assertEqual("fizz", fizzbuzz(3))
             ```
         </section>
 
         <section data-markdown>
             ## Primeira implementação
             ```python
-            def foo(number):
+            def fizzbuzz(number):
                 return "fizz"
 
             class Ticket(TestCase):
 
                 def test_3_returns_fizz(self):
-                    self.assertEqual("fizz", fizz(3))
+                    self.assertEqual("fizz", fizzbuzz(3))
             ```
         </section>
 
@@ -458,14 +458,14 @@
             ```
         </section>
 
+        <section data-markdown>
+          ## Novos testes para garantir **contrato** e **funcionamento unitário** dos componentes
+        </section>
+
         <section data-markdown class="fragments without_ul_style">
           ## Respeito ao contrato é **tudo**
           - ### Comportamentos de **Entrada**
           - ### Comportamentos de **Saída**
-        </section>
-
-        <section data-markdown>
-          ## Novos testes para garantir **contrato** e **funcionamento unitário** dos componentes
         </section>
 
         <section data-markdown>
