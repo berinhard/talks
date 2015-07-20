@@ -68,7 +68,7 @@
       <!-- Any section element inside of this container is displayed as a slide -->
 
         <section>
-          <h1>Ciclo de Palestra</h1>
+          <h1>Ciclo de Palestras</h1>
           <h3>Resolvendo Todos Seus Problemas com Python</h3>
           <br>
 
@@ -114,13 +114,326 @@
             <h2>Quem são vocês?</h2>
         </section>
 
-        <section class="fragments" data-markdown>
-          # Roteiro
+        <section class="fragments without_ul_style" data-markdown>
+          ## O que é Python?
 
-          - ## Básicos de Orientação a Objetos
-          - ## Test-driven Development (TDD)
-          - ## TDD Com Mocks
-          - ## Dúvidas
+          - ### Linguagem de programção de uso geral
+          - ### Mais de 25 anos
+          - ### Criada por Guido Van Rossum
+          - ### Software Livre
+          - ### Sintaxe invejada por muitos
+          - ### Alta produtividade (DRY)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Características da Linguagem
+
+          - ### É interpretada
+          - ### Dinamicamente tipada
+          - ### Fortemente tipada
+          - ### Multiplataforma
+          - ### Blocos por Identação
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Características da Linguagem
+
+          - ### Multiparadigma
+          - ### Procedural
+          - ### Orientação a Objetos
+          - ### Funcional
+        </section>
+
+        <section data-markdown>
+          ## Script Hello World
+          ```python
+          print "hello world!"
+          ```
+          ### Executar:
+          ```bash
+          $ python hello_world.py
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Hello World em Go
+          ```go
+          package main
+          import "fmt"
+
+          func main() {
+              fmt.Println("hello world")
+          }
+          ```
+
+          ### Executar:
+          ```bash
+          $ go run hello_world.go
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Python procedural (sem chaves, colchetes, #wtfs)
+          ```python
+          if nome_para_imprimir == 'meio':
+              print 'Botelho'
+          elif nome_para_imprimir == 'inico':
+              print 'Bernardo'
+          elif nome_para_imprimir == 'fim':
+              print 'Fontes'
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Python procedural (iterações)
+          ```python
+          >>> nomes = ['Bernardo', 'Ana', 'Ronaldo']
+          >>> for nome in nomes:
+          ...     print nome
+          ...
+          Bernardo
+          Ana
+          Ronaldo
+          >>> while nomes:
+          ...     print nomes.pop()
+          ...
+          Ronaldo
+          Ana
+          Bernardo
+          ```
+        </section>
+
+        <section class="fragments" data-markdown>
+            ## Batteries Included
+            ### Tipos básicos poderosos
+            ### Standard Library Gigantesca
+        </section>
+
+        <section data-markdown>
+          ## Tipos Básicos
+          ```python
+          >>> inteiro = 43
+          >>> ponto_flutuante = 31.9
+          >>> complexo = 1.5 + 9j
+          >>> print complexo
+          (1.5+9j)
+          >>> strings = 'palestra bacana'
+          >>> tuplas = (26, 'Bernardo', complexo)
+          >>> listas = [1, 'cavalo', tuplas]
+          >>> dicionarios = {'nome': 'Bernardo', 'linguagem': 'Python'}
+          ```
+        </section>
+
+        <section class="fragments" data-markdown>
+            ## Python Modules
+        </section>
+
+        <section data-markdown>
+          ## Quero lidar com arquivos CSV
+          ```python
+          import csv
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Quero lidar com APIs web
+          ```python
+          import urllib2
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Quero lidar com o Sistema Operacional
+          ```python
+          import sys, os
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Quero lidar com Expressões Regulares
+          ```python
+          import re
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Quero lidar com arquivos JSON
+          ```python
+          import json
+          ```
+        </section>
+
+        <section>
+            <h2>Quero voar</h2>
+            <a href="https://xkcd.com/353/" target = "_blank"><img height="580px" src="images/fly.png"></a>
+        </section>
+
+        <section>
+            <h2>PyMOTW</h2>
+            <h3>Doug Hellman</h3>
+            <a href="http://pymotw.com/2/" target = "_blank"><img src="images/pymotw.png"></a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Orientação à Objetos
+
+          - ### Tem classes
+          - ### Tem objetos
+          - ### Tem métodos estáticos
+          - ### Tem métodos de classes
+          - ### Tem herança (simples e múltipla)
+          - ### Tem polimorfismo
+          - ### Tem encapsulamento
+        </section>
+
+        <section data-markdown>
+          ## Um inteiro é um objeto
+          ```python
+          In [1]: a = 4
+
+          In [2]: a.__sub__(3)
+          Out[2]: 1
+
+          In [3]: print dir(a)
+          ['__abs__', '__add__', '__and__', '__class__', '__cmp__', '__coerce__', '__delattr__', '__div__', '__divmod__', '__doc__', '__float__', '__floordiv__', '__format__', '__getattribute__', '__getnewargs__', '__hash__', '__hex__', '__index__', '__init__', '__int__', '__invert__', '__long__', '__lshift__', '__mod__', '__mul__', '__neg__', '__new__', '__nonzero__', '__oct__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdiv__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'bit_length', 'conjugate', 'denominator', 'imag', 'numerator', 'real']
+
+          In [4]: a.__class__
+          Out[4]: int
+          ```
+        </section>
+
+        <section>
+            <h2>Curso Objetos Pythônicos</h2>
+            <a href="https://adm.python.pro.br/cursos/objetos-pythonicos" target = "_blank"><img height="580px" src="images/objetos_python.png"></a>
+        </section>
+
+        <section data-markdown>
+          ## Python funcional
+          ```python
+          >>> dobro = lambda x: x * 2
+          >>> dobro(4)
+          8
+          >>> range(5)
+          [0, 1, 2, 3, 4]
+          >>> map(dobro, range(5))
+          [0, 2, 4, 6, 8]
+          ```
+        </section>
+
+        <section class="fragments" data-markdown>
+          ## The Zen of Python
+
+          ```python
+          >>> import this
+          The Zen of Python, by Tim Peters
+
+          Beautiful is better than ugly.
+          Explicit is better than implicit.
+          Simple is better than complex.
+          Complex is better than complicated.
+          Flat is better than nested.
+          Sparse is better than dense.
+          Readability counts.
+          Special cases aren't special enough to break the rules.
+          Although practicality beats purity.
+          Errors should never pass silently.
+          Unless explicitly silenced.
+          In the face of ambiguity, refuse the temptation to guess.
+          There should be one-- and preferably only one --obvious way to do it.
+          Although that way may not be obvious at first unless you're Dutch.
+          Now is better than never.
+          Although never is often better than *right* now.
+          If the implementation is hard to explain, it's a bad idea.
+          If the implementation is easy to explain, it may be a good idea.
+          Namespaces are one honking great idea -- let's do more of those!
+          ```
+        </section>
+
+        <section class="fragments" data-markdown>
+            ## Quem usa Python?
+        </section>
+
+        <section>
+            <img height="" src="images/youtube.jpg">
+        </section>
+
+        <section>
+            <img height="" src="images/google.png">
+        </section>
+
+        <section>
+            <img height="" src="images/dropbox.png">
+        </section>
+
+        <section>
+            <img height="" src="images/nasa.jpg">
+        </section>
+
+        <section>
+            <img height="" src="images/blender.jpg">
+        </section>
+
+        <section>
+            <img height="" src="images/gimp.png">
+        </section>
+
+        <section>
+            <img height="" src="images/ubuntu.png">
+        </section>
+
+        <section class="fragments" data-markdown>
+            ## Como resolver meus problemas com Python?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Web
+            - ### Django
+            - ### Flask
+            - ### Tornado
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Desktop
+            - ### PyGTK
+            - ### PyQt
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Games
+            - ### PyGame
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Big Data
+            - ### Pandas
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Integração com Java
+            - ### Jython
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Integração com C/C++
+            - ### Cython
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Mobile
+            - ### Kivy
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Qual a melhor feature do Python?
+            ### As pessoas
+        </section>
+
+        <section class="fragments without_ul_style" >
+            <iframe width="854" height="510" src="https://www.youtube.com/embed/NmTETUjSbHM" frameborder="0" allowfullscreen></iframe>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Diversos encontros e comunidades espalhadas por **todo o mundo**
         </section>
 
         <section>
