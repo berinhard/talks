@@ -244,14 +244,24 @@
         <section data-markdown>
           ## Quero lidar com arquivos CSV
           ```python
-          import csv
+          >>> import csv
+
+          >>> with open('eggs.csv', 'rb') as csvfile:
+          ...     spamreader = csv.reader(csvfile, delimiter=';')
+          ...     for row in spamreader:
+          ...         print ', '.join(row)
+
+          Spam, Spam, Spam, Spam, Spam, Baked Beans
+          Spam, Lovely Spam, Wonderful Spam
           ```
         </section>
 
         <section data-markdown>
           ## Quero lidar com APIs web
           ```python
-          import urllib2
+          >>> import urllib2
+          >>> f = urllib2.urlopen('http://www.python.org/')
+          >>> print f.read()
           ```
         </section>
 
@@ -259,20 +269,42 @@
           ## Quero lidar com o Sistema Operacional
           ```python
           import sys, os
+
+          if sys.platform.startswith('freebsd'):
+              # FreeBSD-specific code here...
+          elif sys.platform.startswith('linux'):
+              # Linux-specific code here...
+
+          #########
+
+          >>> statinfo = os.stat('somefile.txt')
+          >>> statinfo
+          (33188, 422511, 769, 1, 1032, 100, 926, 1105022698,1105022732, 1105022732)
+          >>> statinfo.st_size
+          926
+
           ```
         </section>
 
         <section data-markdown>
           ## Quero lidar com Expressões Regulares
           ```python
-          import re
+          >>> import re
+
+          >>> m = re.search('\d+', 'bernardo3123xasd')
+          >>> m.group(0)
+          '3123'
           ```
         </section>
 
         <section data-markdown>
           ## Quero lidar com arquivos JSON
           ```python
-          import json
+          >>> import json
+
+          >>> dados = {'nome': 'Bernardo', 'idade': 26, 'preguica': None}
+          >>> print json.dumps(dados)
+          {"idade": 26, "preguica": null, "nome": "Bernardo"}
           ```
         </section>
 
@@ -432,13 +464,23 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Mobile
-            - ### Kivy
+            ## mobile
+            - ### kivy
+        </section>
+
+        <section>
+            <h2>PyPI - Python Package Index</h2>
+            <a href="https://pypi.python.org/pypi" target = "_blank"><img src="images/pypi.png"></a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            #### $ sudo apt-get install python-pip
+            #### $ pip install django
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
             ## Qual a melhor feature do Python?
-            ### As pessoas
+            - ### As **pessoas**
         </section>
 
         <section class="fragments without_ul_style" >
