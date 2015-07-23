@@ -206,7 +206,7 @@
 
         <section data-markdown>
             ## Microservices
-            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo póprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade gestão centralizada deve ser mínima** para serviços visando viabilizar a independência entre eles.
+            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo póprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade de gestão centralizada deve ser mínima** para os serviços visando viabilizar a independência entre eles.
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -262,7 +262,7 @@
             - ### Poderíamos envolver **mais devs** no projeto
             - ### Poderíamos entregar **mais rápido**
             - ### Poderíamos gerar software de **maior qualidade**
-            - ### Poderíamos focar em entregar **mais no valor** para o cliente
+            - ### Poderíamos focar em entregar **mais valor** para o cliente
         </section>
 
         <section data-markdown>
@@ -276,11 +276,24 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Trade-offs e Problemas
+            ## Trade-offs que Encontramos
             - ### Aumento da **complexidade operacional**
+              - ### Ambiente de dev mais burocrático (resolvemos com o Docker)
+              - ### Diferentes processos de deploy
             - ### Problemas para garantir a **consistência dos dados**
             - ### Todos os overheads de **comunicação em sistemas distribuídos**
-            - ### Nosso bando de dados era **altamente acoplado**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Killer Problems
+            - ### Nossas regras de negócios estavam **completamente acopladas** entre os módulos services.py, models.py e views.py
+            - ### A **modelagem acoplada** do nosso banco de dados
+            - ### Impossível de mudar
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Solução
+            - ![Legacy](images/giphy.gif)
         </section>
 
         <section >
@@ -294,6 +307,10 @@
             - ### Utilização de **objetos de domínio**
             - ### Criação de **casos de uso** orquestrando a troca de mensagem entre os objetos
             - ### Implementação de **anti-corruption layer** nos serviços
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Implementação em Etapas
         </section>
 
         <section>
