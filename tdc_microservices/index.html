@@ -114,15 +114,178 @@
             <h2>Quem são vocês?</h2>
         </section>
 
-        <section class="fragments without_ul_style" data-markdown>
-          ## O que é Python?
+        <section class="fragments " data-markdown>
+          ## Roteiro
 
-          - ### Linguagem de programação de uso geral
-          - ### Mais de 25 anos
-          - ### Criada por Guido Van Rossum
-          - ### Software Livre
-          - ### Sintaxe invejada por muitos
-          - ### Alta produtividade (DRY)
+          - ### Nosso Cenário
+          - ### Microservices
+          - ### 3 Pontos Sobre DDD
+          - ### Implantação
+          - ### Dúvidas
+        </section>
+
+        <section>
+            <img src="images/hype.jpg">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Nosso Cenário
+
+          ### Sistema para um empresa de **medicina do trabalho** realizar atendimentos de **medicina ocupacional** por todo o Brasil e fornecer uma **análise inteligente** sobre o perfil dos colaboradores de uma empresa.
+        </section>
+
+        <section >
+            <h2>Maaaaaaas...</h2>
+            <h3>Tudo começou só com uma filinha:</h3>
+          <img src="images/chamada.png">
+        </section>
+
+        <section >
+            <h2>Hoje em dia...</h2>
+            <h3>Até <a href="https://en.wikipedia.org/wiki/Jamie_Zawinski#Zawinski.27s_law_of_software_envelopment">envia email</a></h3>
+          <img src="images/realidade.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Histórico do Projeto
+            - ### + de **5 anos**
+            - ### + de **10 devs** passaram
+            - ### Python e **Django 1.4**
+            - ### Hoje: 4 devs e **únicos Pythonistas**
+            - ### Empresa com **12 devs**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Infra do Projeto
+            - ### Em **Outubro de 2014**
+            - ### 3 devs
+            - ### Django com **uma única app**
+            - ### 3k LOC de **models.py**
+            - ### ~3k LOC de **views.py**
+            - ### ~2,5k LOC de **services.py**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Menos de 50% de coverage
+            ![No tests](images/no_test.jpg)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Histórico do Projeto
+            - ### 9 filials == 9 máquinas
+            - ### 1 ambiente de clientes
+            - ### 1 única máquina do banco
+            - ### **11 máquinas**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## $ fab all_hosts deploy
+            ![XKCD](images/deploying.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Cliente
+            - ### **Novos módulos** no sistema
+            - ### **Melhorias** nos antigos
+            - ### Correção de **bugs**
+        </section>
+
+        <section data-markdown>
+            ![Work](images/working.png)
+        </section>
+
+        <section data-markdown>
+            ### Estudamos
+            ![Library](images/library.jpg)
+        </section>
+
+        <section >
+            <h3>Estudamos</h3>
+            <img  src="images/patterns.jpg"/>
+        </section>
+
+        <section data-markdown>
+            ## Microservices
+            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo póprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade gestão centralizada deve ser mínima** para serviços visando viabilizar a independência entre eles.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Componentes por Serviços
+            - ### Componentes: unidades de software **independentes**
+            - ### Serviços: **componentes externos** com comunicação por API
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Foco em Capacidades do Negócio
+            - ### Serviços limitados ao **contexto do problema**
+            - ### Equipe precisa saber só do **contexto específico** e não mais do todo
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Pensamento em ~~Projeto~~ Produto
+            - ### Fim da **Lei de Conway**
+            - ### Domínio menor == entendimento mais simples
+            - ### Entendimento mais simples == equipe responsável por **todo o serviço**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Smart Endpoints & Dumb Pipes
+            - ### Foco em **coesão** e **desacoplamento**
+            - ### Chamadas por métodos em memória viram **chamadas ao serviço**
+            - ### HTTP >> **síncrono**
+            - ### Mensageria >> **assíncrono**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Governança Descentralizada
+            - ### **Decisões específicas** para o microservice
+            - ### **Right tool** for the job
+            - ### **Independência** no processo de desenvolvimento da equipe
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Armazenamento de Dados Descentralizados
+            - ### Dados sendo visualizados de **acordo com o contexto**
+            - ### **Perde-se** a gestão de transações automática
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Design orientado a Falhas
+            - ### **Falhas de comunicação** são sempre reais
+            - ### A comunicação deve ser sempre **desenvolvida pensando o cenário de falha**
+            - ### Código **mais estável**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Conclusões
+            - ### Poderíamos desenvolver em **outras tecnologias**
+            - ### Poderíamos envolver **mais devs** no projeto
+            - ### Poderíamos entregar **mais rápido**
+            - ### Poderíamos gerar software de **maior qualidade**
+            - ### Poderíamos focar em entregar **mais no valor** para o cliente
+        </section>
+
+        <section data-markdown>
+            ## Nossa reação
+            ![Mind](images/mind.gif)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## E começamos...
+            - ![Dog](images/no_Idea.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Trade-offs e Problemas
+            - ### Aumento da **complexidade operacional**
+            - ### Problemas para garantir a **consistência dos dados**
+            - ### Todos os overheads de **comunicação em sistemas distribuídos**
+            - ### Nosso **domínio era altamente acoplado**
+        </section>
+
+        <section >
+            <h3>Então estudamos mais...</h3>
+            <img height="500px" src="images/ddd.jpeg"/>
         </section>
 
         <section>
