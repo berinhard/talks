@@ -156,7 +156,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Infra do Projeto
+            ## Histórico do Projeto
             - ### Em **Outubro de 2014**
             - ### 3 devs
             - ### Django com **uma única app**
@@ -171,7 +171,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Histórico do Projeto
+            ## Infra do Projeto
             - ### 9 filials == 9 máquinas
             - ### 1 ambiente de clientes
             - ### 1 única máquina do banco
@@ -226,6 +226,7 @@
             - ### Fim da **Lei de Conway**
             - ### Domínio menor == entendimento mais simples
             - ### Entendimento mais simples == equipe responsável por **todo o serviço**
+            - ### Deploy independentemente
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -257,12 +258,13 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Conclusões
-            - ### Poderíamos desenvolver em **outras tecnologias**
-            - ### Poderíamos envolver **mais devs** no projeto
-            - ### Poderíamos entregar **mais rápido**
-            - ### Poderíamos gerar software de **maior qualidade**
-            - ### Poderíamos focar em entregar **mais valor** para o cliente
+            ## Conclusões do que poderíamos
+            - ### Desenvolver em **outras tecnologias**
+            - ### Ter rotinas de **deploy mais simpls**
+            - ### Envolver **mais devs** no projeto
+            - ### Entregar **mais rápido**
+            - ### Gerar software de **maior qualidade**
+            - ### Focar em entregar **mais valor** para o cliente
         </section>
 
         <section data-markdown>
@@ -315,6 +317,185 @@
 
         <section class="fragments without_ul_style" data-markdown>
             ## Implementação em Etapas
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## 1º Caso: Isolar lógica de um domínio (sem microservice)
+            - Models continuaram no legado
+            - Nova app somente lidando com um tipo de atendimento
+            - Já existiam testes
+            - Migramos as views, services, urls e testes isolando a app
+            - Ponto de acoplamento: import dos models do legado
+            - Objetivo: aprender a isolar a lógica
+        </section>
+
+        <section data-markdown>
+            ```python
+            # urls.py do legado
+            (r'^clientes/absenteismo/', include('abs_homolog.urls', namespace='abs_homolog'))
+
+            # urls.py da app
+            urlpatterns = patterns('abs_homolog.views',
+                url(r'^graficos/consolidado/$', 'absenteeism_report', name='absenteeism_consolidated'),
+                url(r'^graficos/cat/$', 'absenteeism_cat_report', name='absenteeism_cat_chart'),
+            )
+            ```
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## 2º Caso: Nova funcionalidade com baixo acoplamento (sem microservice)
+            - Models, views, forms e urls próprios em nova app
+            - Utilização de Signals para não mexer no meio legado
+            - Integração através de import em listeners no legado
+            - Ponto de acoplamento: único import para o model legado de Paciente
+            - Objetivo: aprender a organizar o código para ser consumido por clientes externos
+        </section>
+
+        <section data-markdown>
+            ```python
+            # models.py do legado
+            created_medical_file = Signal(providing_args=['medical_file'])
+            created_medical_file.connect(
+                receivers.populate_medical_file_reports,
+                dispatch_uid='medical_file_creation'
+            )
+
+            # views.py do legado
+            created_medical_file.send(
+                sender='atendimento_ocupacional', medical_file=ficha
+            )
+
+            # listener.py no legado
+            def populate_medical_file_reports(sender, medical_file, *args, **kwargs):
+                from epidemiologic.models import EpidemiologicRecord
+                EpidemiologicRecord.objects.create_entry(
+                    **medical_file.get_report_data()
+                )
+            ```
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## 3º Caso: Nova funcionalidade apenas acoplando o banco (microservice interno)
+            - App plugável do Django (estratégias de settings)
+            - Criação de UC para encapsular lógica de domínio
+            - Utilização de Signals para não mexer no meio legado
+            - Integração através de disparo de mensagens via RabbitMq
+                - Disparo encapsulado em objetos de fronteira
+                - Tarefas fazendo apenas a limpeza de dados e delegando aos UC
+            - Ponto de acoplamento: apenas utilizaram o mesmo banco de dados
+            - Objetivo: implementar um microservice sem o overhead dois ambientes
+        </section>
+
+        <section data-markdown>
+            ```python
+            def populate_patient_peridocal_info(sender, patient, *args, **kwargs):
+                from brmed_site.utils import PeriodicalDatesPatientProxy
+
+                patient_proxy = PeriodicalDatesPatientProxy(patient)
+                patient_proxy.send()
+
+
+            class PeriodicalDatesPatientProxy(BaseProxy):
+
+                def __init__(self, patient):
+                    super(PeriodicalDatesPatientProxy, self).__init__()
+                    self.patient = patient
+
+                def send(self):
+                    expiration_days = self.patient.days_until_due_date
+                    if not isinstance(expiration_days, int):
+                      return
+
+                    kwargs = {
+                      'patient_id': self.patient.id
+                      'last_exam_date': self.patient.get_data_ultimo_exame().isoformat(),
+                      'expiration_days': expiration_days,
+                    }
+                    return self.send_task(settings.UPDATE_PERIODICAL_LAST_EXAM_DATE, kwargs=kwargs)
+
+            # use_cases.py no microservice chamada pela task
+            class UpdatePeriodicalDatesExamInfo(object):
+
+                @classmethod
+                def execute(cls, patient_id, last_exam_date, expiration_days):
+                    entry = PeriodicalDates.objects.get_or_prepare(patient_id=patient_id)
+                    entry.update_last_exam_date(last_exam_date)
+                    entry.set_expiration_date(expiration_days)
+                    entry.save()
+            ```
+        </section>
+
+        <section data-markdown>
+            ## 4º Caso: Nova funcionalidade agnóstica (microservice interno)
+            - App plugável do Django (estratégias de settings)
+            - Criação de UC para encapsular lógica de domínio
+            - Utilização de Signals para não mexer no meio legado
+            - Integração através de disparo de mensagens via RabbitMq
+            - **Modelos sem semântica alguma do domínio do legado**
+            - **Banco de dados próprio (máquina própria pro banco)**
+            - Objetivo: ser possível deployar isoladamente no futuro
+        </section>
+
+        <section data-markdown>
+        ```python
+        class ReportsRouter(object):
+
+          def db_for_read(self, model, **hints):
+            if model._meta.app_label == 'reports':
+              return settings.REPORTS_DB_KEY
+
+            return None
+
+          def db_for_write(self, model, **hints):
+            if model._meta.app_label == 'reports':
+              return settings.REPORTS_DB_KEY
+
+            return None
+
+          def allow_relation(self, obj1, obj2, **hints):
+            if obj1._meta.app_label == 'reports' and obj2._meta.app_label == 'reports':
+              return True
+            return None
+
+          def allow_syncdb(self, db, model):
+            if model._meta.app_label == 'south':
+              return True
+
+            if db == settings.REPORTS_DB_KEY:
+              return model._meta.app_label == 'reports'
+            elif model._meta.app_label == 'reports':
+              return False
+
+            return None
+
+        # no settings.py
+        DATABASE_ROUTERS = ['reports.router.ReportsRouter']
+        ```
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## 5º Caso: Autenticação como Microservice
+            - App SSO em Sinatra (Ruby)
+            - **Todo** o ambiente isolado
+            - No legado mudamos o Middleware e Backends de autenticação
+            - Objetivo: validar participação de outros devs no projeto
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## 6º Caso: Novo módulo em Microservice
+            - **App Flask** de ambiente isolado
+            - Utilização de comunicação por RabbitMq **e** API Rest
+            - Tivemos que desenvolver uma API para expor o legado
+            - Objetivo: implementar microservices por completo
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## Conclusões
+            - ### Tem **muitos** trade-offs para serem pensados
+            - ### Não usamos microservices para tudo
+               - ### Foco em **modularização**
+            - ### Diminuímos o **tempo de entrega**
+            - ### Diminuímos a **barreira de entrada** no projeto
         </section>
 
         <section>
