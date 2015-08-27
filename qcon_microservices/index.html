@@ -208,7 +208,7 @@
 
         <section data-markdown>
             ## Microservices
-            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo póprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade de gestão centralizada deve ser mínima** para os serviços visando viabilizar a independência entre eles.
+            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo próprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade de gestão centralizada deve ser mínima** para os serviços visando viabilizar a independência entre eles.
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -293,6 +293,7 @@
             - ### Nossas regras de negócios estavam **completamente acopladas** entre os módulos services.py, models.py e views.py
             - ### A **modelagem acoplada** do nosso banco de dados
             - ### Impossível de mudar
+            - ### Todos esses problemas foram refletidos pros novos serviços
         </section>
 
         <section data-markdown>
@@ -321,7 +322,7 @@
         <section class="fragments without_ul_style" data-markdown>
             ## Focos no Mindset
             - ### Definição dos **Bounded Context** dos serviços
-            - ### Utilização de **Domain Objects**
+            - ### Utilização de **Domain Objects**na implementação
             - ### Criação de **Use Cases** orquestrando a troca de mensagem entre os objetos
             - ### Implementação de **Anti-Corruption Layer** nos serviços
         </section>
@@ -463,7 +464,14 @@
                - ### Foco em **modularização**
             - ### Diminuímos o **tempo de entrega**
             - ### Diminuímos a **barreira de entrada** no projeto
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## Conclusões
             - ### Aumentamos o **nível técnico** da equipe
+            - ### **Monitoramento efetivo** é muito importante
+            - ### **Logs** são nossos melhores amigos
+            - ### Qualquer operação feita 2 vezes, deve ser automatizada
         </section>
 
         <section>
