@@ -401,6 +401,48 @@
             <img src="images/step5.png"/>
         </section>
 
+        <section data-markdown>
+            ### Fronteira de Entrada
+            ```python
+            from scheduling.use_cases import ConsumeScheduleSlots
+
+            class ConsumeScheduleSlotsExecuter(object):
+                """
+                Adapter to Consume Scheduel Slots Use Case
+                """
+
+                def __init__(self, *args, **kwargs):
+                    self.__blocked_attrs = ['repository']
+                    self.instance = ConsumeScheduleSlots(*args, **kwargs)
+
+                def __getattr__(self, name):
+                    if name in self.__blocked_attrs:
+                      raise AttributeError(u'Attribute %s does not exist.' % name)
+                    return getattr(self.instance, name)
+            ```
+        </section>
+
+        <section data-markdown>
+            ### Fronteira de Saída
+            ```python
+            class ConsumeExamsAllocationsProxy(BaseProxy):
+
+                task_name = settings.CONSUME_SCHEDULE_EXAMS_ALLOCATIONS
+
+                def send(self, exam_request, schedule):
+                    scheduling_time = schedule.data_agendamento.isoformat()
+                    exams_ids = exam_request.exames_internos.values_list('id', flat=True)
+
+                    kwargs = {
+                      'scheduling_time': scheduling_time,
+                      'exams_ids': exams_ids,
+                      'subsidiary_id': schedule.filial_id,
+                    }
+
+                    self.send_task(kwargs=kwargs)
+            ```
+        </section>
+
         <section class="fragments " data-markdown>
             ## 6º Caso (atual): Kill the Legacy!
             - Objetivo: **substituir implementações** do legado
