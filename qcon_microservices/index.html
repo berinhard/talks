@@ -402,6 +402,27 @@
         </section>
 
         <section data-markdown>
+            ### Proxy de Saída
+            ```python
+            class ConsumeExamsAllocationsProxy(BaseProxy):
+
+                task_name = settings.CONSUME_SCHEDULE_EXAMS_ALLOCATIONS
+
+                def send(self, exam_request, schedule):
+                    scheduling_time = schedule.data_agendamento.isoformat()
+                    exams_ids = exam_request.exames_internos.values_list('id', flat=True)
+
+                    kwargs = {
+                      'scheduling_time': scheduling_time,
+                      'exams_ids': exams_ids,
+                      'subsidiary_id': schedule.filial_id,
+                    }
+
+                    self.send_task(kwargs=kwargs)
+            ```
+        </section>
+
+        <section data-markdown>
             ### Fronteira de Entrada
             ```python
             from scheduling.use_cases import ConsumeScheduleSlots
@@ -419,27 +440,6 @@
                     if name in self.__blocked_attrs:
                       raise AttributeError(u'Attribute %s does not exist.' % name)
                     return getattr(self.instance, name)
-            ```
-        </section>
-
-        <section data-markdown>
-            ### Fronteira de Saída
-            ```python
-            class ConsumeExamsAllocationsProxy(BaseProxy):
-
-                task_name = settings.CONSUME_SCHEDULE_EXAMS_ALLOCATIONS
-
-                def send(self, exam_request, schedule):
-                    scheduling_time = schedule.data_agendamento.isoformat()
-                    exams_ids = exam_request.exames_internos.values_list('id', flat=True)
-
-                    kwargs = {
-                      'scheduling_time': scheduling_time,
-                      'exams_ids': exams_ids,
-                      'subsidiary_id': schedule.filial_id,
-                    }
-
-                    self.send_task(kwargs=kwargs)
             ```
         </section>
 
