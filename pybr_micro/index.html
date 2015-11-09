@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Matando um Monolítico Django: de Pluggable Apps aos Microservices</title>
+
+    <meta name="description" content="Matando um Monolítico Django: de Pluggable Apps aos Microservices">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+       <section>
+          <h1>PythonBrasil 11</h1>
+          <br>
+          <h3>Matando um Monolítico Django: de Pluggable Apps aos Microservices</h3>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>São José dos Campos/SP</h4>
+          <h4>09 de Novembro de 2015</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://garimpo.fm/">garimpo.fm</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://elogroup.com.br/">
+              <img width="50%" src="images/Logo-EloGroup-fundo-claro.jpg">
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+          <br>
+          <h2>
+            <p>
+              <a target="_blank" href="http://slideshare.net/bernardofontes/">slideshare.net/bernardofontes</a>
+            </p>
+          </h2>
+          <br>
+        </section>
+
+        <section>
+            <img src="images/hype.jpg">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Nosso Cenário
+
+          ### Sistema para um empresa de **medicina do trabalho** realizar atendimentos de **medicina ocupacional** por todo o Brasil e fornecer uma **análise inteligente** sobre o perfil dos colaboradores de uma empresa.
+        </section>
+
+        <section >
+            <h2>Maaaaaaas...</h2>
+            <h3>Tudo começou só com uma filinha:</h3>
+          <img src="images/chamada.png">
+        </section>
+
+        <section >
+            <h2>Hoje em dia...</h2>
+            <h3>Até <a href="https://en.wikipedia.org/wiki/Jamie_Zawinski#Zawinski.27s_law_of_software_envelopment">envia email</a></h3>
+          <img src="images/realidade.png">
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Histórico do Projeto
+            - ### + de **5 anos**
+            - ### + de **10 devs** passaram
+            - ### Python e **Django 1.4**
+            - ### Hoje: 4 devs e **únicos Pythonistas**
+            - ### Empresa com **12 devs**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Histórico do Projeto
+            - ### Em **Outubro de 2014**
+            - ### 3 devs
+            - ### 1 saindo em Dezembro
+            - ### Django com **uma única aplicação**
+            - ### 3k LOC de **models.py** (Banco de Dados)
+            - ### ~3k LOC de **views.py** (Controllers)
+            - ### ~2,5k LOC de **services.py**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Menos de 50% de coverage
+            ![No tests](images/no_test.jpg)
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Infra do Projeto
+            - ### 9 filials == 9 máquinas
+            - ### 1 ambiente de clientes
+            - ### 1 única máquina do banco
+            - ### **11 máquinas**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## $ fab all_hosts deploy
+            ![XKCD](images/deploying.png)
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Cliente
+            - ### **Novos módulos** no sistema
+            - ### **Melhorias** nos antigos
+            - ### Correção de **bugs**
+        </section>
+
+        <section data-markdown>
+            ![Work](images/working.png)
+        </section>
+
+        <section data-markdown>
+            ### Estudamos
+            ![Library](images/library.jpg)
+        </section>
+
+        <section >
+            <h3>Estudamos</h3>
+            <img  src="images/patterns.jpg"/>
+        </section>
+
+        <section data-markdown>
+            ## Microservices
+            Um estilo arquitetural para o desenvolvimento de **serviços enxutos** em que cada um possa ser **executado em um processo próprio** e se comunicando através de mecanismos de fácil implementação como o protocolo HTTP. Esses serviços são **construídos focando capacidades de negócio** e devem poder ser **deployados independentemente** através de um processo automatizado. A **necessidade de gestão centralizada deve ser mínima** para os serviços visando viabilizar a independência entre eles.
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Componentes por Serviços
+            - ### Componentes: unidades de software **independentes**
+            - ### Serviços: **componentes externos** com comunicação por API
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Foco em Capacidades do Negócio
+            - ### Serviços limitados ao **contexto do problema**
+            - ### Equipe precisa saber só do **contexto específico** e não mais do todo
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Pensamento em ~~Projeto~~ Produto
+            - ### Fim da **Lei de Conway**
+            - ### Domínio menor == entendimento mais simples
+            - ### Entendimento mais simples == equipe responsável por **todo o serviço**
+            - ### Deploy independentemente
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Smart Endpoints & Dumb Pipes
+            - ### Foco em **coesão** e **desacoplamento**
+            - ### Chamadas por métodos em memória viram **chamadas ao serviço**
+            - ### HTTP >> **síncrono**
+            - ### Mensageria >> **assíncrono**
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Governança Descentralizada
+            - ### **Decisões específicas** para o microservice
+            - ### **Right tool** for the job
+            - ### **Independência** no processo de desenvolvimento da equipe
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Armazenamento de Dados Descentralizados
+            - ### Dados sendo visualizados de **acordo com o contexto**
+            - ### **Perde-se** a gestão de transações automática
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Design orientado a Falhas
+            - ### **Falhas de comunicação** são sempre reais
+            - ### A comunicação deve ser sempre **desenvolvida pensando o cenário de falha**
+            - ### Código **mais estável**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Conclusões do que poderíamos
+            - ### Desenvolver em **outras tecnologias**
+            - ### Ter rotinas de **deploy mais simples**
+            - ### Envolver **mais devs** no projeto
+            - ### Entregar **mais rápido**
+            - ### Gerar software de **maior qualidade**
+            - ### Focar em entregar **mais valor** para o cliente
+        </section>
+
+        <section data-markdown>
+            ## Nossa reação
+            ![Mind](images/mind.gif)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## E começamos...
+            - ![Dog](images/no_Idea.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Trade-offs que Encontramos
+            - ### Aumento da **complexidade operacional**
+              - ### Ambiente de dev mais burocrático (resolvemos com o Docker)
+              - ### Diferentes processos de deploy
+            - ### Problemas para garantir a **consistência dos dados**
+            - ### Todos os overheads de **comunicação em sistemas distribuídos**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Killer Problems
+            - ### Nossas regras de negócios estavam **completamente acopladas** entre os módulos services.py, models.py e views.py
+            - ### A **modelagem acoplada** do nosso banco de dados
+            - ### Impossível de mudar
+            - ### Todos esses problemas foram refletidos pros novos serviços
+        </section>
+
+        <section data-markdown>
+            ![DatabaseFull](images/whole_db.jpg)
+        </section>
+
+        <section data-markdown>
+            ![Database](images/database.jpg)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Solução
+            - ![Legacy](images/giphy.gif)
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## *"É preciso **tirar o legado da cabeça**"*
+            - Isaac Souza
+        </section>
+
+        <section >
+            <h3>Então estudamos mais...</h3>
+            <img height="500px" src="images/ddd.jpeg"/>
+            <img height="500px" src="images/ddd2.jpg"/>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Focos no Mindset
+            - ### Definição dos **Bounded Context** dos serviços
+            - ### Utilização de **Domain Objects** na implementação
+            - ### Criação de **Use Cases** orquestrando a troca de mensagem entre os objetos
+            - ### Implementação de **Anti-Corruption Layer** nos serviços
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Implementação em Etapas
+        </section>
+
+        <section class="" data-markdown>
+            ## 1º Caso: Isolar lógica de um domínio (sem microservice)
+            - Objetivo: **aprender a isolar a lógica**
+            - Modelos de dados continuaram no legado
+            - Nova aplicação interna somente lidando com um tipo de atendimento
+            - Já existiam testes
+            - Migramos os controllers, services, rotas e testes isolando a app
+            - Ponto de acoplamento: import dos models do legado
+        </section>
+
+        <section >
+            <img src="images/step1.png"/>
+        </section>
+
+        <section data-markdown>
+            ## 2º Caso: Nova funcionalidade com baixo acoplamento (sem microservice)
+            - Objetivo: aprender a **organizar o código** para ser **consumido por clientes externos**
+            - Modelos, controllers, services e urls próprios em nova app
+            - Utilização de eventos para não mexer no meio legado
+            - Integração através de import em listeners no legado
+            - Ponto de acoplamento: único import para o model legado de Paciente
+        </section>
+
+        <section >
+            <img src="images/step2.png"/>
+        </section>
+
+        <section class="" data-markdown>
+            ## 3º Caso: Autenticação como Microservice
+            - Objetivo: validar **participação de outros devs** no projeto
+            - App SSO em Sinatra (Ruby)
+            - **Todo** o ambiente isolado
+            - No legado mudamos a fina camada autenticação
+        </section>
+
+        <section >
+            <img src="images/setp4.png"/>
+        </section>
+
+        <section class="" data-markdown>
+            ## 4º Caso: Nova funcionalidade agnóstica (microservice interno)
+            - Objetivo: ser possível **deployar isoladamente** no futuro
+            - App plugável do Django
+            - Criação de UC para encapsular orquestração de domínio
+            - Integração através de disparo de mensagens via RabbitMq
+            - Modelos sem semântica alguma do domínio do legado
+            - Banco de dados próprio (máquina própria pro banco)
+        </section>
+
+        <section >
+            <img src="images/step3.png"/>
+        </section>
+
+        <section class="" data-markdown>
+            ## 5º Caso: Nova Aplicação em Microservice
+            - Objetivo: implementar **microservices por completo**
+            - App Flask de ambiente isolado
+            - Utilização de comunicação por RabbitMq **e** API Rest
+            - Tivemos que desenvolver uma API para expor o legado
+        </section>
+
+        <section >
+            <img src="images/step5.png"/>
+        </section>
+
+        <section class="" data-markdown>
+            ## 6º Caso (atual): Kill the Legacy!
+            - Guideline de arquitetura 1: ter o **domínio isolado** em libs
+            - Guideline de arquitetura 2: **atrasar** decisões
+        </section>
+
+        <section >
+            <img src="images/pkill_05.png"/>
+        </section>
+
+        <section >
+            <img src="images/pkill_07.png"/>
+        </section>
+
+        <section data-markdown>
+            ## Legado Antes
+
+            ```
+            def patient_arrival(id, eid, user):
+                if isinstance(eid, unicode) or isinstance(eid, str):
+                  eid = int(eid)
+
+                patient = Paciente.objects.get(cpf=id,empresa__id=eid)
+
+                try:
+                  exam_request = PedidoExame.objects.get_active_for_patient(patient.id)
+                except PedidoExame.DoesNotExist:
+                  raise services_exceptions.PatientWithoutActiveExamRequestException(
+                    u'É necessário um pedido de exame ativo para marcar chegada do paciente.'
+                  )
+
+                raise_if('Paciente já encontra-se Presente', patient.presente)
+
+                patient.disponivel = True
+                patient.presente = True
+                patient.chegou = datetime.datetime.now()
+                patient.presente_em = current_filial()
+                patient.save()
+
+                event = PatientCheckInEvent.initialize(user, patient, exam_request)
+                event.publish()
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Legado Depois
+
+            ```
+            def patient_arrival(id, eid, user):
+                if isinstance(eid, unicode) or isinstance(eid, str):
+                  eid = int(eid)
+
+                patient = Paciente.objects.get(cpf=id, empresa__id=eid)
+                from medical_service.queue.factories import build_patient_check_in_use_case
+                use_case = build_patient_check_in_use_case(settings.FILIAL)
+                use_case.execute(patient.id, user.id)
+            ```
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## Conclusões
+            - ### Tem **muitos** trade-offs para serem pensados
+            - ### Não usamos microservices para tudo
+               - ### Foco em **modularização**
+            - ### Diminuímos o **tempo de entrega**
+            - ### Diminuímos a **barreira de entrada** no projeto
+        </section>
+
+        <section class="fragments " data-markdown>
+            ## Conclusões
+            - ### Aumentamos o **nível técnico** da equipe
+            - ### **Monitoramento efetivo** é muito importante
+            - ### **Logs** são nossos melhores amigos
+            - ### Qualquer operação feita 2 vezes, deve ser automatizada
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <p>Bernardo Fontes</p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://garimpo.fm/">garimpo.fm</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://elogroup.com.br/">
+              <img width="50%" src="images/Logo-EloGroup-fundo-claro.jpg">
+            </a>
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
