@@ -397,51 +397,6 @@
             <img src="images/pkill_07.png"/>
         </section>
 
-        <section data-markdown>
-            ## Legado Antes
-
-            ```
-            def patient_arrival(id, eid, user):
-                if isinstance(eid, unicode) or isinstance(eid, str):
-                  eid = int(eid)
-
-                patient = Paciente.objects.get(cpf=id,empresa__id=eid)
-
-                try:
-                  exam_request = PedidoExame.objects.get_active_for_patient(patient.id)
-                except PedidoExame.DoesNotExist:
-                  raise services_exceptions.PatientWithoutActiveExamRequestException(
-                    u'É necessário um pedido de exame ativo para marcar chegada do paciente.'
-                  )
-
-                raise_if('Paciente já encontra-se Presente', patient.presente)
-
-                patient.disponivel = True
-                patient.presente = True
-                patient.chegou = datetime.datetime.now()
-                patient.presente_em = current_filial()
-                patient.save()
-
-                event = PatientCheckInEvent.initialize(user, patient, exam_request)
-                event.publish()
-            ```
-        </section>
-
-        <section data-markdown>
-            ## Legado Depois
-
-            ```
-            def patient_arrival(id, eid, user):
-                if isinstance(eid, unicode) or isinstance(eid, str):
-                  eid = int(eid)
-
-                patient = Paciente.objects.get(cpf=id, empresa__id=eid)
-                from medical_service.queue.factories import build_patient_check_in_use_case
-                use_case = build_patient_check_in_use_case(settings.FILIAL)
-                use_case.execute(patient.id, user.id)
-            ```
-        </section>
-
         <section class="fragments " data-markdown>
             ## Conclusões
             - ### Tem **muitos** trade-offs para serem pensados
