@@ -248,7 +248,7 @@
             ## QuerySets
             - ## É uma **coleção de objetos** recuperados do banco
             - ## Lazy-evaluation
-            - ## Permite **chamadas encadeadas**. Ex: all().count()
+            - ## **Fluent Interface**: Permite chamadas encadeadas. Ex: all().count()
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -322,6 +322,149 @@
             - ### **Verboso**: implementamos 2 classes e configuramos o model 3 vezes
             - ### **Sem Chain Calls**: não conseguiríamos filtrar por tarefas de alta prioridade **e** incompletas
             - ### **Related Manager**: se o model for utilizado em relacionamentos com outro models, os métodos não estarão visíveis
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### 2ª Abordagem: Métodos no Manager
+            ```python
+            class TodoManager(models.Manager):
+
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class Todo(models.Model):
+                objects = TodoManager()
+
+                # Campos na tabela
+            ```
+            ```python
+            >>> Todo.objects.incomplete()
+            >>> Todo.objects.high_priority()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Problemas da 2ª abordagem
+            - ### **Sem Chain Calls**: não conseguiríamos filtrar por tarefas de alta prioridade **e** incompletas
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### 3ª Abordagem: Custom QuerySet
+            ```python
+
+            class TodoQuerySet(models.query.QuerySet):
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class TodoManager(models.Manager):
+                def get_query_set(self):
+                    return TodoQuerySet(self.model, using=self._db)
+
+            class TodoManager(models.Manager):
+
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class Todo(models.Model):
+                objects = TodoManager()
+
+                # Campos na tabela
+            ```
+            ```python
+            >>> Todo.objects.all().incomplete()
+            >>> Todo.objects.all().high_priority()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Problemas da 3ª abordagem
+            - ### **Entry points**: não conseguiríamos filtrar inicialmente invocando os métodos do queryset
+            - ### Maaaas, tem como resolver
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## 3.1: Resolvendo na mão
+            ```python
+            class TodoQuerySet(models.query.QuerySet):
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class TodoManager(models.Manager):
+                def get_query_set(self):
+                    return TodoQuerySet(self.model, using=self._db)
+
+                def incomplete(self):
+                    return self.get_query_set().incomplete()
+
+                def high_priority(self):
+                    return self.get_query_set().high_priority()
+            ```
+            ```python
+            >>> Todo.objects.incomplete().high_priority()
+            >>> Todo.objects.high_priority().incomplete()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## 3.2: Django &lt 1.7
+            ```
+            $ pip install django-model-utils
+            ```
+            ```python
+            from model_utils.managers import PassThroughManager
+
+            class TodoQuerySet(models.query.QuerySet):
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class Todo(models.Model):
+                content = models.CharField(max_length=100)
+                # other fields go here..
+
+                objects = PassThroughManager.for_queryset_class(TodoQuerySet)()
+            ```
+        </section>
+
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## 3.3: Django &gte 1.7
+            ```python
+            class TodoQuerySet(models.query.QuerySet):
+                def incomplete(self):
+                    return self.filter(is_done=False)
+
+                def high_priority(self):
+                    return self.filter(priority=1)
+
+            class Todo(models.Model):
+                content = models.CharField(max_length=100)
+                # other fields go here..
+
+                objects = TodoQuerySet.as_manager()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Resumo
+            - ### Utilizar o ORM puro do Django para consultas é difícil de gerenciar
+            - ### É importante utilizarmos a semântica do domínio inclusive nas queries
+            - ### Managers são utilizados para entry-points customizados
+            - ### QuerySets geram APIs mais elegantes por serem mais fluentes
         </section>
 
         <section>
