@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>4 Conceitos Chaves de Domain Driven Design</title>
+    <title>Utilizando o ORM do Django de Maneira Elegante</title>
 
-    <meta name="description" content="4 Conceitos Chaves de Domain Driven Design">
+
+    <meta name="description" content="Utilizando o ORM do Django de Maneira Elegante">
     <meta name="author" content="Bernardo Fontes">
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -68,16 +69,17 @@
       <!-- Any section element inside of this container is displayed as a slide -->
 
        <section>
-          <h1>LabCodes</h1>
+          <h1>41º PUG-PE</h1>
+          <img src="images/pugpe.png">
+          <h3>Utilizando o ORM do Django de Maneira Elegante</h3>
           <br>
-          <h3>4 Conceitos Chaves de Domain Driven Design</h3>
           <br>
 
           <h3><b>Bernardo Fontes</b></h3>
           <br>
 
           <h4>Recife/PE</h4>
-          <h4>?? de Novembro de 2015</h4>
+          <h4>28 de Novembro de 2015</h4>
         </section>
 
         <section>
@@ -111,16 +113,215 @@
           <br>
         </section>
 
-        <section class="without_ul_style" data-markdown>
-            ## Por que Domain Driven Design?
+        <section>
+          <h3>I &lt3</h3>
+          <img src="images/recife.jpg">
         </section>
 
+        <section>
+          <h3>#pyselfie</h3>
+          <img src="images/pyselfie.jpg">
+        </section>
 
-        <section class="without_ul_style" data-markdown>
-            - ## Bounded Context
-            - ## Domain Objects
-            - ## Use Cases
-            - ## Anti-Corruption Layer
+        <section>
+            <a href="http://www.dabapps.com/blog/higher-level-query-api-django-orm/" target="_blank"><img src="images/talk.png"></a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Todos nós **amamos** o ORM do Django.
+            - ### Certo?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Super-poderes do ORM
+            - ### Agnóstico à **tecnologia infra**
+            - ### Fornece uma **API simples**
+            - ### Conexões e semânticas do **banco invisíveis**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Responsabilidades básicas ORM
+            - ### Fornecer **entidades únicas** representando entradas no banco
+            - ### Viabilizar operações em **coleções de objetos** (select, update, delete)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## API de Objetos
+            ```python
+            >>> from django.contrib.auth.models import User
+            >>> user = User.objects.get(pk=42)
+            >>> user.set_password('morena_tropicana')
+            >>> user.save()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## API de Objetos
+            ```python
+            from django.contrib.auth.hashers import make_password
+
+            class User(models.Model):
+
+                # campos do model
+
+                def set_password(self, raw_password):
+                    self.password = make_password(raw_password)
+                    self._password = raw_password
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Método `set_password`
+            - ### Semântica de **domínio** (atualizar senha)
+            - ### **Encapsula** implementação do objeto user
+            - ### APIs clientes **menos verbosas**
+            - ### Código mais limpo, **testável** e **reusável**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Por que nãõ fazemos o mesmo com **coleções**?
+        </section>
+
+        <section data-markdown>
+            ## Nossa TODO List
+            ```python
+            from django.db import models
+
+            PRIORITY_CHOICES = [(1, 'High'), (2, 'Low')]
+
+            class Todo(models.Model):
+                content = models.CharField(max_length=100)
+                is_done = models.BooleanField(default=False)
+                owner = models.ForeignKey('auth.User')
+                priority = models.IntegerField(choices=PRIORITY_CHOICES, default=1)
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Um exemplo de uso
+            ```python
+            def dashboard(request):
+                todos = Todo.objects.filter(
+                    owner=request.user
+                    is_done=False
+                    priority=1
+                )
+                ctx = {'todos': todos}
+                return render(request, 'todos/list.html', ctx)
+            ```
+            - ### Problemas?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Problemas
+            - ### Implementação de `Todo` **vazando**
+            - ### Consultas mais **verbosas**
+            - ### **Repetição de queries** espalhadas pelo sistema
+            - ### Manutenação/alteração são mais **custosas**
+            - ### Sem **semântica** (o que é priority=1?)
+            - ### Necessidade de testar com o banco configurado corretamente
+        </section>
+
+        <section data-markdown>
+            ## Solução: Queries com **semântica de domínio**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## ***Send messages, not objects***
+            ## Alan Kay
+            - ou algo bem parecido com isso
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Caminhos no ORM do Django
+            - ## Custom **Model Managers**
+            - ## Custom **QuerySets**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Model Managers
+            - ## **Interface** para realizar queries a partir de Models
+            - ## `objects` é sempre o **manager padrão**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## QuerySets
+            - ## É uma **coleção de objetos** recuperados do banco
+            - ## Lazy-evaluation
+            - ## Permite **chamadas encadeadas**. Ex: all().count()
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### QuerySet
+            ```python
+            class QuerySet(object):
+
+                def count(self):
+                    """
+                    Performs a SELECT COUNT() and returns the number of records as an
+                    integer.
+                    If the QuerySet is already fully cached this simply returns the length
+                    of the cached results set to avoid multiple SELECT COUNT(*) calls.
+                    """
+                    if self._result_cache is not None:
+                      return len(self._result_cache)
+
+                    return self.query.get_count(using=self.db)
+
+                # e vai embora...
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Model Manager até 1.6
+            ```python
+            class Manager(object):
+
+                def get_query_set(self):
+                    return QuerySet(self.model, using=self._db)
+
+                def all(self):
+                    return self.get_query_set()
+
+                def count(self):
+                    return self.get_query_set().count()
+
+                def filter(self, *args, **kwargs):
+                    return self.get_query_set().filter(*args, **kwargs)
+
+                # e vai embora...
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### 1ª Abordagem: Múltiplos Managers
+            ```python
+            class IncompleteTodoManager(models.Manager):
+                def get_query_set(self):
+                    return super(TodoManager, self).get_query_set().filter(is_done=False)
+
+            class HighPriorityTodoManager(models.Manager):
+                def get_query_set(self):
+                    return super(TodoManager, self).get_query_set().filter(priority=1)
+
+            class Todo(models.Model):
+                objects = models.Manager() # manager padrão para manter API
+                incomplete = models.IncompleteTodoManager()
+                high_priority = models.HighPriorityTodoManager()
+
+                # Campos na tabela
+            ```
+            ```python
+            >>> Todo.incomplete.all()
+            >>> Todo.high_priority.all()
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Problemas da 1ª abordagem
+            - ### **Verboso**: implementamos 2 classes e configuramos o model 3 vezes
+            - ### **Sem Chain Calls**: não conseguiríamos filtrar por tarefas de alta prioridade **e** incompletas
+            - ### **Related Manager**: se o model for utilizado em relacionamentos com outro models, os métodos não estarão visíveis
         </section>
 
         <section>
