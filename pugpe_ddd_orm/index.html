@@ -179,7 +179,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ## Por que nãõ fazemos o mesmo com **coleções**?
+            ## Por que não fazemos o mesmo com **coleções**?
         </section>
 
         <section data-markdown>
@@ -366,14 +366,6 @@
                 def get_query_set(self):
                     return TodoQuerySet(self.model, using=self._db)
 
-            class TodoManager(models.Manager):
-
-                def incomplete(self):
-                    return self.filter(is_done=False)
-
-                def high_priority(self):
-                    return self.filter(priority=1)
-
             class Todo(models.Model):
                 objects = TodoManager()
 
@@ -442,7 +434,7 @@
 
 
         <section class="fragments without_ul_style" data-markdown>
-            ## 3.3: Django &gte 1.7
+            ## 3.3: Django &gt= 1.7
             ```python
             class TodoQuerySet(models.query.QuerySet):
                 def incomplete(self):
