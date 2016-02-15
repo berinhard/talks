@@ -138,6 +138,7 @@
           - ### **Esconde** muitas outras camadas do framework
           - ### Não implica **pensar o design** da sua aplicação
           - ### Alta chance de **misturar responsabilidades**
+          - ### Resultado: **legados bebês**
         </section>
 
         <section>
@@ -175,10 +176,10 @@
             ```python
             from django.db import models
 
-            HIGH_PRIORITY, LOW_PRIORITY = 2, 1
-            PRIORITY_CHOICES = [(HIGH_PRIORITY, 'High'), (LOW_PRIORITY, 'Low')]
-
             class Todo(models.Model):
+                HIGH_PRIORITY, LOW_PRIORITY = 2, 1
+                PRIORITY_CHOICES = [(HIGH_PRIORITY, 'High'), (LOW_PRIORITY, 'Low')]
+
                 content = models.CharField(max_length=100)
                 is_done = models.BooleanField(default=False)
                 owner = models.ForeignKey('auth.User')
@@ -644,21 +645,22 @@
 
         <section data-markdown class="without_ul_style fragments">
             ## Resumindo
-            - ### Models, Managers e QuerySet com **linguagem de domínio encapsulando detalhes** de implentação e persistência
-            - ### Views só são responsáveis por **fluxo HTTP** é **disparo de execução**
-            - ### Use Cases podem ser seus amigos
-            - ### Teste Forms **unitariamente** para facilitar testes em camadas mais altas (views, por exemplo)
-            - ### Utilize a **linguagem de Template do Django** como amiga para testar Templates
+            - Models, Managers e QuerySet com **linguagem de domínio encapsulando detalhes** de implentação e persistência
+            - Views só são responsáveis por **fluxo HTTP** e **disparo de execução**
+            - MVC define sua **arquitetura**, não seu design
+            - Use Cases podem ser seus amigos
+            - Teste Forms **unitariamente** para facilitar testes em camadas mais altas (views, por exemplo)
+            - Utilize a **linguagem de Template do Django** como amiga para testar Templates
         </section>
 
         <section>
           <h2>Obrigado!</h2>
           <h3>
-            <p>Bernardo Fontes</p>
             <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
             <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
             <p><a target="_blank" href="http://garimpo.fm/">garimpo.fm</a></p>
             <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="https://medium.com/@bernardofontes/">Medium</a></p>
             <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
           </h3>
           <p>
