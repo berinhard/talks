@@ -120,24 +120,24 @@
         <section data-markdown class="fragments without_ul_style">
           ## Fronteiras de Contexto
           - ### Integração entre **nossos próprios módulos**
-          - ### Código **"sob controle"**
           - ### Como o módulo que gerencia um carrinho de compras fala com o nosso módulo de pagamento?
+          - ### Código **"sob controle"**
         </section>
 
         <section data-markdown class="fragments without_ul_style">
           ## Fronteiras de Aplicação
           - ### Integração entre nosso código com **libs terceiras**
-          - ### Código **"confiável"**
           - ### Utilizar a lib `unipath` para gerenciar os arquivos
+          - ### Código **"confiável"**
         </section>
 
         <section data-markdown class="fragments without_ul_style">
           ## Fronteiras de Sistema
           - ### Integração entre nosso código com **outras tecnologias**
-          - ### O **deconhecido** gera **preocupação**
           - ### Integrações via HTTP
           - ### Mensageria via AMQP
           - ### Consultas em DB via SQL
+          - ### O **deconhecido** gera **preocupação**
           - ### Em geral são **mais críticas**
         </section>
 
@@ -146,7 +146,7 @@
         </section>
 
         <section data-markdown>
-            ## Exemplo em Django Integração de Pagamento
+            ## Exemplo **Simplificado** em Django Integração de Pagamento
 
             ```python
             """
@@ -195,7 +195,7 @@
                   'resource_id': order_id,
                   'credit_card': form.cleaned_data['credit_card']
                 }
-                paypal_response = requests.post('/paypal/api', data=data)
+                paypal_response = requests.post('http://paypal.com/api', data=data)
                 if paypal_response.text == 'SUCCESS':
                   order.paid = True
                   order.save()
@@ -220,7 +220,7 @@
                     data = {'credit_card': '1234'}
 
                     with requests_mock.Mocker() as mock:
-                      mock.post('/paypal/api', text='SUCCESS')
+                      mock.post('http://paypal.com/api', text='SUCCESS')
                       self.client.post('/pagamento/42', data)
                     order = Order.objects.get(id=42)
 
@@ -228,22 +228,272 @@
             ```
         </section>
 
-
-        <section data-markdown>
-          ## Processo de Design
-        </section>
-
-        <section data-markdown>
-          ## Design Emergente
-
-          - Refatoração
-          - Remoção de Acoplamentos
-          - Duplicidade
+        <section data-markdown class="fragments without_ul_style">
+          ## Problemas na abordagem
+          - ### Teste **focado em integração** e não em funcionamento unitário da view
+          - ### **Burocrática** para testar outros cenários
+          - ### **Acoplamento direto** do código com a forma de pagamento
         </section>
 
         <section data-markdown class="fragments without_ul_style">
-          ## **Exploração** e **Descoberta**
-          - ## cansativo...
+          ## Como resolver?
+          - ### Uma ou mais novas **camadas de abstrações**
+          - ### Componentes de código com **papéis especificos e limitados**
+          - ### Facilita o **TDD** via **testes unitários**
+          - ### Podemos nos preocupar mais com as características da **integração em si** e não no **papel da integração** no nosso sistema
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### S
+          - ### O
+          - ### L
+          - ### I
+          - ### D
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### **Single Responsibility Principle**
+          - ### **O**pen Closed Principle
+          - ### **L**iskov Substitution Principle
+          - ### **I**nterface Segregation Principle
+          - ### **D**ependency Inversion Principle
+        </section>
+
+        <section>
+            <h2>Object Mentor</h2>
+            <a href="http://www.objectmentor.com/omSolutions/oops_what.html" target = "_blank"><img height="580px" src="images/object_mentor.png"></a>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## O que testar?
+          - ### **Responsabilidade**: definir se o pagamento foi um sucesso ou não?
+          - ### **Confiança**: e se a API mudar?
+          - ### **Disponibilidade**: e se o sistema externo cair?
+          - ### Todas essas questões devem impactar **somente** o código responsável pelo pagamento
+          - ### **Encapsulamento** é a palavra chave
+        </section>
+
+        <section data-markdown>
+            ## Responsabilidade
+
+            ```python
+            import requests_mock
+
+            class TestPaypalPaymentClient(TestCase):
+
+                def setUp(self):
+                    self.paypal_client = PaypalPaymentClient()
+                    self.data = {'credit_card': '1234', 'resource_id': 42}
+
+                def test_check_payment_was_successful(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='SUCCESS')
+                      paypal_response = self.paypal_client.pay(**self.data)
+                  self.assertTrue(paypal_response.success)
+
+                def test_check_payment_wasnt_successful(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='ERROR')
+                      paypal_response = self.paypal_client.pay(**self.data)
+                  self.assertFalse(paypal_response.success())
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Responsabilidade
+
+            ```python
+            import requests
+
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post('http://paypal.com/api/', data=data)
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            class TestPaypalPaymentClient(TestCase):
+                """..... testes de responsabilidade"""
+
+                def test_ensure_payment_url(self):
+                    self.assertEqual('http://paypal.com', self.paypal_client.host)
+                    self.assertEqual('/api/', self.paypal_client.path)
+                    self.assertEqual('http://paypal.com/api/', self.paypal_client.payment_url)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            import requests
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def __init__(self):
+                    self.host = 'http://paypal.com'
+                    self.path = '/api/'
+                    self.payment_url = '{}{}'.format(self.host, self.path)
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post(self.payment_url, data=data)
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Disponibilidade
+
+            ```python
+            class TestPaypalPaymentClient(TestCase):
+                """..... testes de responsabilidade e confiança"""
+
+                def test_raises_custom_exception_if_not_200_api_response(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='ERROR', status_code=408)
+                      self.assertRaises(
+                       PaypalApiCommunicationException, self.paypal_client.pay, **self.data
+                      )
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            import requests
+
+            class PaypalApiCommunicationException(Exception):
+                """
+                Exception raised when Paypal API answers other than 200 status code
+                """
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def __init__(self):
+                    self.host = 'http://paypal.com'
+                    self.path = '/api/'
+                    self.payment_url = '{}{}'.format(self.host, self.path)
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post(self.payment_url, data=data)
+
+                    if not response.ok:
+                      msg = 'Error {} - Content: {}'.format(response.status_code, response.text)
+                      raise PaypalApiCommunicationException()
+
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## O que atingimos?
+          - ### Definimos um **único ponto de comunicação** com o Paypal no nosso sistema
+          - ### Trouxemos **semântica de domínio** com novos objetos
+          - ### Trouxemos **semântica de erro** com uma exceção customizada
+          - ### **Encapsulamos os detalhes de comunicação** para despreocupar o código que precise realizar o pagamento
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Sabe quem sempre fez isso mas nunca nos atentamos?
+          - ### **ORMs =)**
+          - ### São pontos únicos para comunicação com o banco de dados
+          - ### Possuem semãntica de construção de consultas
+          - ### Possuem semântica com erros próprios
+          - ### Encapsulam os detalhes da comunicação
+        </section>
+
+        <section data-markdown>
+            ## Refatoração da view usando a lib mock
+
+            ```python
+            from mock import patch, Mock
+
+            class TestPaymentView(TestCase):
+
+                @patch.object(PaypalResponse, 'success', Mock(return_value=True))
+                def test_pay_order(self):
+                    data = {'credit_card': '1234'}
+
+                    self.client.post('/pagamento/42', data)
+                    order = Order.objects.get(id=42)
+
+                    self.assertTrue(order.paid)
+
+                @patch.object(PaypalResponse, 'success', Mock(side_effect=PaypalApiCommunicationException))
+                def test_400_if_paypal_error(self):
+                    data = {'credit_card': '1234'}
+
+                    response = self.client.post('/pagamento/42', data)
+
+                    self.assertEqual(400, response.status_code)
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            """
+            Nova possível implementação da integração
+            """
+
+            def payment_view(order_id):
+                # códigos pra recuperar a ordem, validar form e tudo mais
+
+                data = {
+                  'resource_id': order_id,
+                  'credit_card': form.cleaned_data['credit_card']
+                }
+                paypal_client = PaypalPaymentClient()
+
+                try:
+                  response = paypal_client.pay(**data)
+                except PaypalApiCommunicationException:
+                  return HttpResponseBadRequest()
+
+                if response.success():
+                  order.paid = True
+                  order.save()
+
+                # códigos pra seguir o fluxo http
+            ```
         </section>
 
         <section data-markdown>
