@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Ataque às Fronteiras Isolando e Testando suas Integrações Externas</title>
+
+    <meta name="description" content="Ataque às Fronteiras Isolando e Testando suas Integrações Externas">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h1>IV PyNE</h1>
+          <br>
+          <h3>Ataque às Fronteiras</h3>
+          <h3>Isolando e Testando suas Integrações</h3>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>Teresina/PI</h4>
+          <h4>10 de Junho de 2016</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="https://soundcloud.com/2bonsai">soundcloud.com/2bonsai</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://elogroup.com.br/">
+              <img width="50%" src="images/Logo-EloGroup-fundo-claro.jpg">
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Fronteiras
+          - ### Mais que **se comunicar** com uma API
+          - ### **Pontos de conexão** do nosso próprio código com **um terceiro** desconhecido ou não
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Tipos
+          - ### Fronteiras de **Contexto**
+          - ### Fronteiras de **Aplicação**
+          - ### Fronteiras de **Sistema**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Fronteiras de Contexto
+          - ### Integração entre **nossos próprios módulos**
+          - ### Como o módulo que gerencia um carrinho de compras fala com o nosso módulo de pagamento?
+          - ### Código **"sob controle"**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Fronteiras de Aplicação
+          - ### Integração entre nosso código com **libs terceiras**
+          - ### Utilizar a lib `unipath` para gerenciar os arquivos
+          - ### Código **"confiável"**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Fronteiras de Sistema
+          - ### Integração entre nosso código com **outras tecnologias**
+          - ### Em geral protocolo + linguagem
+          - ### Integrações via HTTP
+          - ### Mensageria via AMQP
+          - ### Consultas em DB via SQL
+          - ### O **desconhecido** gera **preocupação**
+          - ### Em geral são **mais críticas**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Testando as Fronteiras de Sistema
+        </section>
+
+        <section data-markdown>
+            ## Exemplo **Simplificado** em Django Integração de Pagamento
+
+            ```python
+            """
+            A view de pagamento faz uma integração com o Paypal
+            """
+
+            class TestPaymentView(TestCase):
+
+                def test_pay_order(self):
+                    data = {'credit_card': '1234'}
+
+                    self.client.post('/pagamento/42', data)
+                    order = Order.objects.get(id=42)
+
+                    self.assertTrue(order.paid)
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Problemas na abordagem
+          - ### Estamos fazendo uma **requisição de verdade**
+          - ### **Tempo dos testes** fica lento
+          - ### **Dependência do serviço** estar de pé nos testes
+          - ### E se o serviço gerar alguma **cobrança** (envio de email, por exemplo)?
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Como resolver? Mock
+          - ### **Simulamos** a requisição
+          - ### Tempo de execução **normal do Python**
+          - ### **Independência** do serviço
+          - ### Utilizando a lib **requests**
+          - ### `pip install requests`
+        </section>
+
+        <section data-markdown>
+            ```python
+            """
+            Uma possível implementação da integração
+            """
+
+            def payment_view(order_id):
+                # códigos pra recuperar a ordem, validar form e tudo mais
+
+                data = {
+                  'resource_id': order_id,
+                  'credit_card': form.cleaned_data['credit_card']
+                }
+                paypal_response = requests.post('http://paypal.com/api', data=data)
+                if paypal_response.text == 'SUCCESS':
+                  order.paid = True
+                  order.save()
+
+                # códigos pra seguir o fluxo http
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Testando com Mock
+
+            ```python
+            """
+            Utilizando a lib requests-mock: pip install requests-mock
+            """
+
+            import requests_mock
+
+            class TestPaymentView(TestCase):
+
+                def test_pay_order(self):
+                    data = {'credit_card': '1234'}
+
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='SUCCESS')
+                      self.client.post('/pagamento/42', data)
+                    order = Order.objects.get(id=42)
+
+                    self.assertTrue(order.paid)
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Problemas na abordagem
+          - ### Teste **focado em integração** e não em funcionamento unitário da view
+          - ### **Burocrática** para testar outros cenários
+          - ### **Acoplamento direto** do código com a forma de pagamento
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Como resolver?
+          - ### Uma ou mais novas **camadas de abstrações**
+          - ### Componentes de código com **papéis específicos e limitados**
+          - ### Facilita o **TDD** via **testes unitários**
+          - ### Podemos nos preocupar mais com as características da **integração em si** e não no **papel da integração** no nosso sistema
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### S
+          - ### O
+          - ### L
+          - ### I
+          - ### D
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Princípios de OO
+          - ### **Single Responsibility Principle**
+          - ### **O**pen Closed Principle
+          - ### **L**iskov Substitution Principle
+          - ### **I**nterface Segregation Principle
+          - ### **D**ependency Inversion Principle
+        </section>
+
+        <section>
+            <h2>Object Mentor</h2>
+            <a href="http://www.objectmentor.com/omSolutions/oops_what.html" target = "_blank"><img height="580px" src="images/object_mentor.png"></a>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## O que testar?
+          - ### **Responsabilidade**: definir se o pagamento foi um sucesso ou não?
+          - ### **Confiança**: e se a API mudar?
+          - ### **Disponibilidade**: e se o sistema externo cair?
+          - ### Todas essas questões devem impactar **somente** o código responsável pelo pagamento
+          - ### **Encapsulamento** é a palavra chave
+        </section>
+
+        <section data-markdown>
+            ## Responsabilidade
+
+            ```python
+            import requests_mock
+
+            class TestPaypalPaymentClient(TestCase):
+
+                def setUp(self):
+                    self.paypal_client = PaypalPaymentClient()
+                    self.data = {'credit_card': '1234', 'resource_id': 42}
+
+                def test_check_payment_was_successful(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='SUCCESS')
+                      paypal_response = self.paypal_client.pay(**self.data)
+                  self.assertTrue(paypal_response.success())
+
+                def test_check_payment_wasnt_successful(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='ERROR')
+                      paypal_response = self.paypal_client.pay(**self.data)
+                  self.assertFalse(paypal_response.success())
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Responsabilidade
+
+            ```python
+            import requests
+
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post('http://paypal.com/api/', data=data)
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            class TestPaypalPaymentClient(TestCase):
+                """..... testes de responsabilidade"""
+
+                def test_ensure_payment_url(self):
+                    self.assertEqual('http://paypal.com', self.paypal_client.host)
+                    self.assertEqual('/api/', self.paypal_client.path)
+                    self.assertEqual('http://paypal.com/api/', self.paypal_client.payment_url)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            import requests
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def __init__(self):
+                    self.host = 'http://paypal.com'
+                    self.path = '/api/'
+                    self.payment_url = '{}{}'.format(self.host, self.path)
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post(self.payment_url, data=data)
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Disponibilidade
+
+            ```python
+            class TestPaypalPaymentClient(TestCase):
+                """..... testes de responsabilidade e confiança"""
+
+                def test_raises_custom_exception_if_not_200_api_response(self):
+                    with requests_mock.Mocker() as mock:
+                      mock.post('http://paypal.com/api', text='ERROR', status_code=408)
+                      self.assertRaises(
+                       PaypalApiCommunicationException, self.paypal_client.pay, **self.data
+                      )
+            ```
+        </section>
+
+        <section data-markdown>
+            ## Confiança
+
+            ```python
+            import requests
+
+            class PaypalApiCommunicationException(Exception):
+                """
+                Exception raised when Paypal API answers other than 200 status code
+                """
+
+            class PaypalResponse(object):
+
+                def __init__(self, paypal_response_text):
+                    self.paypal_response_text = paypal_response_text
+
+                def success(self):
+                    return self.paypal_response_text == 'SUCCESS'
+
+
+            class PaypalPaymentClient(object):
+
+                def __init__(self):
+                    self.host = 'http://paypal.com'
+                    self.path = '/api/'
+                    self.payment_url = '{}{}'.format(self.host, self.path)
+
+                def pay(self, credit_card, resource_id):
+                    data = {'credit_card': credit_card, 'resource_id': resource_id}
+                    response = requests.post(self.payment_url, data=data)
+
+                    if not response.ok:
+                      msg = 'Error {} - Content: {}'.format(response.status_code, response.text)
+                      raise PaypalApiCommunicationException()
+
+                    return PaypalResponse(response.text)
+            ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## O que atingimos?
+          - ### Definimos um **único ponto de comunicação** com o Paypal no nosso sistema
+          - ### Trouxemos **semântica de domínio** com novos objetos
+          - ### Trouxemos **semântica de erro** com uma exceção customizada
+          - ### **Encapsulamos os detalhes de comunicação** para despreocupar o código que precise realizar o pagamento
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Sabe quem sempre fez isso mas nunca nos atentamos?
+          - ### **ORMs =)**
+          - ### São pontos únicos para comunicação com o banco de dados
+          - ### Possuem semãntica de construção de consultas
+          - ### Possuem semântica com erros próprios
+          - ### Encapsulam os detalhes da comunicação
+        </section>
+
+        <section data-markdown>
+            ## Refatoração da view usando a lib mock
+
+            ```python
+            from mock import patch, Mock
+
+            class TestPaymentView(TestCase):
+
+                @patch.object(PaypalResponse, 'pay')
+                def test_pay_order(self, mocked_pay):
+                    mocked_resp = Mock(PaypalResponse)
+                    mocked_resp.success.return_value = True
+                    mocked_pay.return_value = mocked_resp
+
+                    data = {'credit_card': '1234'}
+                    self.client.post('/pagamento/42', data)
+                    order = Order.objects.get(id=42)
+
+                    self.assertTrue(order.paid)
+
+                @patch.object(PaypalPaymentClient, 'pay', Mock(side_effect=PaypalApiCommunicationException))
+                def test_400_if_paypal_error(self):
+                    data = {'credit_card': '1234'}
+
+                    response = self.client.post('/pagamento/42', data)
+
+                    self.assertEqual(400, response.status_code)
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            """
+            Nova possível implementação da integração
+            """
+
+            def payment_view(order_id):
+                # códigos pra recuperar a ordem, validar form e tudo mais
+
+                data = {
+                  'resource_id': order_id,
+                  'credit_card': form.cleaned_data['credit_card']
+                }
+                paypal_client = PaypalPaymentClient()
+
+                try:
+                  response = paypal_client.pay(**data)
+                except PaypalApiCommunicationException:
+                  return HttpResponseBadRequest()
+
+                if response.success():
+                  order.paid = True
+                  order.save()
+
+                # códigos pra seguir o fluxo http
+            ```
+        </section>
+
+        <section data-markdown>
+          ## Dúvidas?
+        </section>
+
+        <section>
+            <a href="http://2016.pythonbrasil.org.br/" target = "_blank"><img src="images/pybr.png"></a>
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <br/>
+            <p>Bernardo Fontes</p>
+            <br/>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="https://soundcloud.com/2bonsai">soundcloud.com/2bonsai</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
