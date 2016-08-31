@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Tutorial: Orientação a Objetos em Python</title>
+
+    <meta name="description" content="Tutorial: Orientação a Objetos em Python">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h1>PythonSudeste 2016</h1>
+          <h3>Orientação a Objetos em Python</h3>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>Belo Horizonte/MG</h4>
+          <h4>03 de Setembro de 2016</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+          </h3>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+          <br>
+        </section>
+
+        <section>
+          <h3>
+            <p>Muito grato pela ajuda do Luiz Costa</p>
+            <img src="images/luiz.png"/>
+            <p><a target="_blank" href="https://twitter.com/gutomcosta">twitter.com/gutomcosta</a></p>
+          </h3>
+          <br>
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h2>Object-oriented <b>programming</b></h2>
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h2>Object-oriented <strike>programming</strike></h2>
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h2>Object-oriented <b>design</b></h2>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## O que **são** objetos?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### ...objects that have **an identity**
+            *[Steve Freeman and Nat Pryce](http://www.growing-object-oriented-software.com/)*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### ...objects that have an identity, might **change state** over time
+            *[Steve Freeman and Nat Pryce](http://www.growing-object-oriented-software.com/)*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### ...objects that have an identity, might change state over time and **model computational processes**
+            *[Steve Freeman and Nat Pryce](http://www.growing-object-oriented-software.com/)*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## OO é sobre **objetos**
+            - Classes, funções ou outros procedimentos são **estratégias de implementar OO**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            Mas segundo Alan Kay é sobre **mensagens**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            Just a gentle reminder that I took some pains at the last OOPSLA to try **to remind everyone that Smalltalk is not only NOT its syntax or the class library, it is not even about classes**. I'm sorry that I long ago coined the term "objects" for this topic because it gets many people to focus on the lesser idea. **The big idea is "messaging"**
+
+            *[Alan Kay](http://c2.com/cgi/wiki?AlanKayOnMessaging)*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## **Dados** + **Comportamento**
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h2>Isto é um objeto?</h2>
+            <img src="images/conta.png"/>
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## **3 elementos**
+            - ### Mensagens
+            - ### Tipo
+            - ### Estado
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Mensagens
+            - ### Maneira de os objetos se comunicarem
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h2>The Web of Objects</h2>
+            <img width="80%" src="images/web.png"/>
+        </section>
+
+        <section data-markdown>
+            ## Algum problema?
+
+            ```python
+            class AddUserToGroup(object):
+
+                def execute(self, *args, **kwargs):
+                    # some code
+                    group = Group()
+                    group.name = 'Admin'
+                    group.users = ['Berin', 'Duko', 'Geo']
+                    # more code
+            ```
+        </section>
+
+        <section data-markdown>
+            ```python
+            class AddUserToGroup(object):
+
+                def execute(self, *args, **kwargs):
+                    group = Group()
+                    group.name = 'Admin'
+                    group.users = ['Berin', 'Duko', 'Geo'] # <-- muitas coisas aqui
+            ```
+        </section>
+
+        <section data-markdown>
+            OOP to me means only **messaging**, **local retention** and **protection and hiding of state-process**, and extreme late-binding of all things.
+
+            *[Alan Kay](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)*
+        </section>
+
+        <section data-markdown>
+            OOP to me means only messaging, local retention and protection and hiding of state-process, and extreme late-binding of all things. **It can be done in Smalltalk and in LISP. There are possibly other systems in which this is possible, but I'm not aware of them.**
+
+            *[Alan Kay](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)*
+        </section>
+
+        <section>
+            <img width="50%" src="images/lisp.png">
+        </section>
+
+        <section>
+            <img src="images/state.png">
+        </section>
+
+        <section data-markdown>
+            One powerful design strategy, which is particularly appropriate to the construction of programs for modeling physical systems, is to base the structure of our programs on the structure of the system being modeled. **For each object in the system, we construct a corresponding computational object. For each system action, we define a symbolic operation in our computational model.** Our hope in using this strategy is that extending the model to accommodate new objects or new actions will require no strategic changes to the program, only the addition of the new symbolic analogs of those objects or actions. If we have been successful in our system organization, then to add a new feature or debug an old one we will have to work on only a localized part of the system.
+
+            *[SICP - Modularity, Objects, and State](https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-19.html#%_chap_3)*
+        </section>
+
+        <section data-markdown>
+            One powerful design strategy, which is particularly appropriate to the construction of programs for modeling physical systems, is to base the structure of our programs on the structure of the system being modeled. For each object in the system, we construct a corresponding computational object. For each system action, we define a symbolic operation in our computational model. **Our hope in using this strategy is that extending the model to accommodate new objects or new actions will require no strategic changes to the program, only the addition of the new symbolic analogs of those objects or actions.** If we have been successful in our system organization, then to add a new feature or debug an old one we will have to work on only a localized part of the system.
+
+            *[SICP - Modularity, Objects, and State](https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-19.html#%_chap_3)*
+        </section>
+
+        <section data-markdown>
+            One powerful design strategy, which is particularly appropriate to the construction of programs for modeling physical systems, is to base the structure of our programs on the structure of the system being modeled. For each object in the system, we construct a corresponding computational object. For each system action, we define a symbolic operation in our computational model. Our hope in using this strategy is that extending the model to accommodate new objects or new actions will require no strategic changes to the program, only the addition of the new symbolic analogs of those objects or actions. **If we have been successful in our system organization, then to add a new feature or debug an old one we will have to work on only a localized part of the system.**
+
+            *[SICP - Modularity, Objects, and State](https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-19.html#%_chap_3)*
+        </section>
+
+        <section data-markdown>
+            ## Trocando Mensagens
+
+            ```python
+            class AddUserToGroup(object):
+
+                def execute(self, *args, **kwargs):
+                    # some code
+                    group = Group('Admin')
+                    group.add_user('Berin')
+                    group.add_user('Duko')
+                    group.add_user('Geo') # **envia** a mensagem
+                    # more code
+            ```
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            - ### Semanticamente **enviar uma mensagem** é MUITO diferente do que **chamar um método**
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            - ### Semanticamente **enviar uma mensagem** é MUITO diferente do que **chamar um método**
+            - ### **Mentalidade passiva** VS **metalidade ativa**
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Tipo
+            ...a type a is collection of objects characterized by **functions, axioms and preconditions**.
+
+            *[Bertrand Meyer](https://archive.eiffel.com/doc/oosc/)*
+        </section>
+
+        <section>
+            <img width="80%" src="images/stack.png">
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Estado
+            The state of an object encompasses all of the (usually static) properties of the object plus the current (usually dynamic) values of each of these properties...
+
+            *[Grady. Booch](https://www.amazon.com/Object-Oriented-Analysis-Design-Applications-3rd/dp/020189551X)*
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### Simplificando
+            O estado de um objeto é a configuração dos **valores de seus atributos e relacionamentos** em um **dado momento do tempo**.
+
+            Eu e Luiz Costa
+        </section>
+
+        <section>
+            <img src="images/contas.png">
+        </section>
+
+        <section>
+            <h3>As duas outras contas são iguais?</h3>
+            <img src="images/contas.png">
+        </section>
+
+        <section>
+            <h3>Coding</h3>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Requisitos
+            - Como um gerente de banco, gostaria de que fosse possível **abrir uma conta** e permitir **definir um saldo inicial**.
+            - Como caixa operador, gostaria que fosse possível **sacar e depositar** dinheiro na conta de um cliente.
+        </section>
+
+        <section data-markdown>
+            ## Possível solução
+
+            ```python
+            class BankAccount(object):
+
+                def __init__(self, balance):
+                    self.balance = balance
+
+                def withdraw(self, amount):
+                    self.balance -= amount
+
+                def deposit(self, amount):
+                    self.balance += amount
+            ```
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### Requisitos
+            - Como um gerente de banco, gostaria de que fosse possível abrir uma conta e permitir definir um saldo inicial.
+            - Como caixa operador, gostaria que fosse possível sacar e depositar dinheiro na conta de um cliente.
+            - **IH! Mas esqueci de avisar, ao sacar uma quantia, o cliente deve ter saldo suficiente na conta!**
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### **Estado Válido** VS **Estado Inválido**
+            - Faz sentido uma conta sem número?
+            - Faz sentido uma conta sem agência?
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Um objeto deve nascer em um **estado válido** e **pronto para uso**!
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## O que é um **estado válido**?
+            - O **domínio** onde o objeto está inserido define a **semântica dos seus estados**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## No nosso exemplo
+            - Conta e agência **são obrigatórias**
+            - Saldo inicial a **partir de R$ 1000**
+            - O cliente necessita ter **saldo suficiente** para realizar o saque
+        </section>
+
+        <section data-markdown>
+            ## **Inicializando** VS **Construindo**
+
+            ```python
+            class BankAccount(object):
+
+                def __init__(self, account, agency, balance):
+                    requirements = [account, agency, balance >= 1000]
+                    if not all(requirements):
+                      raise InvalidBankAccountException
+
+                    self.account = account
+                    self.agency = agency
+                    self.balance = balance
+
+                def withdraw(self, amount):
+                    if amount > self.balance:
+                      raise NotEnoughBalanceException
+                    self.balance -= amount
+
+                def deposit(self, amount):
+                    self.balance += amount
+            ```
+        </section>
+
+        <section data-markdown>
+            ## **Inicializando** VS **Construindo**
+
+            ```python
+            class BankAccount(object):
+
+                @classmethod
+                def initialize(cls, account, agency, balance):
+                    requirements = [account, agency, balance >= 1000]
+                    if not all(requirements):
+                      raise InvalidBankAccountException
+
+                    return cls(account, agency, balance)
+
+                def __init__(self, account, agency, balance):
+                    self.account = account
+                    self.agency = agency
+                    self.balance = balance
+
+                def withdraw(self, amount):
+                    if amount > self.balance:
+                      raise NotEnoughBalanceException
+                    self.balance -= amount
+
+                def deposit(self, amount):
+                    self.balance += amount
+            ```
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Nova restrição
+            - Uma conta não pode ter um **saldo negativo**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Invariantes
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            A **class invariant** is a **condition** that every object of that class must **satisfy at all times** (when the object is in equilibrium*)
+
+            *[Page Jones](https://books.google.com.br/books?id=iNAezyMExBkC&pg=PA266&lpg=PA266&dq=Fundamentals+of+Object-Oriented+Design+in+UML+-+State-Space+and+Behavior&source=bl&ots=BLu094Lasq&sig=WxGzA0tnDhAGMlRwzkc4kZ11pS8&hl=pt-BR&sa=X&ved=0ahUKEwjhjdq8yezOAhXCEJAKHUgcDFAQ6AEIJjAA#v=onepage&q=Fundamentals%20of%20Object-Oriented%20Design%20in%20UML%20-%20State-Space%20and%20Behavior&f=false)*
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            A **class invariant** is a **condition** that every object of that class must **satisfy at all times** (when the object is in equilibrium*)
+
+             * * “when object is in equilibrium” means that an object must obey its class invariant at all times it’s **not in the middle of changing states**
+
+            *[Page Jones](https://books.google.com.br/books?id=iNAezyMExBkC&pg=PA266&lpg=PA266&dq=Fundamentals+of+Object-Oriented+Design+in+UML+-+State-Space+and+Behavior&source=bl&ots=BLu094Lasq&sig=WxGzA0tnDhAGMlRwzkc4kZ11pS8&hl=pt-BR&sa=X&ved=0ahUKEwjhjdq8yezOAhXCEJAKHUgcDFAQ6AEIJjAA#v=onepage&q=Fundamentals%20of%20Object-Oriented%20Design%20in%20UML%20-%20State-Space%20and%20Behavior&f=false)*
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Como garantir o **estado** e as **invariantes**?
+            - ### **Encapsulamento**
+            - ### Objetos só se **comunicando por mensages**
+            - ### Atribustos **Privado/Público** vieram desse conceito
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Exercício
+            - Como administrador de uma escola de cursos, para que seja possível organizar o calendário de cursos, gostaria de poder **criar novos cursos**.
+            - Um curso tem um **nome**, uma **data inicial** e uma **data final**, uma **descrição** e um **código de identificação**.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Atribuição de Responsabilidades
+            - O que é uma **responsabilidade** em um **objeto**?
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+             A responsibility is an **obligation to perform** a task or **know information**.
+            *[Rebecca Wirfs and Alan McKean](https://www.amazon.com/Object-Design-Roles-Responsibilities-Collaborations/dp/0201379430)*
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### Quais os **objetos ou classes** que encontramos nessa história?
+            - Como gerente de uma frota de veículos, **gostaria de poder registrar o abastecimento dos veículos da empresa, informando a quantidade em litros**.  Além disso, gostaria que fosse possível saber o quanto de combustível tem disponível na Bomba utilizada para abastecimento.
+        </section>
+
+        <section>
+            <h3>Sessão de Modelagem</h3>
+            <p>Vamos nos limitar a relação de Veículo e Bomba</p>
+            <img src="images/modelagem.png">
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### De quem é a **responsabilidade de abastecimento**?
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## **GRASP**
+            ### General Responsibility Assignment Software Patterns
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### Creator
+            ### Information Expert
+            ### Controller
+            ### High Cohesion
+            ### Indirection
+            ### Low Coupling
+            ### Polymorphism
+            ### Protected Variations
+            ### Pure Fabrications
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### **Information Expert**
+            Atribua responsabilidade à classe que tenha **informação necessária para satisfazê-la**
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ### **Coesão**
+            É aquela medida que nos faz achar estranho um método `Acelerar` em um objeto `Caneta`
+        </section>
+
+        <section>
+            <h3>Code Time</h3>
+            <img src="images/modelagem.png">
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### O que vimos
+            - Trocar **mensagens**
+            - Controlar o **estado**
+            - Manter **invariantes**
+            - Promover o **encapsulamento**
+            - Dividir **responsabilidades**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Onde chegamos?
+            - ### **Alta coesão**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## De onde vem os objetos?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Voltando
+            - Como administrador de uma escola de cursos, para que seja possível organizar o calendário de cursos, gostaria de poder **criar novos cursos**.
+            - Um curso tem um **nome**, uma **data inicial** e uma **data final**, uma **descrição** e um **código de identificação**.
+            - **Ah lembrei, um dos principais problemas que temos é o risco de ter dois cursos no mesmo período, isso não pode acontecer.**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## #comofaz?
+            - Surgiu algo novo?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            The traditional way of explaining object analysis involves identifying nouns and verbs in the requirements documents and using them as the initial objects and methods. **This explanation is recognized as an oversimplification that can be useful for teaching object modeling to beginners. The truth is, though, that initial models usually are naive and superficial, based on shallow knowledge.**
+
+            *[Eric Evans](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)*
+        </section>
+
+        <section>
+            <h3>Sessão de Modelagem</h3>
+            <img src="images/model_periodo.png">
+            <p>Período era um <b>conceito implícito</b> que estava na nossa modelagem</p>
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            Many transformations of domain models and the corresponding code happen when developers recognise a concept that has been hinted at in discussion or present simplicity in the design, and they then represent it explicitly in the model with one or more objects or relationships.
+
+            *[Eric Evans](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)*
+
+            PAREI NO 103
+        </section>
+
+        <section>
+            <h2>12ª PythonBrasil</h2>
+            <a href="http://2016.pythonbrasil.org.br/" target = "_blank"><img src="images/pythonbrasil12.png"></a>
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <p>Bernardo Fontes</p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+          </h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
