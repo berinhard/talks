@@ -549,8 +549,346 @@
             Many transformations of domain models and the corresponding code happen when developers recognise a concept that has been hinted at in discussion or present simplicity in the design, and they then represent it explicitly in the model with one or more objects or relationships.
 
             *[Eric Evans](https://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)*
+        </section>
 
-            PAREI NO 103
+        <section class="without_ul_style" data-markdown>
+            ### Sessão de Modelagem
+            Como administrador de uma escola de cursos, gostaria que fosse possível definir turmas diferentes para um curso, além disso matricular alunos nestas turmas. É muito importante controlar se um aluno esteve na aula ou não. Por enquanto vamos oferecer apenas uma turma por vez do curso.
+        </section>
+
+        <section>
+            <h3>Sessão de Modelagem</h3>
+            <img width="80%" src="images/model_turma.png">
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Como os objetos se **relacionam**?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            Como administrador de uma escola de cursos, gostaria que fosse enviado um email personalizado para os alunos após sua matricula ser efetuada.
+        </section>
+
+        <section data-markdown>
+            ### Implementação Inicial da Matrícula
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+
+                def matricular(self, aluno):
+                    return Matricula(self, aluno)
+            ```
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## De quem é a responsabilidade de enviar o email?
+            - ### Pelo **information expert**, turma talvez...
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Enviando email
+
+            ```python
+            import smtplib
+
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    server.sendmail('oo@pyse.com.br', aluno.email, msg)
+                    return matricula
+            ```
+
+            - Qual o problema dessa implementação?
+        </section>
+
+        <section data-markdown>
+            ### Acoplamento
+
+            ```python
+            import smtplib
+
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    ###
+                    ### Acoplamento direto com o serviço de envio de email
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    server.sendmail('oo@pyse.com.br', aluno.email, msg)
+                    ###
+                    return matricula
+            ```
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Acoplamento
+            - ### **Maneira e grau** de dependência entre objetos
+            - ### Medida de **quão conectados** são dois objetos
+            - ### Peso de **relação entre módulos**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Indireção
+            - Atribuir a responsabilidade de **ser o mediador** entre outros componentes ou serviços a um objeto intermediário, para que eles **não sejam diretamente acoplados**.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+Atribuir a responsabilidade de ser o mediador entre outros componentes ou serviços a um objeto intermediário, para que eles não sejam diretamente acoplados. O intermediário cria uma indicação entre os outros componentes.
+        [Craig Larman](http://freecomputerbooks.com/Applying-UML-and-Patterns-3rd-Edition.html)
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Nasce um obeto que envia email
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    envio_de_email = EnvioDeEmail(remetente='oo@pyse.com.br')
+                    envio_de_email.enviar(aluno.email, msg)
+                    return matricula
+            ```
+
+            - Qual o problema dessa implementação?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Mas e se a notificação for diferente?
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    envio_de_email = EnvioDeEmail(remetente='oo@pyse.com.br') # CTRL-C + CTRL-V?
+                    envio_de_email.enviar(aluno.email, msg)
+                    return matricula
+            ```
+
+            - Qual o problema dessa implementação?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Injeção de Dependências
+            Dependency injection separates the creation of a client's dependencies from the client's behavior, which allows program designs to be loosely coupled and to follow the dependency inversion and single responsibility principles.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Injetando Dependência
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim, servico_de_email):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+                    self.servico_de_email = servico_de_email
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    self.servico_de_email.enviar(aluno.email, msg)
+                    return matricula
+            ```
+
+            - Qual o problema dessa implementação?
+            - Quem **cria** esse objeto.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Nova solicitação
+            - Como gerente financeiro de uma escola de cursos, gostaria que fosse gerado uma ordem de cobrança no ERP quando uma matrícula for confirmada. Isso vai diminuir muito o trabalho da equipe do financeiro.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Integração ERP
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim, servico_de_email, integracao_erp):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+                    self.servico_de_email = servico_de_email
+                    self.integracao_erp = integracao_erp
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    msg = u'Sua matrícula foi confirada. Fique atendo ao início das aulas'
+                    self.servico_de_email.enviar(aluno.email, msg)
+                    self.integracao_erp.gerar_ordem_cobranca(aluno)
+                    return matricula
+            ```
+
+            - Qual o problema dessa implementação?
+            - **Bloated Constructor**
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            Sometimes during the TDD process, we end up with a constructor that has a long, unwieldy list of arguments.  We most likely got there by adding the object’s dependencies one at a time, and it go out of hand.
+
+            *[Steve Freeman and Nat Pryce](http://www.growing-object-oriented-software.com/)*
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## **Object Peer Stereotypes**
+            - ### **Dependencies**: quando um objeto não consegue executar suas ações sem depender de outros
+            - ### **Notifications**: pares de objetos que precisam se manter atualizados sobre as atividades uns dos outros
+            - ### **Adjustments**: objetos que ajustam o comportamento de outros
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            These stereotypes are **only heuristics** to help us think about the design, not hard rules, so we don’t obsess about finding just the right classification of object’s peers.
+
+            *[Steve Freeman and Nat Pryce](http://www.growing-object-oriented-software.com/)*
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ##  Como diminuir o acoplamento do objeto de domínio `Turma`  e os serviços que ele precisa?
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Explícito é melhor que Implícito
+            - ### Há um conceito implícito
+            - ### Turma deve **notificar** que ocorreu uma matrícula
+            - ### De quem é a responsabilidade?
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+            ## Pure Fabrication
+            - ### Atribuir um conjunto de **responsabilidades altamente coeso** a uma classe artificial ou de conveniência que **não represente um conceito no domínio do problema**
+        </section>
+
+        <section>
+            <img src="images/pure.png">
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### Utilizando Notificações
+
+            ```python
+            class Turma(object):
+
+                def __init__(self, curso, inicio, fim, notificacoes):
+                    self.curso = curso
+                    self.periodo = Periodo(inicio, fim)
+                    self.notificacoes = notificacoes
+
+                def matricular(self, aluno):
+                    matricula = Matricula(self, aluno)
+                    self.notifica(matricula)
+                    return matricula
+
+                def notifica(self):
+                    for notificacao in self.notificacoes:
+                      notificacao.notificar(self)
+            ```
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Law of Demeter
+            - Each unit should have only limited knowledge about other units: only **units "closely" related** to the current unit.
+            - Each unit should only talk to its friends; **don't talk to strangers**.
+            - Only talk to your **immediate friends**.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ```python
+            turma.lista_de_presenca.registrar_presenca(aluno)
+            ```
+
+            - Design frágil
+            - Mudanças num objeto desconhecido podem quebrar turma
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Tell Don't Ask
+            ```python
+            turma.registrar_presenca(aluno)
+            ```
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ### O que vimos
+            - Indireção
+            - Injetar dependências
+            - Notifications
+            - Law of demeter
+            - Tell, don’t ask
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Onde chegamos?
+            - ### **Baixo acoplamento**
+            - O acoplamento vai existir, o problema é quando ele é **descontrolado**.
+        </section>
+
+        <section class="without_ul_style fragments" data-markdown>
+            ## Object-oriented **Design**
+            - ### Ideal: **Alta coesão** + **Baixo acoplamento**
+            - ### **Princípios** e **Padrões**: ferramentas de design
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          - ### S
+          - ### O
+          - ### L
+          - ### I
+          - ### D
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Princípios de OO
+          - ### **S**ingle Responsibility Principle
+          - ### **O**pen Closed Principle
+          - ### **L**iskov Substitution Principle
+          - ### **I**nterface Segregation Principle
+          - ### **D**ependency Inversion Principle
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Princípios GoF
+          - Programe **voltado para interfaces** e não para implementação
+          - Favoreça **composição sobre herança**
+          - Identifique o que varia e **encapsule**
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Padrões de Projeto
+          - **Coleção** de boas práticas
+          - Criação de **vocabulário comum**
+          - GoF, GRASP, DDD, PoEA, etc
+        </section>
+
+        <section>
+          <h2>Dúvidas?</h2>
         </section>
 
         <section>
