@@ -140,9 +140,8 @@
             ```python
             class Cerveja(object):
 
-                def __init__(self, temperatura, cervejada):
+                def __init__(self, temperatura):
                     self.temperatura = temperatura
-                    self.cervejada = cervejada
                     self.quantidade = 600
 
                 def esta_gelada(self):
@@ -155,9 +154,16 @@
 
             #############################
 
-            cerveja = Cerveja(temperatura=2, cervejada=True)
-            cerveja.esta_gelada()
-            cerveja.servir(150)
+
+            In : cerveja = Cerveja(temperatura=-2)
+
+            In : cerveja.esta_gelada()
+            Out: True
+
+            In : cerveja.servir(150)
+
+            In : cerveja.quantidade
+            Out: 450
             ```
         </section>
 
@@ -205,7 +211,7 @@
 
         <section data-markdown class="without_ul_style">
           ## Single Responsibility Principle
-          - ### Nunca deve exstir mais de **uma razão para modificar** algo em uma classe.
+          - ### Nunca deve existir mais de **uma razão para modificar** algo em uma classe.
         </section>
 
         <section data-markdown class="without_ul_style">
@@ -254,8 +260,9 @@
             ```
         </section>
 
-        <section data-markdown>
-          ## Coding Dojo!!!
+        <section>
+            <h2>Coding Dojo!!!</h2>
+            <a href="https://www.dropbox.com/s/1zbqkb2w49kte9m/PROJETO%20FINAL%20BERNARDO%20FONTES.pdf?dl=0" target = "_blank"><img height="500px" src="images/tcc.png"></a>
         </section>
 
         <section>
@@ -513,6 +520,10 @@
 
         <section data-markdown>
           ## Dúvidas?
+        </section>
+
+        <section>
+            <a href="http://brasil.pyladies.com/" target = "_blank"><img src="images/pyladies.svg"></a>
         </section>
 
         <section>
