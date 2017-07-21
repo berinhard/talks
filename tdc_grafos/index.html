@@ -100,6 +100,14 @@
           </h2>
         </section>
 
+        <section data-markdown>
+          ## WARNING!
+
+          ### O Teoria de Grafos é uma **área inteira** em Ciência da Computação.
+          ### Iremos algumas partes dela nessa palestra para avaliarmos a **utilidade** do tema.
+          ### Encorajo muito a buscarem mais informações e trocarmos ideia depois da palestra.
+        </section>
+
         <section class="fragments" data-markdown>
           ## Roteiro
 
@@ -142,16 +150,18 @@
         <section class="fragments without_ul_style" data-markdown>
           ## Quando usar grafos?
 
-          - Quando o *domínio do problema* e o *entendimento dos dados* é muito mais atrelado a **como as entidades se relacionam** do que com suas mudanças de estado.
-          - Nosso grafo: pessoas que se conhecem
+          - Quando o *domínio do problema* e o *entendimento dos dados* é muito mais atrelado a **como as entidades se relacionam** do que com suas mudanças de estado
+          - Grafos visualizam as relações **diretamente**, ou seja, são **entidades** por si só
+          - **Nosso grafo**: pessoas que se conhecem
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
           ## Persistência: Neo4j
 
-          - Módulo **py2neo** para comunicação com o banco
-          - **Cypher** query languae == SQL do Neo4j
+          - BD Orientado a Grafos escrito em **Java**
+          - **Cypher** query language == SQL do Neo4j
           - **Bolt** é o protocolo de comunicação utilizado
+          - Módulo **py2neo** para comunicação com o banco
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -176,10 +186,10 @@
           ```python
           from py2neo import Node, Relationship
 
-          mari = Node('Person', name='Mari', gender='F')
+          mari = Node('Person', name='Mari', gender='F') # propriedades do nó
           bernardo = Node('Person', name='Bernardo', gender='M')
           fabio = Node('Person', name='Fábio', gender='M')
-          rel1 = Relationship(mari, 'KNOWS', bernardo)
+          rel1 = Relationship(mari, 'KNOWS', bernardo) # KNOWS == tipo
 
           transaction = graph.begin()
 
@@ -299,8 +309,8 @@
 
             for relationship in relationships:
                 source, target = relationship.start_node(), relationship.end_node()
-                nx_graph.add_node(source['name'])
-                nx_graph.add_node(target['name'])
+                nx_graph.add_node(source['name'], gender=source['gender'])
+                nx_graph.add_node(target['name'], gender=target['gender'])
                 nx_graph.add_edge(source['name'], target['name'])
 
             print('Nodes: {}'.format(nx_graph.number_of_nodes()))
@@ -438,6 +448,18 @@
           <img src="images/betweenness.jpg">
         </section>
 
+        <section data-markdown>
+            ## Diversidade
+
+            ```python
+            # Assortatividade é a tendência de um nó
+            # de se conectar com outros nós de grau parecido
+
+            nx.attribute_assortativity_coefficient(nx_graph, 'gender')
+            0.15827338129496404
+            ```
+        </section>
+
         <section class="fragments without_ul_style" data-markdown>
             ## Conclusões
 
@@ -446,6 +468,7 @@
             - Controle suas **transações no banco manualmente**
             - O módulo do **networkx** já tem 99% do que você precisa
             - Saiba quais **perguntas** fazer e quais **métricas** as respondem
+            - Outras possíveis análises poderiam ser **detecção de clusters** ou **identificação de padrões**
         </section>
 
         <section>
