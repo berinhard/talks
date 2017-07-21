@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Navegando por grafos com Python</title>
+
+    <meta name="description" content="Navegando por grafos com Python">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h1>TDC 2017</h1>
+          <h3>Navegando por grafos com Python</h3>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>São Paulo/SP</h4>
+          <h4>22 de Julho de 2017</h4>
+        </section>
+
+        <section>
+          <h2>Só para dizer um oi!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <a href="http://simplefractal.com/" target="_blank">
+            <img src="images/simplefractal.jpg">
+          </a>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+        </section>
+
+        <section class="fragments" data-markdown>
+          ## Roteiro
+
+          - Exemplo real
+          - Nosso exemplo
+          - Persistindo no banco
+          - Analisando as métricas
+        </section>
+
+        <section>
+          <h2>Network of Thrones</h2>
+          <p>por Andrew Beveridge e Jie Shan</p>
+          <a href="https://networkofthrones.wordpress.com/" target="_blank">
+            <img src="images/networkofthrones.png">
+          </a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Análise dos dados
+
+          - Grafo em que os **personagens são os nós**
+          - Nomes de **personagens** aparecendo a uma **distância de 15 palavras** gera uma **conexão** entre eles
+        </section>
+
+        <section>
+          <h3>Resultado</h3>
+          <a href="https://networkofthrones.wordpress.com/a-science-of-networks/" target="_blank">
+            <img src="images/got.png">
+          </a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Métricas de centralidade
+          - **Degree centrality**: quantas conexões possui?
+          - **Eigenvector centrality**: quantas conexões com personagens **importantes**?
+          - **Betweenness Centrality**: são pontos de conexão de diferente partes do grafo?
+          - **SPOILER**: as métricas indicaram que **Tyrion é o protagonista**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Quando usar grafos?
+
+          - Quando o *domínio do problema* e o *entendimento dos dados* é muito mais atrelado a **como as entidades se relacionam** do que com suas mudanças de estado.
+          - Nosso grafo: pessoas que se conhecem
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Persistência: Neo4j
+
+          - Módulo **py2neo** para comunicação com o banco
+          - **Cypher** query languae == SQL do Neo4j
+          - **Bolt** é o protocolo de comunicação utilizado
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Criando a conexão
+
+          ```python
+          from py2neo import Graph as Py2NeoGraph
+
+          graph_kwargs = {
+              'host': 'localhost',
+              'http_port': 7475,
+              'bolt_port': 7688,
+          }
+
+          graph = Py2NeoGraph(**graph_kwargs)
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Criando o grafo
+
+          ```python
+          from py2neo import Node, Relationship
+
+          mari = Node('Person', name='Mari', gender='F')
+          bernardo = Node('Person', name='Bernardo', gender='M')
+          fabio = Node('Person', name='Fábio', gender='M')
+          rel1 = Relationship(mari, 'KNOWS', bernardo)
+
+          transaction = graph.begin()
+
+          transaction.create(mari)
+          transaction.create(bernardo)
+          transaction.create(fabio)
+          transaction.create(rel1)
+
+          trasaction.commit()
+          ```
+        </section>
+
+        <section>
+          <h3>Grafo (17 nós e 26 arestas)</h3>
+          <img src="images/full_graph.jpg">
+        </section>
+
+        <section>
+          <h3>Brincando com o grafo</h3>
+          <img src="images/neo4jweb.png">
+        </section>
+
+        <section>
+          <h3>Recuperando o grafo via Cypher</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=()-[r:KNOWS]->()
+              RETURN p;
+            </code>
+          </pre>
+        </section>
+
+        <section>
+          <h3>Grafo de pessoas que conhecem mulheres</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=()-[:KNOWS]->(target)
+              WHERE
+                target.gender = 'F'
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/knows_f.jpg"/>
+        </section>
+
+        <section>
+          <h3>Grafo somente das mulheres</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(source)-[r:KNOWS]->(target)
+              WHERE
+                target.gender='F' AND source.gender='F'
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/f_knows_f.jpg"/>
+        </section>
+
+        <section>
+          <h3>Pessoas que se conhecem mutuamente</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(source)-[r:KNOWS]->()-[:KNOWS]->(target)
+              WHERE
+                target.name = source.name
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/reciprocal.jpg"/>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Analisando o grafo
+
+          - `networkx`: lib python para **processamento de grafo**
+          - Ler o grafo do Neo4J
+          - Popular um grafo do networkx
+          - Tirar as métricas
+        </section>
+
+        <section data-markdown>
+            ## Lendo o grafo do Neo4J
+
+            ```python
+            from pprint import pprint
+            query = 'MATCH p=()-[r:KNOWS]->() RETURN p;'
+            data = graph.data(query)
+            pprint(data)
+
+
+            [{'p': (mari)-[:KNOWS]->(bernardo)},
+             {'p': (claudia)-[:KNOWS]->(`fábio`)},
+             {'p': (`antônio`)-[:KNOWS]->(`fábio`)},
+             {'p': (mari)-[:KNOWS]->(`fábio`)},
+             {'p': (`joão`)-[:KNOWS]->(`fábio`)},
+             ......]
+            ```
+        </section>
+
+        <section data-markdown>
+            ## O grafo no networkx
+
+            ```python
+            nx_graph = nx.DiGraph() # grafo direcional
+            relationships = [d['p'] for d in data]
+
+            for relationship in relationships:
+                source, target = relationship.start_node(), relationship.end_node()
+                nx_graph.add_node(source['name'])
+                nx_graph.add_node(target['name'])
+                nx_graph.add_edge(source['name'], target['name'])
+
+            print('Nodes: {}'.format(nx_graph.number_of_nodes()))
+            print('Edges: {}'.format(nx_graph.number_of_edges()))
+
+
+
+            Nodes: 17
+            Edges: 26
+            ```
+        </section>
+
+        <section data-markdown>
+            ## In-Degree centrality: mais famosos
+
+            ```python
+            in_degree_centrality = nx.in_degree_centrality(nx_graph)
+            sorted(in_degree_centrality.items(), key=lambda x:x[1], reverse=True)
+
+            [('Fernanda', 0.375),
+             ('Fábio', 0.25),
+             ('José', 0.125),
+             ('Marcia', 0.125),
+             ('Tereza', 0.125),
+             ('Regina', 0.125),
+             ('Bernardo', 0.0625),
+             ('Ana', 0.0625),
+             ('Orlando', 0.0625),
+             ('Jonas', 0.0625),
+             ('Luís', 0.0625),
+             ('Mari', 0.0625),
+             ('Renata', 0.0625),
+             ('Joana', 0.0625),
+             ('Antônio', 0.0),
+             ('João', 0.0),
+             ('Claudia', 0.0)]
+            ```
+        </section>
+
+        <section>
+          <img src="images/in_degree.jpg">
+        </section>
+
+        <section data-markdown>
+            ## Out-Degree centrality: mais conhecedor
+
+            ```python
+            out_degree_centrality = nx.out_degree_centrality(nx_graph)
+            sorted(out_degree_centrality.items(), key=lambda x:x[1], reverse=True)
+
+            [('Marcia', 0.375),
+             ('Fábio', 0.25),
+             ('Claudia', 0.25),
+             ('Mari', 0.1875),
+             ('Ana', 0.125),
+             ('Joana', 0.125),
+             ('Bernardo', 0.0625),
+             ('José', 0.0625),
+             ('Antônio', 0.0625),
+             ('João', 0.0625),
+             ('Regina', 0.0625),
+             ('Fernanda', 0.0),
+             ('Orlando', 0.0),
+             ('Jonas', 0.0),
+             ('Luís', 0.0),
+             ('Tereza', 0.0),
+             ('Renata', 0.0)]
+            ```
+        </section>
+
+        <section>
+          <img src="images/out_degree.jpg">
+        </section>
+
+        <section data-markdown>
+            ## Eigenvector centrality: gente influente
+
+            ```python
+            eigenvector_centrality = nx.eigenvector_centrality(nx_graph)
+            sorted(eigenvector_centrality.items(), key=lambda x:x[1], reverse=True)
+
+
+            [('Fernanda', 0.8090398349558906),
+             ('Tereza', 0.26967994498529685),
+             ('Regina', 0.26967994498529685),
+             ('Bernardo', 0.13483997249264842),
+             ('Ana', 0.13483997249264842),
+             ('José', 0.13483997249264842),
+             ('Orlando', 0.13483997249264842),
+             ('Jonas', 0.13483997249264842),
+             ('Marcia', 0.13483997249264842),
+             ('Fábio', 0.13483997249264842),
+             ('Renata', 0.13483997249264842),
+             ('Mari', 0.13483997249264842),
+             ('Luís', 0.13483997249264842),
+             ('Joana', 0.13483997249264842),
+             ('Antônio', 0.0),
+             ('João', 0.0),
+             ('Claudia', 0.0)]
+            ```
+        </section>
+
+        <section>
+          <img src="images/eigenvector.jpg">
+        </section>
+
+        <section data-markdown>
+            ## Betweenness centrality: proxies entre grupos
+
+            ```python
+            betweenness_centrality = nx.betweenness_centrality(nx_graph)
+            sorted(betweenness_centrality.items(), key=lambda x:x[1], reverse=True)
+
+            [('Fábio', 0.08333333333333333),
+             ('Marcia', 0.075),
+             ('Mari', 0.05),
+             ('Ana', 0.01875),
+             ('Joana', 0.0125),
+             ('Regina', 0.0020833333333333333),
+             ('Bernardo', 0.0),
+             ('José', 0.0),
+             ('Fernanda', 0.0),
+             ('Antônio', 0.0),
+             ('Orlando', 0.0),
+             ('Jonas', 0.0),
+             ('Luís', 0.0),
+             ('Tereza', 0.0),
+             ('João', 0.0),
+             ('Renata', 0.0),
+             ('Claudia', 0.0)]
+            ```
+        </section>
+
+        <section>
+          <img src="images/betweenness.jpg">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Conclusões
+
+            - NoSQL **não** é uma estratégia para todos os problemas
+            - A persistência com o py2neo é **chata**
+            - Controle suas **transações no banco manualmente**
+            - O módulo do **networkx** já tem 99% do que você precisa
+            - Saiba quais **perguntas** fazer e quais **métricas** as respondem
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <br/>
+            <p>Bernardo Fontes</p>
+            <br/>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://pessoas.cc/">pessoas.cc</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <a href="http://simplefractal.com/" target="_blank">
+            <img src="images/simplefractal.jpg">
+          </a>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
