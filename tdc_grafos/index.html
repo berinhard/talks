@@ -218,7 +218,7 @@
           <pre>
             <code class="avrasm">
               MATCH
-                p=()-[r:KNOWS]->()
+                p=(:Person)-[r:KNOWS]->(:Person)
               RETURN p;
             </code>
           </pre>
@@ -230,7 +230,7 @@
           <pre>
             <code class="avrasm">
               MATCH
-                p=()-[:KNOWS]->(target)
+                p=(:Person)-[:KNOWS]->(target:Person)
               WHERE
                 target.gender = 'F'
               RETURN p;
@@ -246,7 +246,7 @@
           <pre>
             <code class="avrasm">
               MATCH
-                p=(source)-[r:KNOWS]->(target)
+                p=(source:Person)-[r:KNOWS]->(target:Person)
               WHERE
                 target.gender='F' AND source.gender='F'
               RETURN p;
@@ -262,7 +262,7 @@
           <pre>
             <code class="avrasm">
               MATCH
-                p=(source)-[r:KNOWS]->()-[:KNOWS]->(target)
+                p=(source:Person)-[r:KNOWS]->()-[:KNOWS]->(target:Person)
               WHERE
                 target.name = source.name
               RETURN p;
@@ -292,7 +292,7 @@
 
             ```python
             from pprint import pprint
-            query = 'MATCH p=()-[r:KNOWS]->() RETURN p;'
+            query = 'MATCH p=(:Person)-[r:KNOWS]->(:Person) RETURN p;'
             data = graph.data(query)
             pprint(data)
 
