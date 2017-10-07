@@ -209,14 +209,14 @@
           </a>
         </section>
 
-        <section class="fragments without_ul_style" data-markdown>
-          ## Resultado (PLAYED_WITH)
-            IMAGEM!!!!!!!!!!!!!!!
+        <section>
+          <h3>Resultado (RECORDED)</h3>
+          <img width="70%" src="images/RECORDED.png">
         </section>
 
-        <section class="fragments without_ul_style" data-markdown>
-          ## Resultado (RECORDED)
-            IMAGEM!!!!!!!!!!!!!!!
+        <section>
+          <h3>Resultado (PLAYED_WITH)</h3>
+          <img src="images/PLAYED_WITH.png">
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -315,7 +315,7 @@
                 if not data['type'] == 'PLAYED_WITH':
                   continue
                 if not graph.has_edge(source, target):
-                  graph.add_edge(source, target, weight=1, **data)
+                  graph.add_edge(source, target, weight=0, **data)
                 graph.edges[(source, target)]['weight'] += 1
 
               return graph
@@ -423,12 +423,13 @@
           </p>
         </section>
 
-        <section data-markdown>
+        <section class="fragments without_ul_style" data-markdown>
           ## O que dá mais pra fazer?
 
-          - Base de dados mais completa
+          - Base de dados mais completa: allmusic.com
           - Como chegar de um músico a outro?
           - Quais são os núcleos?
+          - Estudar outros estilos
         </section>
 
         <section>
