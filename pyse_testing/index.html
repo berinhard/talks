@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Além do MVC: Testando Unitariamente Apps Django</title>
+
+
+    <meta name="description" content="Além do MVC: Testando Unitariamente Apps Django">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+       <section>
+          <h1>Python Sudeste 2018</h1>
+          <br>
+          <h3>Além do MVC: Testando Unitariamente Apps Django</h3>
+          <br>
+          <br>
+
+          <h3><b>Bernardo Fontes</b></h3>
+          <br>
+
+          <h4>São Paulo / SP</h4>
+          <h4>30 de Março de 2016</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://berinfontes.com">berinfontes.com</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://simplefractal.com/">
+              <img width="50%" src="images/simplefractal.jpg">
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2>
+            <p>
+              <a target="_blank" href="https://berinhard.github.io/talks/">berinhard.github.io/talks/</a>
+            </p>
+          </h2>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## DISCLAIMER
+            - ### Esta é só a minha verdade
+            - ### Testem
+            - ### Testem confortavelmente
+        </section>
+
+        <section>
+          <h2>Arquitetura MVC</h2>
+          <img width="50%" src="images/django_diagram.png">
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Problemas de MVC
+          - ### Uma decisão estritamente **arquitetural**
+          - ### O nível de **abstração é alto**
+          - ### **Esconde** muitas outras camadas do framework
+          - ### Não implica **pensar o design** da sua aplicação
+          - ### Alta chance de **misturar responsabilidades**
+          - ### Resultado: **legados bebês**
+        </section>
+
+        <section>
+            <h2>Minimizando os Problemas</h2>
+          <img src="images/solid.jpg">
+        </section>
+
+        <section>
+            <h2>Object Mentor (SOLID)</h2>
+            <a href="http://www.objectmentor.com/omSolutions/oops_what.html" target = "_blank"><img height="580px" src="images/object_mentor.png"></a>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## **Single Responsibility Principle**
+          - ### Nunca deve exstir mais de **uma razão para modificar** algo em uma classe.
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Single Responsibility Principle **para testes**
+          - ### Nunca deve exstir mais de uma razão para **TESTAR** algo em um objeto.
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Responsabilidades por Camada
+          - ### **Models**: abstração para armazenar e consultar dados
+          - ### **Views**: garantir fluxo HTTP de Request-Response para uma rota após executar o comportamento desejado
+          - ### **Templates**: apresendar dados em algum formato (HTML em geral)
+        </section>
+
+        <section data-markdown>
+          ## Testando os Models
+        </section>
+
+        <section data-markdown>
+            ## Nossa TODO List
+            ```python
+            class Todo(models.Model):
+                HIGH_PRIORITY, LOW_PRIORITY = 2, 1
+                PRIORITY_CHOICES = [(HIGH_PRIORITY, 'High'), (LOW_PRIORITY, 'Low')]
+
+                owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+                content = models.CharField(max_length=100)
+                is_done = models.BooleanField(default=False)
+                priority = models.IntegerField(choices=PRIORITY_CHOICES, default=LOW_PRIORITY)
+            ```
+        </section>
+
+        <section >
+            <h3>Melhore seu vocabulário</h3>
+            <img height="500px" src="images/ddd.jpeg"/>
+            <img height="500px" src="images/ddd2.jpg"/>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Domínio no Banco VS Domínio Desacoplado?
+          - ### Nosso domínio viverá no model do Django (domínio no banco)
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Responsabilidades por Camada
+          ### **Models**: abstração para armazenar e consultar dados **com semântica de domínio**
+          - ### Testes de models **precisam** bater no banco
+          - ### Alguém pensou em fixtures?
+        </section>
+
+        <section data-markdown >
+          ## Model Mommy FTW!
+          ### pip install model_mommy
+          Model-mommy offers you a smart way to **create fixtures** for testing in Django. With a simple and powerful API you can create many objects with a **single line of code**.
+        </section>
+
+        <section>
+            <a href="https://github.com/vandersonmota/model_mommy/" target = "_blank"><img  src="images/mommy.png"></a>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Testando o **Modelo** de Dados
+          - ### Defina uma API que represente seu domínio e **encapsule** seus dados
+          - ### Teste como essa API manipula os dados
+          - ### Toda a aplicação só operar sobre o banco **através dessa API**
+        </section>
+
+        <section data-markdown>
+          ```python
+          from model_mommy import mommy
+          from django.tests import TestCase
+          from app.models import Todo
+
+          class TodoModelTests(TestCase):
+
+            def test_mark_as_high_priority(self):
+              todo = mommy.prepare(Todo, priority=Todo.LOW_PRIORITY)
+
+              todo.mark_as_high_priority()  # trocamos mensagens
+
+              asser Todo.HIGH_PRIORITY == todo.priority  # testamos dados
+
+            def test_mark_as_low_priority(self):
+              todo = mommy.prepare(Todo, priority=Todo.HIGH_PRIORITY)
+
+              todo.mark_as_low_priority()
+
+              asser Todo.LOW_PRIORITY == todo.priority  # testamos dados
+          ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Testando a **Manipulação** de Dados
+          - ### Pare de pensar em **query** e pense em **intenções**
+          - ### O que significa a consulta ```Todo.objects.filter(priority=1)```?
+          - ### Gere semântica de domínio através de **Model Managers** e **QuerySets** customizados
+        </section>
+
+        <section data-markdown>
+          ```python
+          from model_mommy import mommy
+          from django.tests import TestCase
+          from app.models import Todo
+
+          class TodoModelManagerTests(TestCase):
+
+            def test_filter_high_priority(self):
+              expected = mommy.make(Todo, priority=Todo.HIGH_PRIORITY, _quantity=2)
+              mommy.make(Todo, priority=Todo.LOW_PRIORITY, _quantity=3)
+
+              qs = Todo.objects.high_priority()
+
+              self.assertQuerysetEqual(qs, expected)
+
+            def test_filter_incomplete(self):
+              expected = mommy.make(Todo, is_done=False, _quantity=3)
+              mommy.make(Todo, is_done=True, _quantity=2)
+
+              qs = Todo.objects.incomplete()
+
+              self.assertQuerysetEqual(qs, expected)
+
+            def test_filter_chained_incomplete_and_high_priority(self):
+              expected = mommy.make(
+                Todo, is_done=False, priority=Todo.HIGH_PRIORITY, _quantity=3
+              )
+              mommy.make(Todo, is_done=True, priority=Todo.HIGH_PRIORITY)
+              mommy.make(Todo, is_done=True, _quantity=2)
+
+              qs = Todo.objects.incomplete().high_priority()
+
+              self.assertQuerysetEqual(qs, expected)
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Testando as **Views**
+        </section>
+
+        <section>
+          <h2>Testando os <b>Buracos Negros</b></h2>
+          <img src="images/black_hole.jpg">
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Testar Views é **chato**!
+          - ### Tenho que configurar o banco
+          - ### Tenho que logar o usuário
+          - ### Tenho que configurar permissões
+          - ### Tenho que checar vários fluxos de sucesso
+          - ### Tenho que lidar com os de falha
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Se é **chato/difícil de testar**, isso pode ser um grande **bad smell** sobre seu código...
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Responsabilidades por Camada
+          - ### Views: garantir **fluxo HTTP** de Request-Response para uma rota após **executar o comportamento desejado**
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## **fluxo HTTP**
+          - ### Request GET/POST...
+          - ### 404 para página não encontrada
+          - ### 200 para sucesso com conteúdo
+          - ### 302 para um redirect e por aí vai...
+        </section>
+
+        <section>
+          <h2><b>executar</b> o comportamento desejado</h2>
+          <img src="images/black-hole-singularity.jpeg">
+        </section>
+
+        <section data-markdown>
+          ### Um exemplo antigo e meu
+          ```python
+          def index(request):
+            today = date().today()
+            hangovers = Hangover.objects.filter(day=today).count()
+
+            if request.method == 'GET':
+              context = RequestContext(request, {'hangovers': hangovers})
+              return render_to_response('index.html', context)
+
+            elif request.method == 'POST':
+              msg = 'Eu sou a {}ª pessoa #deressaca hoje! http://deressaca.net'.format(hangovers)
+              twitter_message = urllib.urlencode({'status': msg})
+              twitter_url = 'http://twitter.com/home?{}'.format(twitter_message)
+
+              if 'new_hangover' in request.POST:
+                Hangover.objects.create()
+                return HttpResponseRedirect(twitter_url)
+              else:
+                return HttpResponseRedirect(reverse('counter'))
+          ```
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Problemas para testar dessa view
+            - Requisições Get + Requisições Post
+            - Formatação da mensagem do Tweet
+            - Redirecionamento pro twitter com mensagem
+            - Criação de objeto Hangover
+            - Não criação de objeto Hangover
+            - Redirect para reverse de counter
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+            ## Responsabilidades **Reais** da View
+            - Fluxo de Get Vs Fluxo de Post
+            - ~~Formatação da mensagem do Tweet~~
+            - ~~Redirecionamento pro twitter com mensagem~~
+            - ~~Criação de objeto Hangover~~
+            - ~~Não criação de objeto Hangover~~
+            - Redirect para alguma url (reverse de counter ou do twitter)
+            - ### **Quem** faz o resto então?
+        </section>
+
+        <section>
+            <h3>Habemus Use Cases</h3>
+            <a href="https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html" target = "_blank"><img width="60%" src="images/clean_arch.png"></a>
+        </section>
+
+        <section data-markdown>
+            ##Use Cases
+            *"The software in this layer contains **application specific business rules**. It **encapsulates and implements** all of the use cases of the system. These use cases **orchestrate the flow of data** to and from the entities, and direct those entities to use their enterprise wide business rules to achieve the goals of the use case."*
+            - Uncle Bob
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Responsabilidades por Camada
+          - ### Views: garantir **fluxo HTTP** de Request-Response para uma rota após **executar um CASO DE USO**
+          - ### Como testar caso de uso? **Mockando** sua chamada!
+          - ### Garantimos o funcionamento testando **unitariamente** o caso de uso
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Mock
+          - ### **Simulam** funcionamento de objetos
+          - ### Respeitam **API** dos objetos
+          - ### Viabilizam maneira de fazer **asserções**
+        </section>
+
+        <section data-markdown>
+          ### Testes
+          ```python
+          class HangoverIndexTests(TestCase):
+            url = reverse_lazy('index')
+
+            def test_show_counter_on_context(self):
+              mommy.make(Hangover, day=date.today(), _quantity=4)
+
+              response = self.client.get(self.url)
+
+              self.assertEqual(4, response.context['hangovers'])
+
+            def test_uses_correct_template_on_get(self):
+              response = self.client.get(self.url)
+
+              self.assertTemplateUsed(response, 'index.html')
+
+            @patch.object(SendTwitterHangoverMessageUseCase, 'execute')
+            def test_redirects_to_use_case_url(self, mocked_execute):
+              mocked_execute.return_value = reverse('counter')
+
+              data = {'new_hangover': True}
+              response = self.client.post(self.url, data)
+
+              mocked_execute.assert_called_once_with(create_hangover=True)
+              self.assertRedirects(response, reverse('counter'))
+          ```
+        </section>
+
+        <section data-markdown>
+          ### Possível implementação
+          ```python
+          def index(request):
+            today = date.today()
+            hangovers = Hangover.objects.filter(day=today)
+
+            if request.method == 'GET':
+              context = RequestContext(request, {'hangovers': hangovers})
+              return render_to_response('index.html', context)
+
+            elif request.method == 'POST':
+              if 'new_hangover' not in request.POST:
+                return reverse('counter')
+
+              redirect_url = use_case.execute()
+              return HttpResponseRedirect(redirect_url)
+          ```
+        </section>
+
+        <section data-markdown>
+          ### Possível implementação
+          ```python
+          class SendTwitterHangoverMessageUseCase():
+
+            def execute(self):
+              today = date.today()
+              Hangover.objects.create()
+              hangovers = Hangover.objects.filter(day=today).count()
+
+              msg = 'Eu sou a {}ª pessoa #deressaca hoje! http://deressaca.net'.format(hangovers)
+              twitter_message = urllib.urlencode({'status': msg})
+              twitter_url = 'http://twitter.com/home?{}'.format(twitter_message)
+
+              return twitter_url
+          ```
+        </section>
+        <section>
+            <h3><b>Definitivamente</b> leia mais aqui:</h3>
+            <a href="https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html" target = "_blank"><img width="60%" src="images/clean_arch.png"></a>
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ### Dicas extras para testar Views
+          - ### Crie **asserções customizadas** para Views
+          - ### Crie métodos auxiliares para **gerência de usuários**
+          - ### **Nunca** mockar o comportamento padrão do Forms (bad smell)
+          - ### Utlize mommy recipes =)
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Testando os Templates
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Testando a Área Cinza: **Forms/Serializers**
+        </section>
+
+        <section data-markdown class="fragments without_ul_style">
+          ## Responsabilidades
+          - ### Validação, Sanitização e Formatação
+          - ### Teste o que for dos Forms **unitariamente**! Lembre-se: testar pela view é chato
+          - ### ModelForms **nem sempre** são uma boa idéia...
+          - ### Garanta um **output de dados** desacoplado da API do Django
+          - ### Forms também são bons canditados de **asserções customizadas**
+        </section>
+
+        <section data-markdown>
+            ```python
+            class TodoListModelFormTests(TestCase):
+
+              def setUp(self):
+                self.data = {'content': 'content', 'owner': 42}
+                self.user = mommy.make(User, id=42)
+
+              def test_required_fields(self):
+                required_fields = ['content', 'owner']
+
+                form = TodoListForm({})
+                form.is_valid()
+
+                self.assertEqual(len(required_fields), len(form.errors))
+                for field in required_fields:
+                  self.assertIn(field, form.errors)
+
+              def test_cleans_content_to_upper_case(self):
+                form = TodoListForm(self.data)
+
+                self.assertTrue(form.is_valid())
+                self.assertEqual('CONTENT', form.cleaned_data['content'])
+
+              def test_get_form_result_data(self):
+                form = TodoListForm(self.data)
+                self.assertTrue(form.is_valid())
+
+                data = form.get_result_data()  # redução de acoplamento de objeto
+
+                self.assertEqual('CONTENT', data['content'])
+                self.assertEqual(self.user, data['owner'])
+
+              def test_priority_choices_range(self):
+                priority_choices = [(1, 'High'), (2, 'Low')]
+
+                form = TodoListForm()
+
+                self.assertEqual(priority_choices, list(form.fields['priority'].choices))
+            ```
+        </section>
+
+        <section data-markdown>
+            <h3>Asserções Customizadas para Forms</h3>
+            ```python
+            def assertRequiredFields(self, required_fields, form_class, *args, **kwargs):
+                form = form_class(*args, **kwargs)
+                form.is_valid()
+
+                self.assertEqual(len(required_fields), len(form.errors))
+                for field in required_fields:
+                  self.assertIn(field, form.errors)
+
+            def assertChoiceFieldOptions(self, expected_choices, form, field_name):
+              expected_choices = list(expected_choices)
+              self.assertEqual(expected_choices, list(form.fields[field_name].choices))
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ## Testando os Templates
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ## Responsabilidades dos Templates
+          - ### **Renderizar variáveis** corretamente
+          - ### Funcionamento de **Template Filters**
+          - ### Funcionamento de **Template Tags**
+        </section>
+
+        <section data-markdown class="without_ul_style">
+          ### Renderizar variáveis corretamente
+          ```python
+          # settings.py
+          TEMPLATE_STRING_IF_INVALID = 'XXXXX-INVALID_CONTEXT_VAR-XXXXXX'
+
+          # sobreescrita de assertTemplateUsed
+          def assertTemplateUsed(self, response, template_name):
+            super(TestCase, self).assertTemplateUsed(response, template_name)
+            self.assertNotIn(settings.TEMPLATE_STRING_IF_INVALID, response.content, self.__clean_template_output(response))
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+          ### Template Tags e Filters
+          - ### Validar o **funcionamento**
+          - ### Validar que **foi registrada**
+          - ### **Template Library** pode ser usada para ambos
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ```python
+            def test_my_crazy_upper(self):
+              content = '{% load app_tags %}{{ "bernardo"|crazy_upper }}'
+              template = Template(content)
+              output = template.render({})
+              self.assertEqual("BeRnArDo", output)
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Isso é só o começo...
+            - ### Middlewares
+            - ### Caching
+            - ### Emails
+            - ### Controle de permissões
+            - ### APIs Rest e por aí vai
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Resumindo
+            - Models, Managers e QuerySet com **linguagem de domínio encapsulando detalhes** de implentação e persistência
+            - Views só são responsáveis por **fluxo HTTP** e **disparo de execução**
+            - MVC define sua **arquitetura**, não seu design
+            - Use Cases podem ser seus amigos
+            - Teste Forms **unitariamente** para facilitar testes em camadas mais altas (views, por exemplo)
+            - Utilize a **linguagem de Template do Django** como amiga para testar Templates
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="http://berinfontes.com">berinfontes.com</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+          <p>
+            <a href="http://simplefractal.com/">
+              <img width="50%" src="images/simplefractal.jpg">
+            </a>
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
