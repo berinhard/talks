@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Manipulando dados com Grafos</title>
+
+    <meta name="description" content="Manipulando dados com Grafos">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h3><b>Manipulando dados com Grafos</b></h3>
+          <br>
+
+          <h3>Bernardo Fontes</h3>
+          <br>
+
+          <h4>São Paulo/SP</h4>
+          <h4>13 de Dezembro de 2018</h4>
+        </section>
+
+        <section>
+          <h2>Só para dizer um oi!</h2>
+          <h3>
+            <p>Berin =]</p>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ## WARNING!
+
+          - ### O Teoria de Grafos é uma **área inteira** em Ciência da Computação
+          - ### Veremos algumas partes dela nessa palestra para avaliarmos a **utilidade** do tema
+          - ### Encorajo muito a buscarem mais informações e trocarmos ideia depois da palestra
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Roteiro
+
+          - O que são grafos?
+          - Possíveis análises
+          - Persistindo no banco
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## O que são grafos?
+
+          - Estrutura composta por **nós e arestas**
+          - **Nós** possuem dados
+          - **Arestas** definem relações entre os nós
+          - As relações são entidades, ou seja, podem **possuir dados** também
+        </section>
+
+        <section>
+          <h3>Exemplo clássico</h3>
+          <img src="images/graph_001.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Quando usar grafos?
+
+          - Quando o *domínio do problema* e/ou *entendimento dos dados* é muito mais atrelado a **como as entidades se relacionam** do que com suas mudanças de estado
+        </section>
+
+        <section>
+          <h3>Exemplo mais real</h3>
+          <img src="images/graph_002.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Quais tecnologias usar?
+
+          - Análise: Python + **networkx**
+          - Persistência: Neo4j
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Possíveis análises
+          - Centralidades
+          - Clusterização
+          - Percursos no grafo
+          - Padrões estruturais da rede
+          - E por aí vai...
+        </section>
+
+        <section>
+          <img src="images/nx_algo.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Centralidades
+          - Degree
+          - Closeness
+          - Betweenness
+          - Eigenvector
+          - Existem outras
+        </section>
+
+        <section>
+          <h3>Nosso grafo</h3>
+          <img src="images/base_sample.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Input de texto
+
+          ```
+          sq
+          ml
+          mj
+          mq
+          lk
+          lj
+          ...
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Criando o grafo
+
+          ```python
+          import networkx as nx
+
+          def get_graph():
+              graph = nx.Graph()
+
+              with open('links.txt', 'r') as fd:
+                  lines = fd.readlines()
+
+              for line in lines:
+                  node_1, node_2 = line.strip()
+                  graph.add_edge(node_1, node_2)
+
+              return graph
+          ```
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+          ## Degree centrality
+          - Centralidade baseada diretamente no número de arestas de um nó
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Degree centrality
+
+          ```python
+          g = get_graph()
+
+          centralities = nx.degree_centrality(g)
+          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+
+          for node, value in centralities:
+              print('{} - {}'.format(node, value))
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Degree centrality - Resultado
+
+          ```
+          j - 0.3684210526315789
+          d - 0.3157894736842105
+          h - 0.2631578947368421
+          g - 0.2631578947368421
+          p - 0.21052631578947367
+          i - 0.21052631578947367
+          f - 0.21052631578947367
+          b - 0.21052631578947367
+          m - 0.15789473684210525
+          l - 0.15789473684210525
+          k - 0.15789473684210525
+          n - 0.15789473684210525
+          a - 0.15789473684210525
+          e - 0.15789473684210525
+          q - 0.10526315789473684
+          o - 0.10526315789473684
+          c - 0.10526315789473684
+          s - 0.05263157894736842
+          t - 0.05263157894736842
+          r - 0.05263157894736842
+          ```
+        </section>
+
+        <section>
+          <h3>Degree centrality - Resultado</h3>
+          <img src="images/degree.png">
+          <p>Útil para análises quantitativas totais</p>
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+          ## Closeness centrality
+          - Centralidade baseada na distância entre os nós
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Closeness centrality
+
+          ```python
+          g = get_graph()
+
+          centralities = nx.closeness_centrality(g)
+          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+
+          for node, value in centralities:
+              print('{} - {}'.format(node, value))
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Closeness centrality - Resultado
+
+          ```
+          i - 0.4634146341463415
+          h - 0.4418604651162791
+          j - 0.4318181818181818
+          p - 0.3877551020408163
+          n - 0.37254901960784315
+          g - 0.3584905660377358
+          f - 0.35185185185185186
+          c - 0.3392857142857143
+          m - 0.3333333333333333
+          l - 0.3275862068965517
+          k - 0.3220338983050847
+          o - 0.3114754098360656
+          r - 0.3114754098360656
+          d - 0.296875
+          b - 0.2878787878787879
+          t - 0.2835820895522388
+          a - 0.2835820895522388
+          e - 0.2835820895522388
+          q - 0.2602739726027397
+          s - 0.2087912087912088
+          ```
+        </section>
+
+        <section>
+          <h3>Closeness centrality - Resultado</h3>
+          <img src="images/closeness.png">
+          <p>Útil para análises com o objetivo de otimizar propagações</p>
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+          ## Betweenness centrality
+          - Centralidade baseada em caminhos ao qual o nó pertence como intermediário
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Betweenness centrality
+
+          ```python
+          g = get_graph()
+
+          centralities = nx.betweenness_centrality(g)
+          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+
+          for node, value in centralities:
+              print('{} - {}'.format(node, value))
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Betweenness centrality - Resultado
+
+          ```
+          h - 0.5614035087719298
+          i - 0.5321637426900585
+          j - 0.41812865497076024
+          m - 0.19883040935672514
+          g - 0.18226120857699804
+          p - 0.13450292397660818
+          q - 0.10526315789473684
+          f - 0.1033138401559454
+          d - 0.03313840155945419
+          n - 0.029239766081871343
+          c - 0.025341130604288498
+          l - 0.008771929824561403
+          k - 0.005847953216374269
+          b - 0.004873294346978557
+          a - 0.001949317738791423
+          s - 0.0
+          t - 0.0
+          o - 0.0
+          r - 0.0
+          e - 0.0
+          ```
+        </section>
+
+        <section>
+          <h3>Betweenness centrality - Resultado</h3>
+          <img src="images/betweenness.png">
+          <p>Útil para identificações pontos de entradas de clusters</p>
+        </section>
+
+        <section class="without_ul_style" data-markdown>
+          ## Eigenvector centrality
+          - Centralidade baseada na influência de um nó na rede (topologia)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Eigenvector centrality
+
+          ```python
+          g = get_graph()
+
+          centralities = nx.eigenvector_centrality(g, max_iters=1000)
+          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+
+          for node, value in centralities:
+              print('{} - {}'.format(node, value))
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Eigenvector centrality - Resultado
+
+          ```
+          d - 0.4624402711011163
+          g - 0.426845473522682
+          b - 0.3581392113941398
+          f - 0.3534627131011391
+          e - 0.30255496341693877
+          a - 0.2847564509725969
+          h - 0.28327303565327666
+          c - 0.18086819094144457
+          i - 0.1380402866193515
+          j - 0.12545874636983892
+          p - 0.08464539539539807
+          n - 0.07574895588735901
+          r - 0.06870626212854221
+          k - 0.06495072621439604
+          l - 0.05767676369108016
+          o - 0.04880319165681279
+          m - 0.0473817168614392
+          t - 0.020530832833996485
+          q - 0.012210983147939322
+          s - 0.0029618234810396492
+          ```
+        </section>
+
+        <section>
+          <h3>Eigenvector centrality - Resultado</h3>
+          <img src="images/eigenvector.png">
+          <p>Versões iniciais do PageRank do Google</p>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Persistência
+          - Neo4j
+          - BD Orientado a Grafos escrito em **Java**
+          - **Cypher** query language == SQL do Neo4j
+          - **Bolt** é o protocolo de comunicação utilizado
+          - Módulo **py2neo** para comunicação com o banco
+        </section>
+
+        <section>
+          <h3>Interface web</h3>
+          <img src="images/neo4j-web.png">
+        </section>
+
+        <section>
+          <h3>Voltando ao nosso exemplo</h3>
+          <img src="images/graph_002.png">
+        </section>
+
+        <section>
+          <h3>Recuperando o grafo de pessoas via Cypher</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(:Person)-[]->(:Person)
+              RETURN p;
+            </code>
+          </pre>
+          <img src="images/query_001.png">
+        </section>
+
+        <section>
+          <h3>Grafo de pessoas que trabalham juntas</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(:Person)-[:TRABALHA_COM]-(:Person)
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/query_002.png"/>
+        </section>
+
+        <section>
+          <h3>Grafo das pessoas que moram em SP</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(:Person)-[]->(state:Estado)
+              WHERE
+                state.Name='SP'
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/query_003.png"/>
+        </section>
+
+        <section>
+          <h3>Grafo das pessoas amigas de pessoas que moram no RJ</h3>
+
+          <pre>
+            <code class="avrasm">
+              MATCH
+                p=(:Person)-[:AMIGO]-(:Person)-[:VIVE_EM]-(state:Estado)
+              WHERE
+                state.Name='RJ'
+              RETURN p;
+            </code>
+          </pre>
+
+          <img src="images/query_004.png"/>
+        </section>
+
+        <section>
+          <a href="https://neo4j.com/developer/cypher-query-language/">
+            <img src="images/cypher_intro.png"/>
+          </a>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ## Conclusões
+
+            - O módulo do **networkx** já tem 99% do que você precisa
+            - NoSQL **não** é uma estratégia para todos os problemas
+            - Saiba quais **perguntas** fazer e quais **métricas** as respondem
+            - Não confie em apenas uma métrica
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <br/>
+            <p>Bernardo Fontes (Berin)</p>
+            <br/>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="mailto:bernardoxhc@gmail.com">bernardoxhc@gmail.com</a></p>
+          </h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
