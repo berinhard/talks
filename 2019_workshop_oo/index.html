@@ -173,410 +173,531 @@
           [Referência](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)
         </section>
 
-        <section>
-          <h3>Exemplo clássico</h3>
-          <img src="images/graph_001.png">
+        <section class="fragments without_ul_style" data-markdown>
+          ### Em termos de objeto:
+
+          - **state-process**: mais ou menos ~conjunto de dados~
+          - **messaging**: conjunto de métodos
+          - **late-biding**: calma, já chegamos lá
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Quando usar grafos?
+          ### Por que mais ou menos conjunto de dados?
 
-          - Quando o *domínio do problema* e/ou *entendimento dos dados* é muito mais atrelado a **como as entidades se relacionam** do que com suas mudanças de estado
-        </section>
-
-        <section>
-          <h3>Exemplo mais real</h3>
-          <img src="images/graph_002.png">
-        </section>
-
-        <section class="fragments without_ul_style" data-markdown>
-          ## Quais tecnologias usar?
-
-          - Análise: Python + **networkx**
-          - Persistência: Neo4j
+          - Podemos traduzir state process para **estado em curso**, ou seja, ele é mutável
+          - O estado é uma leitura **qualitativa do total de dados** de um objeto
+          - Se um dos dados do objeto, por exemplo o saldo em uma conta bancária, muda, o estado precisa ser **"reavaliado"**
+          - O estado ideal é sempre um **estado válido** para o domínio e isso é **sempre relativo**
+          - Uma conta com saldo negativo poder existir configura um **estado válido em uma conta corrente**, mas **não em uma conta de poupança**.
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Possíveis análises
-          - Centralidades
-          - Clusterização
-          - Percursos no grafo
-          - Padrões estruturais da rede
-          - E por aí vai...
-        </section>
+          ### Exemplo 001
 
-        <section>
-          <img src="images/nx_algo.png">
+          Em um sistema de GPS, dada uma latitude e longitude, preciso conseguir calcular a distância e a direção até uma outra posição de latitude e longitude.
+
+          [Referência](https://www.javaworld.com/article/2075271/encapsulation-is-not-information-hiding.html)
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Centralidades
-          - Degree
-          - Closeness
-          - Betweenness
-          - Eigenvector
-          - Existem outras
-        </section>
+          ### Exemplo 001
 
-        <section>
-          <h3>Nosso grafo</h3>
-          <img src="images/base_sample.png">
+          Em um **sistema de GPS**, dada uma posição com sua **latitude e longitude**, preciso conseguir calcular a **distância** e a **direção** até uma outra **posição**.
+
+          [Referência](https://www.javaworld.com/article/2075271/encapsulation-is-not-information-hiding.html)
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Input de texto
-
-          ```
-          sq
-          ml
-          mj
-          mq
-          lk
-          lj
-          ...
-          ```
-        </section>
-
-        <section class="fragments without_ul_style" data-markdown>
-          ## Criando o grafo
+          ### Exemplo 001 - o que acham?
 
           ```python
-          import networkx as nx
+          class Posicao():
 
-          def get_graph():
-              graph = nx.Graph()
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
 
-              with open('links.txt', 'r') as fd:
-                  lines = fd.readlines()
+          def distancia(pos_1, pos_2):
+              #### implementação do cálculo de distância
 
-              for line in lines:
-                  node_1, node_2 = line.strip()
-                  graph.add_edge(node_1, node_2)
+          def direcao(pos_1, pos_2):
+              #### implementação do cálculo de direção
 
-              return graph
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = distancia(p1, p2)
+          direcao = direcao(p1, p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
           ```
         </section>
 
-        <section class="without_ul_style" data-markdown>
-          ## Degree centrality
-          - Centralidade baseada diretamente no número de arestas de um nó
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - `Posicao` é somente uma **estrutura de dados**
+          - Estamos usando **objetos**, mas num código estritamente **procedural**
+          - Podemos criar **estados inválidos**, exemplo, `Posicao(-50000000, 500000000)`
+          - Jargão clássico: **problemas de encapsulamento**
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Degree centrality
+          ### Encapsulamento 101
+
+          A language mechanism for restricting **direct access to the object's data**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Noções da primeira definição
+
+          - Limita a discussão de encapsulamento **aos dados** e a maneira como são expostos
+          - Atributos possuem **restrições**:
+            - `public` o atributo é externamente acessível e modificável
+            - `protect` o atributo é externamente acessível e internamente modificável
+            - `private` o atributo é somente internamente acessível e internamente
+          - Construções de **métodos de acesso** (`get` ou `set`) para modificar seus valores
+          - **Nem todas as linguagens** viabilizam esses 3 estados
+          - "Protected" em Python: `self._varname` como convenção
+          - "Private" em Python: `self.__varname`
+        </section>
+
+        <section data-markdown>
+            *Never, ever use two leading underscores. This is annoyingly private. If name clashes are a concern, use explicit name mangling instead (e.g., _MyThing_blahblah). This is essentially the same thing as double-underscore, only it's transparent where double underscore obscures.*
+
+            [Ian Bicking - Paste Style Guide](https://paste.readthedocs.io/en/latest/StyleGuide.html)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo 002 - o que acham?
 
           ```python
-          g = get_graph()
+          class Posicao():
 
-          centralities = nx.degree_centrality(g)
-          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
 
-          for node, value in centralities:
-              print('{} - {}'.format(node, value))
+              @property
+              def lat(self):
+                return self._lat
+
+              @lat.setter
+              def lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self._lat = value
+
+              @property
+              def lng(self):
+                return self._lng
+
+              @lng.setter
+              def lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self._lng = value
+
+          def distancia(pos_1, pos_2):
+              #### implementação do cálculo de distância
+
+          def direcao(pos_1, pos_2):
+              #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = distancia(p1, p2)
+          direcao = direcao(p1, p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
           ```
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Degree centrality - Resultado
+          ### Comentários
 
-          ```
-          j - 0.3684210526315789
-          d - 0.3157894736842105
-          h - 0.2631578947368421
-          g - 0.2631578947368421
-          p - 0.21052631578947367
-          i - 0.21052631578947367
-          f - 0.21052631578947367
-          b - 0.21052631578947367
-          m - 0.15789473684210525
-          l - 0.15789473684210525
-          k - 0.15789473684210525
-          n - 0.15789473684210525
-          a - 0.15789473684210525
-          e - 0.15789473684210525
-          q - 0.10526315789473684
-          o - 0.10526315789473684
-          c - 0.10526315789473684
-          s - 0.05263157894736842
-          t - 0.05263157894736842
-          r - 0.05263157894736842
-          ```
-        </section>
-
-        <section>
-          <h3>Degree centrality - Resultado</h3>
-          <img src="images/degree.png">
-          <p>Útil para análises quantitativas totais</p>
-        </section>
-
-        <section class="without_ul_style" data-markdown>
-          ## Closeness centrality
-          - Centralidade baseada na distância entre os nós
+          - Encapsulamento torna **difícil gerar estados inválidos**
+          - Continuamos utilizando **código estrutal**
+          - `Posicao` continua sendo uma **estrutura de dados**, só que agora **com restrições** (constraints)
+          - De acordo com a visão sobre encapsulamento, mas **permitindo que objetos externos operem** diretamente com os dados de `Posicao`
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Closeness centrality
+          ### Refinando o que é encapsulamento
+
+          - Só **encapsular dados** não implica necessariamente em ter um bom código OOP
+          - Melhorando a definição: *A language construct that facilitates the **bundling of data** with the **methods operating on that data***
+          - Como melhorar o exemplo [002](#/20)?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo 003 - o que acham?
 
           ```python
-          g = get_graph()
+          class Posicao():
 
-          centralities = nx.closeness_centrality(g)
-          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
 
-          for node, value in centralities:
-              print('{} - {}'.format(node, value))
+              @property
+              def lat(self):
+                return self._lat
+
+              @lat.setter
+              def lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self._lat = value
+
+              @property
+              def lng(self):
+                return self._lng
+
+              @lng.setter
+              def lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self._lng = value
+
+              def distancia(self, pos):
+                  #### implementação do cálculo de distância
+
+              def direcao(self, pos):
+                  #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
           ```
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Closeness centrality - Resultado
+          ### Comentários
 
-          ```
-          i - 0.4634146341463415
-          h - 0.4418604651162791
-          j - 0.4318181818181818
-          p - 0.3877551020408163
-          n - 0.37254901960784315
-          g - 0.3584905660377358
-          f - 0.35185185185185186
-          c - 0.3392857142857143
-          m - 0.3333333333333333
-          l - 0.3275862068965517
-          k - 0.3220338983050847
-          o - 0.3114754098360656
-          r - 0.3114754098360656
-          d - 0.296875
-          b - 0.2878787878787879
-          t - 0.2835820895522388
-          a - 0.2835820895522388
-          e - 0.2835820895522388
-          q - 0.2602739726027397
-          s - 0.2087912087912088
-          ```
+          - Estamos de fato começando a **utilizar OOP** e não só o paradigma estrutural
+          - `Posicao` é quase como **novo tipo** definido por nós: possui uma estrutura de armazenamento, regras de persistência e lógica de manipulação
+          - **Mais semântica** ao código porque fica mais claro qual é o ponto de referência para os cálculos
+          - `Posicao` agora é um **"first-class citizen"**: entidade que suporta todas as operações disponíveis na linguagem
+          - Os clientes não sabem nada sobre os **detalhes de implementação** do objeto Posição
+          - Sem saber, tocamos superficialmente num outro ponto: **information hiding**
+        </section>
+
+        <section data-markdown>
+            ### Information Hiding
+
+            Information hiding is the process of **hiding the details of an object** or function. The hiding of these details **results in an abstraction**, which **reduces the external complexity** and makes the object or function easier to use. In addition, information hiding effectively **decouples** the calling code from the internal workings of the object or function being called, which makes it possible **to change the hidden portions without having to also change the calling code**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tirando proveito de Information Hiding
+
+
+
+          - Nosso sistema agora precisa considerar aceitar **diferentes unidades de medidas** (quilômetros, milhas e radianos) e **diferentes geometria** (plana, esférica e elíptica).
+          - As geometrias esperam sempre os ângulos em radianos (sistemas de coordenadas esféricas)
         </section>
 
         <section>
-          <h3>Closeness centrality - Resultado</h3>
-          <img src="images/closeness.png">
-          <p>Útil para análises com o objetivo de otimizar propagações</p>
-        </section>
-
-        <section class="without_ul_style" data-markdown>
-          ## Betweenness centrality
-          - Centralidade baseada em caminhos ao qual o nó pertence como intermediário
+          <img width="80%" src="images/geometria_esferica.png">
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Betweenness centrality
+          ### Exemplo 004 - o que acham?
 
           ```python
-          g = get_graph()
+          import math
 
-          centralities = nx.betweenness_centrality(g)
-          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+          class Posicao():
+              PLANA, ESFERICA, ELIPTICA = 'plana', 'esferica', 'eliptica'
+              KM, M, MILHAS = 'kms', 'm', 'miles'
 
-          for node, value in centralities:
-              print('{} - {}'.format(node, value))
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+                  self.geometria = self.PLANA
+                  self.unidade = self.KM
+
+              @property
+              def lat(self):
+                return math.degree(self.phi)
+
+              @lat.setter
+              def lat(self, value):
+                self.phi = math.radians(value)
+
+              @property
+              def phi(self):
+                 return self._phi
+
+              @phi.setter
+              def phi(self, value):
+                if not -math.pi / 2 <= value <= math.pi / 2:
+                  raise ValueError("Latitude inválida")
+                self._phi = value
+
+              @property
+              def lng(self):
+                return math.degree(self.theta)
+
+              @lng.setter
+              def lng(self, value):
+                 self.theta = math.radians(value)
+
+              @property
+              def theta(self):
+                 return self._theta
+
+              @theta.setter
+              def theta(self, value):
+                if not -math.pi  <= value <= math.pi :
+                  raise ValueError("Longitude inválida")
+                self._theta = value
+
+              def distancia(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a distância conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a distância conciderando a geometria esférica
+                 else:
+                   # calcula a distância considerando a geometria elíptica
+                 if self.unidade == self.KM:
+                   # converte a distância para kms
+                 elif self.unidade == self.MILHAS:
+                   # converte a distância para milhas
+                 else:
+                   # converte a distância para metros
+
+              def direcao(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a direção conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a direção conciderando a geometria esférica
+                 else:
+                   # calcula a direção considerando a geometria elíptica
+          ```
+        </section>
+
+        <section data-markdown>
+          ```python
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando quiometros e geometria plana")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+
+          p1.geometria = Posicao.ESFERICA
+          p1.unidade = Posicao.MILHAS
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando milhas e geometria esférica")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
           ```
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Betweenness centrality - Resultado
+          ### Comentários
 
-          ```
-          h - 0.5614035087719298
-          i - 0.5321637426900585
-          j - 0.41812865497076024
-          m - 0.19883040935672514
-          g - 0.18226120857699804
-          p - 0.13450292397660818
-          q - 0.10526315789473684
-          f - 0.1033138401559454
-          d - 0.03313840155945419
-          n - 0.029239766081871343
-          c - 0.025341130604288498
-          l - 0.008771929824561403
-          k - 0.005847953216374269
-          b - 0.004873294346978557
-          a - 0.001949317738791423
-          s - 0.0
-          t - 0.0
-          o - 0.0
-          r - 0.0
-          e - 0.0
-          ```
-        </section>
-
-        <section>
-          <h3>Betweenness centrality - Resultado</h3>
-          <img src="images/betweenness.png">
-          <p>Útil para identificações pontos de entradas de clusters</p>
-        </section>
-
-        <section class="without_ul_style" data-markdown>
-          ## Eigenvector centrality
-          - Centralidade baseada na influência de um nó na rede (topologia)
+          - **Os clientes não mudaram** e continuam achando que `Posicao` só possui latitudes e longitudes
+          - Latitude e longitude deixaram de ser dados do objeto e sim **derivações e modificadores** dos dados
+          - Expor a posição via as propriades **escondem os detalhes de implementação** do objeto
+          - Vocês gostaram de como estamos calculando as distâncais e direções?
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Eigenvector centrality
+          ### Melhorando o Design: Responsabilidades
+
+          - A **visão de OOP limitada ao bom encapsulamento** ainda pode nos fazer **gerar código de difícil manutenção**
+          - Quanto **trabalho** teremos para adicionar mais um tipo de Geometria na nossa classe `Posicao`?
+          - A tendência é acabarmos com **classes grandes**, com **vários métodos**, cada um **interagindo com os dados de maneira específica**
+          - Já ouviram falar sobre `Bloated models`? --> Data-driven design
+          - Qual a alternativa? --> Responsability-driven design
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Definindo responsabilidades
+
+          **Responsibility-driven design** is a design technique in object-oriented programming, which improves encapsulation by using the client–server model. It **focuses on the contract** by considering **the actions that the object is responsible for** and the **information that the object shares**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Quais responsabilidades vemos aqui?
 
           ```python
-          g = get_graph()
+          import math
 
-          centralities = nx.eigenvector_centrality(g, max_iters=1000)
-          centralities = sorted(centralities.items(), key=lambda x: x[1], reverse=True)
+          class Posicao():
+              PLANA, ESFERICA, ELIPTICA = 'plana', 'esferica', 'eliptica'
+              KM, M, MILHAS = 'kms', 'm', 'miles'
 
-          for node, value in centralities:
-              print('{} - {}'.format(node, value))
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+                  self.geometria = self.PLANA
+                  self.unidade = self.KM
+
+              @property
+              def lat(self):
+                return math.degree(self.phi)
+
+              @lat.setter
+              def lat(self, value):
+                self.phi = math.radians(value)
+
+              @property
+              def phi(self):
+                 return self._phi
+
+              @phi.setter
+              def phi(self, value):
+                if not -math.pi / 2 <= value <= math.pi / 2:
+                  raise ValueError("Latitude inválida")
+                self._phi = value
+
+              @property
+              def lng(self):
+                return math.degree(self.theta)
+
+              @lng.setter
+              def lng(self, value):
+                 self.theta = math.radians(value)
+
+              @property
+              def theta(self):
+                 return self._theta
+
+              @theta.setter
+              def theta(self, value):
+                if not -math.pi  <= value <= math.pi :
+                  raise ValueError("Longitude inválida")
+                self._theta = value
+
+              def distancia(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a distância conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a distância conciderando a geometria esférica
+                 else:
+                   # calcula a distância considerando a geometria elíptica
+                 if self.unidade == self.KM:
+                   # converte a distância para kms
+                 elif self.unidade == self.MILHAS:
+                   # converte a distância para milhas
+                 else:
+                   # converte a distância para metros
+
+              def direcao(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a direção conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a direção conciderando a geometria esférica
+                 else:
+                   # calcula a direção considerando a geometria elíptica
           ```
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ## Eigenvector centrality - Resultado
+          ### Uma possível API
 
+          ```python
+          class GemotriaBase():
+
+              def distancia(self, phi_1, theta_1, phi_2, theta_2):
+                  """
+                  calcula a distância e retorna o valor bruto
+                  """
+                  pass
+
+              def direcao(self, phi_1, theta_1, phi_2, theta_2):
+                  """
+                  calcula a direção de 1 em relação a 2
+                  """
+                  pass
+
+          class UnidadeBase():
+
+              def converte(self, valor_bruto):
+                  """
+                  converte um valor bruto para a unidade de medida
+                  """
           ```
-          d - 0.4624402711011163
-          g - 0.426845473522682
-          b - 0.3581392113941398
-          f - 0.3534627131011391
-          e - 0.30255496341693877
-          a - 0.2847564509725969
-          h - 0.28327303565327666
-          c - 0.18086819094144457
-          i - 0.1380402866193515
-          j - 0.12545874636983892
-          p - 0.08464539539539807
-          n - 0.07574895588735901
-          r - 0.06870626212854221
-          k - 0.06495072621439604
-          l - 0.05767676369108016
-          o - 0.04880319165681279
-          m - 0.0473817168614392
-          t - 0.020530832833996485
-          q - 0.012210983147939322
-          s - 0.0029618234810396492
+        </section>
+
+        <section class="" data-markdown>
+          ### Uma possível refatoração (!!!!decomposição e generalização!!!!)
+
+          ```python
+          import math
+
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+                  self.geometria = GeometriaPlana()
+                  self.unidade = UnidadeQuilometro()
+
+              @property
+              def lat(self):
+                return math.degree(self.phi)
+
+              @lat.setter
+              def lat(self, value):
+                self.phi = math.radians(value)
+
+              @property
+              def phi(self):
+                 return self._phi
+
+              @phi.setter
+              def phi(self, value):
+                if not -math.pi / 2 <= value <= math.pi / 2:
+                  raise ValueError("Latitude inválida")
+                self._phi = value
+
+              @property
+              def lng(self):
+                return math.degree(self.theta)
+
+              @lng.setter
+              def lng(self, value):
+                 self.theta = math.radians(value)
+
+              @property
+              def theta(self):
+                 return self._theta
+
+              @theta.setter
+              def theta(self, value):
+                if not -math.pi  <= value <= math.pi :
+                  raise ValueError("Longitude inválida")
+                self._theta = value
+
+              def distancia(self, pos):
+                 dist = self.geometria.distance(self.phi, self.theta, pos.phi, pos.theta)
+                 return self.unidade.converte(dist)
+
+              def direcao(self, pos):
+                 return self.geometria.direcao(self.phi, self.theta, pos.phi, pos.theta)
           ```
         </section>
 
-        <section>
-          <h3>Eigenvector centrality - Resultado</h3>
-          <img src="images/eigenvector.png">
-          <p>Versões iniciais do PageRank do Google</p>
-        </section>
+        SOBRE acoplamento (alto vs baixo)
+          Degree (grau de conexão entre objetos)
+          Ease (how obvious the connections are)
+          Flexibility (o quão customizável e modificável é o seu objeto e o quanto ele está aberto a extensão)
 
-        <section class="fragments without_ul_style" data-markdown>
-          ## Persistência
-          - Neo4j
-          - BD Orientado a Grafos escrito em **Java**
-          - **Cypher** query language == SQL do Neo4j
-          - **Bolt** é o protocolo de comunicação utilizado
-          - Módulo **py2neo** para comunicação com o banco
-        </section>
+        coesão  -->  clareza sobre a responsabilidade do objeto
+        alta vs baixa coesão
 
-        <section>
-          <h3>Interface web</h3>
-          <img src="images/neo4j-web.png">
-        </section>
+        separation of concerns (exemplo de mercados)  -->  separamos saber a posição de saber calcular as distâncias e direções
 
-        <section>
-          <h3>Voltando ao nosso exemplo</h3>
-          <img src="images/graph_002.png">
-        </section>
-
-        <section>
-          <h3>Recuperando o grafo de pessoas via Cypher</h3>
-
-          <pre>
-            <code class="avrasm">
-              MATCH
-                p=(:Person)-[]->(:Person)
-              RETURN p;
-            </code>
-          </pre>
-          <img src="images/query_001.png">
-        </section>
-
-        <section>
-          <h3>Grafo de pessoas que trabalham juntas</h3>
-
-          <pre>
-            <code class="avrasm">
-              MATCH
-                p=(:Person)-[:TRABALHA_COM]-(:Person)
-              RETURN p;
-            </code>
-          </pre>
-
-          <img src="images/query_002.png"/>
-        </section>
-
-        <section>
-          <h3>Grafo das pessoas que moram em SP</h3>
-
-          <pre>
-            <code class="avrasm">
-              MATCH
-                p=(:Person)-[]->(state:Estado)
-              WHERE
-                state.Name='SP'
-              RETURN p;
-            </code>
-          </pre>
-
-          <img src="images/query_003.png"/>
-        </section>
-
-        <section>
-          <h3>Grafo das pessoas amigas de pessoas que moram no RJ</h3>
-
-          <pre>
-            <code class="avrasm">
-              MATCH
-                p=(:Person)-[:AMIGO]-(:Person)-[:VIVE_EM]-(state:Estado)
-              WHERE
-                state.Name='RJ'
-              RETURN p;
-            </code>
-          </pre>
-
-          <img src="images/query_004.png"/>
-        </section>
-
-        <section>
-          <a href="https://neo4j.com/developer/cypher-query-language/">
-            <img src="images/cypher_intro.png"/>
-          </a>
-        </section>
-
-        <section>
-          <h2>Exemplo real: Brasil.io</h2>
-          <img src="images/graph_brasilio.png"/>
-        </section>
-
-        <section>
-          <h2>Exemplo real: Jazz anos 60</h2>
-          <img src="images/jazz_001.png"/>
-        </section>
-
-        <section>
-          <h2>Exemplo real: Jazz anos 60</h2>
-          <img src="images/jazz_002.png"/>
-        </section>
-
-        <section>
-          <h2>Grafos e uma Análise Matemática do Jazz nos anos 60</h2>
-          <a href="https://www.youtube.com/watch?v=BWp_2xeVzoc" target="_blank"><img src="images/talk_jazz.png"/></a>
-        </section>
-
-        <section class="fragments without_ul_style" data-markdown>
-            ## Conclusões
-
-            - O módulo do **networkx** já tem 99% do que você precisa
-            - NoSQL **não** é uma estratégia para todos os problemas
-            - Saiba quais **perguntas** fazer e quais **métricas** as respondem
-            - Não confie em apenas uma métrica
-        </section>
 
         <section>
           <h2>Obrigado!</h2>
