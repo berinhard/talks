@@ -220,7 +220,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Exemplo 001 - o que acham?
+          ### Exemplo [001](https://gist.github.com/berinhard/b4c7cd5742730722ce4729a766c8e3fc) - o que acham?
 
           ```python
           class Posicao():
@@ -277,7 +277,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Exemplo 002 - o que acham?
+          ### Exemplo [002](https://gist.github.com/berinhard/3bef4af4b1fc40864d72a941d4257cba) - o que acham?
 
           ```python
           class Posicao():
@@ -334,7 +334,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Exemplo 002 - Python OOP
+          ### Exemplo [002](https://gist.github.com/berinhard/9eb69f44897f634193b612ef08976cf5) - Python OOP
 
           ```python
           class Posicao():
@@ -385,6 +385,7 @@
           - Continuamos utilizando **código estrutal**
           - `distancia` e `direcao` estão como equivalentes a módulos `utils`
           - De acordo com a visão sobre encapsulamento, mas **permitindo que objetos externos operem** diretamente com os dados de `Posicao`
+          - Em Javascript é [bem parecido](https://javascriptplayground.com/es5-getters-setters/).
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -392,11 +393,11 @@
 
           - Só **encapsular dados** não implica necessariamente em ter um bom código OOP
           - Melhorando a definição: *A language construct that facilitates the **bundling of data** with the **methods operating on that data***
-          - Como melhorar o exemplo [002](#/20)?
+          - Como melhorar o exemplo [002](https://gist.github.com/berinhard/9eb69f44897f634193b612ef08976cf5)?
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Exemplo 003 - o que acham?
+          ### Exemplo [003](https://gist.github.com/berinhard/826690b839f5b867ffdf304aefe7a19d) - o que acham?
 
           ```python
           class Posicao():
@@ -456,17 +457,19 @@
           ### Tirando proveito de Information Hiding
 
 
-
           - Nosso sistema agora precisa considerar aceitar **diferentes unidades de medidas** (quilômetros, milhas e radianos) e **diferentes geometria** (plana, esférica e elíptica).
-          - As geometrias esperam sempre os ângulos em radianos (sistemas de coordenadas esféricas)
+          - As geometrias esperam sempre em radianos (sistemas de coordenadas esféricas) e hoje estamos utilizando graus
+          - `phi` é o equivalente à latitude em radianos
+          - `theta` é o equivalente à longitude em radianos
         </section>
 
         <section>
           <img width="80%" src="images/geometria_esferica.png">
+          <p>Rascunhem baseado <a href="https://gist.github.com/berinhard/826690b839f5b867ffdf304aefe7a19d" target="_blank">neste gist</a>.</p>
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Exemplo 004 - o que acham?
+          ### Exemplo [004](https://gist.github.com/berinhard/014ba858d0fbd57d2ac8506ef47edd6b) - o que acham?
 
           ```python
           import math
@@ -586,78 +589,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Quais responsabilidades vemos aqui?
-
-          ```python
-          import math
-
-          class Posicao():
-              PLANA, ESFERICA, ELIPTICA = 'plana', 'esferica', 'eliptica'
-              KM, M, MILHAS = 'kms', 'm', 'miles'
-
-              def __init__(self, lat, lng):
-                  self.lat, self.lng = lat, lng
-                  self.geometria = self.PLANA
-                  self.unidade = self.KM
-
-              @property
-              def lat(self):
-                return math.degree(self.phi)
-
-              @lat.setter
-              def lat(self, value):
-                self.phi = math.radians(value)
-
-              @property
-              def phi(self):
-                 return self._phi
-
-              @phi.setter
-              def phi(self, value):
-                if not -math.pi / 2 <= value <= math.pi / 2:
-                  raise ValueError("Latitude inválida")
-                self._phi = value
-
-              @property
-              def lng(self):
-                return math.degree(self.theta)
-
-              @lng.setter
-              def lng(self, value):
-                 self.theta = math.radians(value)
-
-              @property
-              def theta(self):
-                 return self._theta
-
-              @theta.setter
-              def theta(self, value):
-                if not -math.pi  <= value <= math.pi :
-                  raise ValueError("Longitude inválida")
-                self._theta = value
-
-              def distancia(self, pos):
-                 if self.geometria == self.PLANA:
-                   # calcula a distância conciderando a geometria plana
-                 elif self.geometria == self.ESFERICA:
-                   # calcula a distância conciderando a geometria esférica
-                 else:
-                   # calcula a distância considerando a geometria elíptica
-                 if self.unidade == self.KM:
-                   # converte a distância para kms
-                 elif self.unidade == self.MILHAS:
-                   # converte a distância para milhas
-                 else:
-                   # converte a distância para metros
-
-              def direcao(self, pos):
-                 if self.geometria == self.PLANA:
-                   # calcula a direção conciderando a geometria plana
-                 elif self.geometria == self.ESFERICA:
-                   # calcula a direção conciderando a geometria esférica
-                 else:
-                   # calcula a direção considerando a geometria elíptica
-          ```
+          ### Quais responsabilidades vemos no [exemplo 004](https://gist.github.com/berinhard/014ba858d0fbd57d2ac8506ef47edd6b)?
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -694,7 +626,7 @@
         </section>
 
         <section class="" data-markdown>
-          ### Uma possível refatoração
+          ### Uma possível refatoração ([Exemplo 005](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a))
 
           ```python
           import math
@@ -819,7 +751,7 @@
             - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
             - Os agregados **não sabem nada sobre quem os organiza**
             - As instâncias dos agregados **podem ser compartilhadas** com outras instâncias do objeto dono
-            - A relação entre nosso objeto `Posicao` com `GeometriaPlana` e `UnidadeQuilometro` caracteriza uma **agregation**
+            - A relação entre [nosso objeto `Posicao`](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a) com `GeometriaPlana` e `UnidadeQuilometro` caracteriza uma **agregation**
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
