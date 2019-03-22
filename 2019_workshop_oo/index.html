@@ -599,7 +599,7 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Decomposição
+          ### Uma possível refatoração ([Exemplo 005](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a))
 
           ```python
           class GeometriaPlana():
@@ -626,7 +626,7 @@
         </section>
 
         <section class="" data-markdown>
-          ### Uma possível refatoração ([Exemplo 005](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a))
+          ### Delegation
 
           ```python
           import math
@@ -824,7 +824,152 @@
         <section>
             <h3>Baixa coesão e baixo acoplamento</h3>
             <img width="50%" src="images/coesao_4.png">
+
             <p><a href="https://enterprisecraftsmanship.com/2015/09/02/cohesion-coupling-difference/" target="_blank">Referência</a></p>
+        </section>
+
+        <section data-markdown>
+            ## Fim da Parte 1
+        </section>
+
+        <section data-markdown>
+            ## Parte 2
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Revisão rápida
+
+            - Objetos são compostos por **dados** e **comportamento** e são instâncias de classes
+            - O objeto possui um **estado** que deve sempre ser considerado válido
+            - **Encapsulamento** ao lado de **information hiding** nos ajudam a não violar os estados
+            - Dois indicadores sobre o design de um objeto são o seu **acoplamento** e a sua **coesão**
+            - Para distribuir responsabilidades, um objeto pode **depender** de outros
+            - O **tipo das depedências** impactam diretamente no design da aplicação
+            - Mas, além disso, a **como elas são usadas** também
+        </section>
+
+        <section data-markdown>
+            ## Discussão de Exemplo
+
+            Entregador de jornal cobrando o pagamento de um cliente
+            [Versão 001](https://gist.github.com/berinhard/24d1087b44867219b78ebb4207a33508)
+
+            [Referência](https://www2.ccs.neu.edu/research/demeter/demeter-method/LawOfDemeter/paper-boy/demeter.pdf)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários (parte 1)
+
+          - `Paperboy` está exposto a **mais informação do que ele precisaria saber** para desempenhar a sua função (receber o pagamento)
+          - `Paperboy` só "conhecia" `Customer`, mas agora também ele sabe que:
+            - `Customer` possui um atributo `wallet` que é uma instância de `Wallet`
+            - O objeto `Wallet` é quem guarda as informações de dinheiro
+            - Sabe como manipular a carteira para se pagar
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários (parte 2)
+
+          - Apesar de `Wallet` **não ser uma dependência** de `Paperboy`, agora há entre eles um **acoplamento muito alto**
+          - A implementação em `Paperboy` assume que um `Customer` **sempre tem uma carteira**.
+            - Qual a consequência de um `if` para checar se o usuário tem uma carteira?
+          - O **acoplamento só irá aumentar** porque a implementação do `if` expõe ainda mais informações sobre `Customer`.
+          - Exemplo clássico de um **má comunicação com as dependências influenciando negativamente o design**
+          - Vamos refatorar?
+        </section>
+
+        <section data-markdown>
+            ## Discussão da [refatoração 001](https://gist.github.com/berinhard/e88269e696bd664d290e117308c536a0)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Termos usados no código mais próximo do **mundo real** (aka domínio)
+          - **Ubiquotous language** do Domain-Driven Desing
+          - `Paperboy` agora só se comunica com `Customer` através da sua **interface** de comportamento
+          - `Paperboy` está **isolado de mudanças internas** tanto na classe `Wallet` quanto `Customer`
+          - Estamos trocando **mensagens** e **não dados** (semântica)
+        </section>
+
+        <section data-markdown>
+            ## Discussão da [refatoração 002](https://gist.github.com/berinhard/e88269e696bd664d290e117308c536a0)
+
+            O customer agora conta sempre com algumas moedas no bolso, não na carteira. Apesar disso, ele tem a nóia de ficar guardando moedas pra pegar seu ônibus e prefere pagar primeiro com o dinheiro mesmo.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários e perguntas
+
+          - Estratégia de **Information hiding** provando-se mais uma vez nossa amiga!
+          - A classe `Customer` aumentou a sua complexidade?
+          - O sistema como um todo, aumentou a sua complexidade?
+          - Estamos proibidos de retornar a `Wallet` ou suas dependências a partir do `Customer`?
+          - Enxergam algum problema ou desvantagem nessa estratégia de **indireção**?
+            - Supondo que agora `Wallet` possua também um novo objeto chamado `IdDocument`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Law of Demeter
+
+          - **Um método de um objeto deve somente invocar métodos dos seguintes tipos de objetos:**
+          - *Métodos do própio objeto*
+          - *Objetos recebidos como parâmetro*
+          - *Instâncias de outras classes que foram criadas pelo próprio objeto*
+          - *Outros objetos que sejam atributos do objeto*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Boas aplicações da Lei de Demeter I
+
+          ```python
+          ### encadeamento de atributos
+          numero = customer.wallet.document.number
+          # vs
+          numero = customer.get_identity_number()  # poderia ser uma property
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Boas aplicações da Lei de Demeter II
+
+          ```python
+          ### variáveis temporárias
+          for customer in customers:
+              temp_wallet = customer.wallet
+              temp_doc = temp_wallet.document
+              print(temp_doc.number)
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Essa visão permite pensar em **objetos que são containers**
+          - Objetos que **auxiliem e limitem** o número de dependências
+          - Nos ajuda a entender quando alguns tipos **design patterns** podem nos ser úteis
+          - A lei se torna necessária por um hábito de **programação voltada à manipulação de dados** e não de objetos
+        </section>
+
+        <section data-markdown>
+            *Procedural code **gets information** and then **makes decisions**. Object-oriented code **tells objects to do things***
+
+            \- Alec Sharp
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tell, don't ask
+
+          - Pensamento declarativo VS pensamento procedural
+          - Dados **não possuem semântica** e dizem respeito somente a **decisões de implementação**
+          - Declarativo == troca de **mensagens**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Por que mensagens e não métodos?
+
+          - Pensamento declarativo VS pensamento procedural
+          http://baddotrobot.com/blog/2012/10/06/sending-messages-vs-method-invocation/
         </section>
 
       </div>
