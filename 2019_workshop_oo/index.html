@@ -770,11 +770,6 @@
             - Uma **classe base define comportamentos** que podem ser **especializados por classes filhas**
             - **Herança** (também possuem vários tipos e veremos mais pra frente)
             - **Realization** está diretamente ligas ao conceito de **Interfaces**
-            - Exemplo: Shape <- Rectangle <-Square
-            - Evitem **ao máximo**
-            - **Estado compartilhado** é delicado
-            - Debug == Alice in the rabbit hole
-            - Péssimo exemplo: Django Class Based Views
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -893,7 +888,7 @@
         </section>
 
         <section data-markdown>
-            ## Discussão da [refatoração 002](https://gist.github.com/berinhard/e88269e696bd664d290e117308c536a0)
+            ## Discussão da [refatoração 002](https://gist.github.com/berinhard/40c216aeaff583b48fa8d2ad3745c93a)
 
             O customer agora conta sempre com algumas moedas no bolso, não na carteira. Apesar disso, ele tem a nóia de ficar guardando moedas pra pegar seu ônibus e prefere pagar primeiro com o dinheiro mesmo.
         </section>
@@ -945,7 +940,7 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Comentários
 
-          - Essa visão permite pensar em **objetos que são containers**
+          - Essa visão flexibiliza os objetos, agora **eles podem ser só "containers"**
           - Objetos que **auxiliem e limitem** o número de dependências
           - Nos ajuda a entender quando alguns tipos **design patterns** podem nos ser úteis
           - A lei se torna necessária por um hábito de **programação voltada à manipulação de dados** e não de objetos
@@ -968,8 +963,156 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Por que mensagens e não métodos?
 
-          - Pensamento declarativo VS pensamento procedural
-          http://baddotrobot.com/blog/2012/10/06/sending-messages-vs-method-invocation/
+          - O que vem a cabeça de vocês quando falamos **"chamar um método"**?
+          - O que vem a cabeça de vocês quando falamos **"enviar uma mensagem"**?
+          - Método é a descrição de algo e diz muito mais a respeito da **sua execução**
+          - Enviar uma mensagem se aproxima mais da **semântica de comportamento**
+          - Mensagem **explicita** os papéis de emissor e receptor
+          - Ter os papéis explícitos nos viabiliza **pensar em sua comunicação** antes de qualquer coisa
+          - Há uma [explicação histórica](http://baddotrobot.com/blog/2012/10/06/sending-messages-vs-method-invocation/) e baseada na evolução das linguagens de programação
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Refinando a troca das mensagens
+
+          - Os **comportamentos de um objeto** estão diretamente ligados à **sua responsabilidade**
+          - Existem vários **termos diferentes** para falar sobre **conceitos muitos parecidos**
+          - Existem várias **maneiras** de adicionar responsabilidades a objetos
+          - Se existem várias maneiras, somente **valores ou padrões** podem nos servir de norte
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Refinando a troca das mensagens
+
+          - **GRASP**: guias para definir a **responsabilidade dos objetos** dentro do sistema
+          - **SOLID**: 5 princípios de design focado na **implementação de objetos mais coesos**
+          - **Design Patterns**: padrões de projeto propondo **estruturas padrões** para refinarmos o design da aplicação
+          - **Domain-Driven Design**: foco em como utilizar a **linguagem de domínio** para determinar quais são nossos objetos, suas responsabilidades e mensagens que sabem processam
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### GRASP
+
+          - General Responsibility Assignment Software Patterns
+          - 9 padrões
+            - Creator
+            - Information Expert
+            - Low Coupling
+            - Controller
+            - High Cohesion
+            - Indirection
+            - Polymorphism
+            - Protected Variations
+            - Pure Fabrication
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Creator
+
+          - Dado dois objetos que se relacionam, esse padrão nos ajuda a definir quem tem a **responsabilidade de criação** das instâncias
+          - O objeto "Container" cria os objetos "contindos"
+          - ![Creator example](images/creator.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Information Expert
+
+          - A responsabilidade pautada em **quem possui a informação necessária** para realizá-la
+          - ![Creator example](images/creator.png)
+          - Quem calcula o preço da compra?
+          - Quem calcula o preço de um produto na compra?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Low Coupling
+
+          - Distribuir responsabilidades de forma que o **acoplamento permaneça baixo**
+          - Nossa refatoração do objeto `Paperboy` é um exemplo
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Controller
+
+          - Responsabilidade por **receber dados e mapeá-los** para camadas mais internas
+          - Em teoria, são responsabilidades de **roteamento**
+          - Objetivo principal é ter **um ponto de entrada que delega o processamento** para outros objetos
+          - Bons candidatos: Facade pattern ou **Caso de Usos**
+          - Views do Django são Controllers
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### High Coesion
+
+          - Distribuir responsabilidades de forma que a **coesão permaneça alta**
+          - Agrupar **responsabilidades relacionadas** em um único objeto
+          - Exemplo: Model manager VS Model do Django
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Indirection
+
+          - Como evitar o **acoplamento direto** entre 2 ou mais objetos?
+          - Indireção **introduz uma unidade que faça a comunicação** entre os objetos
+          - Exemplo: toda a dicussão que tivemos de `Wallet` com `Paperboy` e surgimento do método `pay_for_something` em `Customer`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polymorphism (em GRASP)
+
+          - Variar **implementação de responsabilidades** por tipo
+          - Mecanismo que viabiliza isso: Herança
+          - ![Polymorphism](images/poly_2.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Protected Variation
+
+          - Responsabilidades pautadas nos seus impactos no sistema por conta de mudanças futuras
+          - Partes com **maior probabilidade de mudança** ficam bem **encapsuladas**
+          - Objetos com **interfaces bem definidas** e semânticas
+          - Foco em viabilizar **flexibilidade** e **proteger dependências de mudanças internas**
+          - Viabiliza um **design mais estruturado**
+          - Exemplo: nossa refatoração de `Posicao`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Pure Fabrication
+
+          ![é fistaile](images/fistaile.gif)
+
+          [é fistaile](https://www.youtube.com/watch?v=KbONGYcRVrA)
+
+          loggers, db adapters, session controllers, etc
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### GRASP
+
+          - Definições de responsabilidades por **estruturas**
+          - Muito **atrelado a modelagem UML**: conhecer os objetos antes de implementá-los
+          - Definidos por Craig Larman, no livro "Applying UML and Patterns"
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### SOLID
+
+          - Diferente do **GRASP**, focado na **gestao de dependências** ao invés de modelagem
+          - Organizados por Uncle Bob e definidos em **Agile Software Development, Principles, Patterns and Practices**
+          - Princípios de Object-oriented **design**
+        </section>
+
+
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polymorphism - GoF
+
+          - **Estado compartilhado** é delicado
+          - Debug == Alice in the rabbit hole
+          - Evitem **ao máximo**, nem tudo é tão absoluto
+          - Círculo é uma `Forma`?
+          - Existe maneiras menos acopladas de se viabilizar polimorfismo
+          - COMPOSITION OVER INHERITANCE
+          - DUCK TYPE
         </section>
 
       </div>
