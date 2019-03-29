@@ -138,12 +138,23 @@
           - Se nem a academia concorda, não somos nós que iremos definir OOP do jeito certo
           - Afinal, não há jeito certo
           - Só nos resta fazer do jeito que convém
+          - Convém == aprender conceitos e escolher quando aplicá-los
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Por que surgiram os objetos?
+
+          - O que tinha antes? **Estruturas de dados**, **funções** e **procedimentos** separados
+          - Os dados não tinham **lastro** ou **donos**
+          - **Regras da aplicação espalhadas** em vários métodos
+          - O "objeto" veio para **unificar dados e métodos** em estruturas semânticas
+          - O que seriam **estruturas semânticas**?
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
           ### OOP por Kristen Nygaard (Simula)
 
-          The notion of a **physical model** should be taken literally. Most people can imagine the construction of physical models by means of, for example, **Lego bricks**. In the same way, a **program execution** may be viewed as a physical model. Other perspectives on programming are made precise by some underlying model defining equations, relations, predicates, etc. **For object-oriented programming, however, we have to elaborate on the concept of physical models**.
+          The notion of a **physical model** should be taken literally. Most people can imagine the construction of physical models by means of, for example, **Lego bricks**. In the same way, a **program execution** may be **viewed as a physical model**. Other perspectives on programming are made precise by some underlying model defining equations, relations, predicates, etc. **For object-oriented programming, however, we have to elaborate on the concept of physical models**.
 
           [Referência](http://wiki.c2.com/?NygaardClassification)
         </section>
@@ -154,6 +165,7 @@
           - Conceitos que se entenderam como **obrigatórios** para OOP
           - Foco em construir as **peças de lego**
           - Visão e justificativa que se adequava muito ao modelo de venda de software pré-internet
+          - Mistura de parte com o todo
           - [Referência](http://wiki.c2.com/?PolymorphismEncapsulationInheritance)
         </section>
 
@@ -174,14 +186,6 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-          ### Em termos de objeto:
-
-          - **state-process**: mais ou menos ~conjunto de dados~
-          - **messaging**: mais ou menos ~conjunto de métodos~
-          - **late-biding**: calma, já chegamos lá
-        </section>
-
-        <section class="fragments without_ul_style" data-markdown>
           ### Exemplo 000
 
           - Em um sistema de GPS, dada um ponto em latitude e longitude, preciso poder movimentá-lo no mapa
@@ -191,6 +195,14 @@
 
         <section>
           <img width="80%" src="images/mundo.jpg">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Em termos de objeto:
+
+          - **state-process**: mais ou menos ~conjunto de dados~
+          - **messaging**: mais ou menos ~conjunto de métodos~
+          - **late-biding**: calma, já chegamos lá
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -267,9 +279,9 @@
 
           - Limita a discussão de encapsulamento **aos dados** e a maneira como são expostos
           - Atributos possuem **restrições**:
-            - `public` o atributo é externamente acessível e modificável
-            - `protect` o atributo é externamente acessível e internamente modificável
-            - `private` o atributo é somente internamente acessível e internamente
+            - `public`
+            - `protected`
+            - `private`
           - Construções de **métodos de acesso** (`get` ou `set`) para modificar seus valores
           - **Nem todas as linguagens** viabilizam esses 3 estados
           - "Protected" em Python: `self._varname` como convenção
@@ -382,10 +394,10 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Comentários
 
+          - Em Javascript é [bem parecido](https://javascriptplayground.com/es5-getters-setters/).
           - Continuamos utilizando **código estrutal**
           - `distancia` e `direcao` estão como equivalentes a módulos `utils`
           - De acordo com a visão sobre encapsulamento, mas **permitindo que objetos externos operem** diretamente com os dados de `Posicao`
-          - Em Javascript é [bem parecido](https://javascriptplayground.com/es5-getters-setters/).
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -567,7 +579,8 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Comentários
 
-          - **Os clientes não mudaram** e continuam achando que `Posicao` só possui latitudes e longitudes
+          - **Os clientes não mudaram** e continuam achando que `Posicao` só possui latitude, longitude, direcao e distancia
+          - Não mudamos nada (assinatura ou parâmetros) em como chamamos os métodos `direcao` e `distancia`
           - Latitude e longitude deixaram de ser dados do objeto e sim **derivações e modificadores** dos dados
           - Expor a posição via as propriades **escondem os detalhes de implementação** do objeto
         </section>
@@ -582,20 +595,11 @@
           ### Melhorando o Design: Responsabilidades
 
           - Vocês gostaram de como estamos calculando as distâncais e direções?
-          - A **visão de OOP limitada ao bom encapsulamento** ainda pode nos fazer **gerar código de difícil manutenção**
           - Quanto **trabalho** teremos para adicionar mais um tipo de Geometria na nossa classe `Posicao`?
-          - A tendência é acabarmos com **classes grandes**, com **vários métodos**, cada um **interagindo com os dados de maneira específica**
-          - Já ouviram falar sobre `Bloated models`? --> Data-driven design
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
           ### Quais responsabilidades vemos no [exemplo 004](https://gist.github.com/berinhard/014ba858d0fbd57d2ac8506ef47edd6b)?
-        </section>
-
-        <section class="fragments without_ul_style" data-markdown>
-          ### Responsability-driven design
-
-          Is a design technique in object-oriented programming, which improves encapsulation by using the client–server model. It **focuses on the contract** by considering **the actions that the object is responsible for** and the **information that the object shares**.
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -683,10 +687,43 @@
           ```
         </section>
 
+        <section class="" data-markdown>
+          ### Uso
+
+          ```python
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando quitômetros e geometria plana")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+
+          p1.geometria = GeometriaEsferica()
+          p1.unidade = UnidadeMilhas()
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando milhas e geometria esférica")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Responsability-driven design
+
+          Is a design technique in object-oriented programming, which improves encapsulation by using the client–server model. It **focuses on the interface** by considering **the actions that the object is responsible for** and the **information that the object shares**.
+        </section>
+
         <section class="fragments without_ul_style" data-markdown>
             ### Comentários
 
+            - A **visão de OOP limitada ao bom encapsulamento** ainda pode nos fazer **gerar código de difícil manutenção**
+            - Há uma tendência natural de acabarmos com **classes grandes**, com **vários métodos**, cada um **interagindo com os dados de maneira específica**
+            - Já ouviram falar sobre `Bloated models`? --> Data-driven design
             - Tanto a classe de `Unidade` quanto a de `Geometria` podem ser **reaproveitáveis** por outras partes do sistema
+            - **Separamos a configuração** de `Posicao` de sua conexão com a **sua lógica de conexão**
             - No final das contas, `Posicao` passou a **depender** dessas duas classes
             - Como essa dependência se **caracteriza**?
         </section>
@@ -708,7 +745,7 @@
             - Diz respeito **somente a comportamento** e não dados
             - Enquanto o **contrato for mantido**, o código **não deveria quebrar**
             - Contrato: **assinatura + conj. de parâmetros + conj. de retornos + exceções**
-            - Qual o contrato de um método para **somar dois números**?
+            - Qual o contrato de um método para **dividir dois números**?
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -741,7 +778,6 @@
               - Regular (one-to-one, one-to-many, many-to-many)
               - Aggregation
               - Composition
-            - As duas últimas são relações **mais fortes** que a normal e são **associações atreladas a semântica do objeto**
             - São sempre relações **com direção**
         </section>
 
@@ -751,15 +787,15 @@
             - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
             - Os agregados **não sabem nada sobre quem os organiza**
             - As instâncias dos agregados **podem ser compartilhadas** com outras instâncias do objeto dono
-            - A relação entre [nosso objeto `Posicao`](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a) com `GeometriaPlana` e `UnidadeQuilometro` caracteriza uma **agregation**
+            - Pensando um sistema de vôo, uma `Viagem` poderia adicionar `Passageiros` e ter um `Avião` com uma determinada capacidade
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
             ### Composition
 
+            - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
             - Os agregados **não sabem nada sobre quem os organiza**
             - As instâncias dos agregados **não podem** ser compartilhadas com outras instâncias do objeto dono
-            - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
             - Exemplo: ordem de compra, compra, produto
             - Onde está a **composição**?
         </section>
@@ -768,8 +804,11 @@
             ### Generalization / Realization
 
             - Uma **classe base define comportamentos** que podem ser **especializados por classes filhas**
-            - **Herança** (também possuem vários tipos e veremos mais pra frente)
+            - A **generalização** se dá através do mecanismo de **Herança**
+            - Exemplo: Mensagem.send, MensagemTwitter, MensagemFacebook
             - **Realization** está diretamente ligas ao conceito de **Interfaces**
+            - Implementa **todos os comportamentos** definidos por em uma interface
+            - Exemplo: Animal, Cachorro e Gato
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -785,6 +824,16 @@
             <h3>Dependência e Acoplamento</h3>
             <img src="images/types_dependencies.png">
             <p><a href="http://rcardin.github.io/programming/oop/software-engineering/2017/04/10/dependency-dot.html" target="_blank">Referência</a></p>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Reduzindo o Acoplamento
+
+            - Como as dependências de [`Posicao`](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a) se caracterizam?
+            - Acoplamento interno VS acoplamento externo
+            - Conseguiríamos reduzir esses acoplamentos?
+            - Sugestão de [refatoração](https://gist.github.com/berinhard/a718f0ab07e83c3fc64d6b0dc00675c0)
+            - Mais pra frente vamos dar nome a esses bois aí...
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
