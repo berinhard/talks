@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Workshop OOP</title>
+
+    <meta name="description" content="Workshop OOP">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h3><b>Workshop OOP</b></h3>
+          <br>
+
+          <h3>Bernardo Fontes</h3>
+          <br>
+
+          <img src="images/labcodes.png">
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ## Brainstorm
+
+          ### O que é OOP (Object Oriented Programming) para nós?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Dissenso
+          - Há um dissenso acadêmico sobre o tema
+          - Não existir uma visão consolidada viabiliza qualquer visão
+          - Salda mista conceitual
+          - Influência no design das linguagem
+        </section>
+
+        <section data-markdown>
+          ## Interfaces em Java
+          ```
+          interface Animal {
+              public void eat();
+              public void travel();
+          }
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Interfaces em Java
+          ```
+          public class MammalInt implements Animal {
+
+            public void eat() {
+               System.out.println("Mammal eats");
+            }
+
+            public void travel() {
+               System.out.println("Mammal travels");
+            }
+
+            public int noOfLegs() {
+               return 0;
+            }
+
+          }
+          ```
+        </section>
+
+        <section>
+          <h2>Interfaces em Python</h2>
+          <img src="images/pep.png">
+        </section>
+
+        <section>
+          <h2>Interfaces em Python</h2>
+          <img src="images/pep-rej.png">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Resumão
+
+          - Se nem a academia concorda, não somos nós que iremos definir OOP do jeito certo
+          - Afinal, não há jeito certo
+          - Só nos resta fazer do jeito que convém
+          - Convém == aprender conceitos e escolher quando aplicá-los
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Por que surgiram os objetos?
+
+          - O que tinha antes? **Estruturas de dados**, **funções** e **procedimentos** separados
+          - Os dados não tinham **lastro** ou **donos**
+          - **Regras da aplicação espalhadas** em vários métodos
+          - O "objeto" veio para **unificar dados e métodos** em estruturas semânticas
+          - O que seriam **estruturas semânticas**?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### OOP por Kristen Nygaard (Simula)
+
+          The notion of a **physical model** should be taken literally. Most people can imagine the construction of physical models by means of, for example, **Lego bricks**. In the same way, a **program execution** may be **viewed as a physical model**. Other perspectives on programming are made precise by some underlying model defining equations, relations, predicates, etc. **For object-oriented programming, however, we have to elaborate on the concept of physical models**.
+
+          [Referência](http://wiki.c2.com/?NygaardClassification)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polimorfismo, Encapsulamento e Herança
+
+          - Conceitos que se entenderam como **obrigatórios** para OOP
+          - Foco em construir as **peças de lego**
+          - Visão e justificativa que se adequava muito ao modelo de venda de software pré-internet
+          - Mistura de parte com o todo
+          - [Referência](http://wiki.c2.com/?PolymorphismEncapsulationInheritance)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Uncle Bob (em 2001)
+
+          - "I define Object Oriented programming as programming in which abstractions are independent, and concrete modules depend upon them. i.e. **Dependency Inversion**"
+          - Outra maneira, porém mais arquitetural, de viabilizar as peças de lego
+          - [Referência](http://wiki.c2.com/?PolymorphismEncapsulationInheritance)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Alan Kay (criador do termo OOP e da Small Talk)
+
+          "OOP to me means only **messaging**, **local retention** and **protection** and **hiding of state-process**, and extreme **late-binding** of all things. It can be done in Smalltalk and in LISP. There are possibly other systems in which this is possible, but I'm not aware of them."
+
+          [Referência](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo 000
+
+          - Em um sistema de GPS, dada um ponto em latitude e longitude, preciso poder movimentá-lo no mapa
+
+          - Vamos pro quadro!
+        </section>
+
+        <section>
+          <img width="80%" src="images/mundo.jpg">
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Em termos de objeto:
+
+          - **state-process**: mais ou menos ~conjunto de dados~
+          - **messaging**: mais ou menos ~conjunto de métodos~
+          - **late-biding**: calma, já chegamos lá
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Por que mais ou menos conjunto de dados?
+
+          - Podemos traduzir state process para **estado em curso**, ou seja, ele é mutável
+          - O estado é uma leitura **qualitativa do total de dados** de um objeto
+          - Se um dos dados do objeto, por exemplo o saldo em uma conta bancária, muda, o estado precisa ser **"reavaliado"**
+          - O estado ideal é sempre um **estado válido** para o domínio e isso é **sempre relativo**
+          - Uma conta com saldo negativo poder existir configura um **estado válido em uma conta corrente**, mas **não em uma conta de poupança**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo 001
+
+          Em um sistema de GPS, dada uma latitude e longitude, preciso conseguir calcular a distância e a direção até uma outra posição de latitude e longitude.
+
+          [Referência](https://www.javaworld.com/article/2075271/encapsulation-is-not-information-hiding.html)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo 001
+
+          Em um **sistema de GPS**, dada uma posição com sua **latitude e longitude**, preciso conseguir calcular a **distância** e a **direção** até uma outra **posição**.
+
+          [Referência](https://www.javaworld.com/article/2075271/encapsulation-is-not-information-hiding.html)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo [001](https://gist.github.com/berinhard/b4c7cd5742730722ce4729a766c8e3fc) - o que acham?
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+
+          def distancia(pos_1, pos_2):
+              #### implementação do cálculo de distância
+
+          def direcao(pos_1, pos_2):
+              #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = distancia(p1, p2)
+          direcao = direcao(p1, p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - `Posicao` é somente uma **estrutura de dados**
+          - Uma classe é uma estrutura declarativa dos **dados e do comportamentos** que os objetos terão
+          - Objetos são **instâncias** de uma classe
+          - Estamos usando **objetos**, mas num código estritamente **procedural**
+          - Podemos criar **estados inválidos**, exemplo, `Posicao(-50000000, 500000000)`
+          - Jargão clássico: **problemas de encapsulamento**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Encapsulamento 101
+
+          A language mechanism for restricting **direct access to the object's data**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Noções da definição
+
+          - Limita a discussão de encapsulamento **aos dados** e a maneira como são expostos
+          - Atributos possuem **restrições**:
+            - `public`
+            - `protected`
+            - `private`
+          - Construções de **métodos de acesso** (`get` ou `set`) para modificar seus valores
+          - **Nem todas as linguagens** viabilizam esses 3 estados
+          - "Protected" em Python: `self._varname` como convenção
+          - "Private" em Python: `self.__varname`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo [002](https://gist.github.com/berinhard/3bef4af4b1fc40864d72a941d4257cba) - o que acham?
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.set_lat(lat)
+                  self.set_lng(lng)
+
+              def get_lat(self):
+                return self.__lat
+
+              def set_lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self.__lat = value
+
+              def get_lng(self):
+                return self.__lng
+
+              def set_lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self.__lng = value
+
+          def distancia(pos_1, pos_2):
+              #### implementação do cálculo de distância
+
+          def direcao(pos_1, pos_2):
+              #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = distancia(p1, p2)
+          direcao = direcao(p1, p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Encapsulamento torna **difícil gerar estados inválidos**
+          - `Posicao` continua sendo uma **estrutura de dados**, só que agora **com restrições** (constraints)
+          - Sou guerreiro, sou javeiro
+        </section>
+
+        <section data-markdown>
+            *Never, ever use two leading underscores. This is annoyingly private. If name clashes are a concern, use explicit name mangling instead (e.g., _MyThing_blahblah). This is essentially the same thing as double-underscore, only it's transparent where double underscore obscures.*
+
+            [Ian Bicking - Paste Style Guide](https://paste.readthedocs.io/en/latest/StyleGuide.html)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo [002](https://gist.github.com/berinhard/9eb69f44897f634193b612ef08976cf5) - Python OOP
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+
+              @property
+              def lat(self):
+                return self._lat
+
+              @lat.setter
+              def lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self._lat = value
+
+              @property
+              def lng(self):
+                return self._lng
+
+              @lng.setter
+              def lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self._lng = value
+
+          def distancia(pos_1, pos_2):
+              #### implementação do cálculo de distância
+
+          def direcao(pos_1, pos_2):
+              #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = distancia(p1, p2)
+          direcao = direcao(p1, p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Em Javascript é [bem parecido](https://javascriptplayground.com/es5-getters-setters/).
+          - Continuamos utilizando **código estrutal**
+          - `distancia` e `direcao` estão como equivalentes a módulos `utils`
+          - De acordo com a visão sobre encapsulamento, mas **permitindo que objetos externos operem** diretamente com os dados de `Posicao`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Refinando o que é encapsulamento
+
+          - Só **encapsular dados** não implica necessariamente em ter um bom código OOP
+          - Melhorando a definição: *A language construct that facilitates the **bundling of data** with the **methods operating on that data***
+          - Como melhorar o exemplo [002](https://gist.github.com/berinhard/9eb69f44897f634193b612ef08976cf5)?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo [003](https://gist.github.com/berinhard/826690b839f5b867ffdf304aefe7a19d) - o que acham?
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+
+              @property
+              def lat(self):
+                return self._lat
+
+              @lat.setter
+              def lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self._lat = value
+
+              @property
+              def lng(self):
+                return self._lng
+
+              @lng.setter
+              def lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self._lng = value
+
+              def distancia(self, pos):
+                  #### implementação do cálculo de distância
+
+              def direcao(self, pos):
+                  #### implementação do cálculo de direção
+
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist}")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Estamos de fato começando a **utilizar OOP** e não só o paradigma estrutural
+          - `Posicao` é quase como **novo tipo** definido por nós: possui uma estrutura de armazenamento, regras de persistência e lógica de manipulação
+          - **Mais semântica** ao código porque fica mais claro qual é o ponto de referência para os cálculos
+          - `Posicao` agora é um **"first-class citizen"**: entidade que suporta todas as operações disponíveis na linguagem
+          - Os clientes não sabem nada sobre os **detalhes de implementação** de Posição
+          - Sem saber, tocamos superficialmente num outro ponto: **information hiding**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tirando proveito de Information Hiding
+
+
+          - Nosso sistema agora precisa considerar aceitar **diferentes unidades de medidas** (quilômetros, milhas e radianos) e **diferentes geometria** (plana, esférica e elíptica).
+          - As geometrias esperam sempre em radianos (sistemas de coordenadas esféricas) e hoje estamos utilizando graus
+          - `phi` é o equivalente à latitude em radianos
+          - `theta` é o equivalente à longitude em radianos
+        </section>
+
+        <section>
+          <img width="80%" src="images/geometria_esferica.png">
+          <p>Rascunhem baseado <a href="https://gist.github.com/berinhard/826690b839f5b867ffdf304aefe7a19d" target="_blank">neste gist</a>.</p>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Exemplo [004](https://gist.github.com/berinhard/014ba858d0fbd57d2ac8506ef47edd6b) - o que acham?
+
+          ```python
+          import math
+
+          class Posicao():
+              PLANA, ESFERICA, ELIPTICA = 'plana', 'esferica', 'eliptica'
+              KM, M, MILHAS = 'kms', 'm', 'miles'
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+                  self.geometria = self.PLANA
+                  self.unidade = self.KM
+
+              @property
+              def lat(self):
+                return math.degree(self.phi)
+
+              @lat.setter
+              def lat(self, value):
+                self.phi = math.radians(value)
+
+              @property
+              def phi(self):
+                 return self._phi
+
+              @phi.setter
+              def phi(self, value):
+                if not -math.pi / 2 <= value <= math.pi / 2:
+                  raise ValueError("Latitude inválida")
+                self._phi = value
+
+              @property
+              def lng(self):
+                return math.degree(self.theta)
+
+              @lng.setter
+              def lng(self, value):
+                 self.theta = math.radians(value)
+
+              @property
+              def theta(self):
+                 return self._theta
+
+              @theta.setter
+              def theta(self, value):
+                if not -math.pi  <= value <= math.pi :
+                  raise ValueError("Longitude inválida")
+                self._theta = value
+
+              def distancia(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a distância conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a distância conciderando a geometria esférica
+                 else:
+                   # calcula a distância considerando a geometria elíptica
+                 if self.unidade == self.KM:
+                   # converte a distância para kms
+                 elif self.unidade == self.MILHAS:
+                   # converte a distância para milhas
+                 else:
+                   # converte a distância para metros
+
+              def direcao(self, pos):
+                 if self.geometria == self.PLANA:
+                   # calcula a direção conciderando a geometria plana
+                 elif self.geometria == self.ESFERICA:
+                   # calcula a direção conciderando a geometria esférica
+                 else:
+                   # calcula a direção considerando a geometria elíptica
+          ```
+        </section>
+
+        <section data-markdown>
+          ```python
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando quitômetros e geometria plana")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+
+          p1.geometria = Posicao.ESFERICA
+          p1.unidade = Posicao.MILHAS
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando milhas e geometria esférica")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - **Os clientes não mudaram** e continuam achando que `Posicao` só possui latitude, longitude, direcao e distancia
+          - Não mudamos nada (assinatura ou parâmetros) em como chamamos os métodos `direcao` e `distancia`
+          - Latitude e longitude deixaram de ser dados do objeto e sim **derivações e modificadores** dos dados
+          - Expor a posição via as propriades **escondem os detalhes de implementação** do objeto
+        </section>
+
+        <section data-markdown>
+            ### Information Hiding
+
+            Information hiding is the process of **hiding the details of an object** or function. The hiding of these details **results in an abstraction**, which **reduces the external complexity** and makes the object or function easier to use. In addition, information hiding effectively **decouples** the calling code from the internal workings of the object or function being called, which makes it possible **to change the hidden portions without having to also change the calling code**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Melhorando o Design: Responsabilidades
+
+          - Vocês gostaram de como estamos calculando as distâncais e direções?
+          - Quanto **trabalho** teremos para adicionar mais um tipo de Geometria na nossa classe `Posicao`?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Quais responsabilidades vemos no [exemplo 004](https://gist.github.com/berinhard/014ba858d0fbd57d2ac8506ef47edd6b)?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Uma possível refatoração ([Exemplo 005](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a))
+
+          ```python
+          class GeometriaPlana():
+
+              def distancia(self, phi_1, theta_1, phi_2, theta_2):
+                  """
+                  calcula a distância e retorna o valor bruto
+                  """
+                  pass
+
+              def direcao(self, phi_1, theta_1, phi_2, theta_2):
+                  """
+                  calcula a direção de 1 em relação a 2
+                  """
+                  pass
+
+          class UnidadeQuilometro():
+
+              def converte(self, valor_bruto):
+                  """
+                  converte um valor bruto para a unidade de medida
+                  """
+          ```
+        </section>
+
+        <section class="" data-markdown>
+          ### Delegation
+
+          ```python
+          import math
+
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+                  self.geometria = GeometriaPlana()
+                  self.unidade = UnidadeQuilometro()
+
+              @property
+              def lat(self):
+                return math.degree(self.phi)
+
+              @lat.setter
+              def lat(self, value):
+                self.phi = math.radians(value)
+
+              @property
+              def phi(self):
+                 return self._phi
+
+              @phi.setter
+              def phi(self, value):
+                if not -math.pi / 2 <= value <= math.pi / 2:
+                  raise ValueError("Latitude inválida")
+                self._phi = value
+
+              @property
+              def lng(self):
+                return math.degree(self.theta)
+
+              @lng.setter
+              def lng(self, value):
+                 self.theta = math.radians(value)
+
+              @property
+              def theta(self):
+                 return self._theta
+
+              @theta.setter
+              def theta(self, value):
+                if not -math.pi  <= value <= math.pi :
+                  raise ValueError("Longitude inválida")
+                self._theta = value
+
+              def distancia(self, pos):
+                 dist = self.geometria.distance(self.phi, self.theta, pos.phi, pos.theta)
+                 return self.unidade.converte(dist)
+
+              def direcao(self, pos):
+                 return self.geometria.direcao(self.phi, self.theta, pos.phi, pos.theta)
+          ```
+        </section>
+
+        <section class="" data-markdown>
+          ### Uso
+
+          ```python
+          p1 = Posicao(12.0123, 36.12313)
+          p2 = Posicao(12.5123, 34.00000)
+
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando quitômetros e geometria plana")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+
+          p1.geometria = GeometriaEsferica()
+          p1.unidade = UnidadeMilhas()
+          dist = p1.distancia(p2)
+          direcao = p1.direcao(p2)
+
+          print(f"Distância {p1} até {p2} é de {dist} utilizando milhas e geometria esférica")
+          print(f"Direção de {p1} até {p2} é de {direcao} graus")
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Responsability-driven design
+
+          Is a design technique in object-oriented programming, which improves encapsulation by using the client–server model. It **focuses on the interface** by considering **the actions that the object is responsible for** and the **information that the object shares**.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Comentários
+
+            - A **visão de OOP limitada ao bom encapsulamento** ainda pode nos fazer **gerar código de difícil manutenção**
+            - Há uma tendência natural de acabarmos com **classes grandes**, com **vários métodos**, cada um **interagindo com os dados de maneira específica**
+            - Já ouviram falar sobre `Bloated models`? --> Data-driven design
+            - Tanto a classe de `Unidade` quanto a de `Geometria` podem ser **reaproveitáveis** por outras partes do sistema
+            - **Separamos a configuração** de `Posicao` de sua conexão com a **sua lógica de conexão**
+            - No final das contas, `Posicao` passou a **depender** dessas duas classes
+            - Como essa dependência se **caracteriza**?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Dependências
+
+            - Entedermos **como as dependências se dão** e suas consequências é essencial para **identificarmos potenciais falhas no design** e responsabilidades de um objeto
+            - Dependency
+            - Association
+            - Generalization
+            - Realization
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Dependency
+
+            - O tipo mais **simples** e **intuitivo**
+            - Diz respeito **somente a comportamento** e não dados
+            - Enquanto o **contrato for mantido**, o código **não deveria quebrar**
+            - Contrato: **assinatura + conj. de parâmetros + conj. de retornos + exceções**
+            - Qual o contrato de um método para **dividir dois números**?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Dependency
+
+            ```python
+            class LogMessage():
+
+                def __init__(self, msg, attrs):
+                    self.msg, self.attrs = msg, attrs
+
+                def format(self):
+                    now = datetime.now().isoformat()
+                    msg = msg.format(**self.attrs)
+                    return f'[{now}] - {msg}'
+
+            class Logger():
+
+                def log_message(self, message):
+                    print(message.format())
+            ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Association
+
+            - Relação quando um objeto **contém uma referência** para outro objeto
+            - Um objeto **é também um atributo** do outro
+            - Existem três tipos de associação:
+              - Regular (one-to-one, one-to-many, many-to-many)
+              - Aggregation
+              - Composition
+            - São sempre relações **com direção**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Aggregation
+
+            - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
+            - Os agregados **não sabem nada sobre quem os organiza**
+            - As instâncias dos agregados **podem ser compartilhadas** com outras instâncias do objeto dono
+            - Pensando um sistema de vôo, uma `Viagem` poderia adicionar `Passageiros` e ter um `Avião` com uma determinada capacidade
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Composition
+
+            - O objeto principal é reponsável pela **criação** e eventual **deleção** dos agregados
+            - Os agregados **não sabem nada sobre quem os organiza**
+            - As instâncias dos agregados **não podem** ser compartilhadas com outras instâncias do objeto dono
+            - Exemplo: ordem de compra, compra, produto
+            - Onde está a **composição**?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Generalization / Realization
+
+            - Uma **classe base define comportamentos** que podem ser **especializados por classes filhas**
+            - A **generalização** se dá através do mecanismo de **Herança**
+            - Exemplo: Mensagem.send, MensagemTwitter, MensagemFacebook
+            - **Realization** está diretamente ligas ao conceito de **Interfaces**
+            - Implementa **todos os comportamentos** definidos por em uma interface
+            - Exemplo: Animal, Cachorro e Gato
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Dependências e Qualidade do Código
+
+            - As dependências em um sistema estão **diretamente relacionadas a complexidade** do código
+            - A métrica utilizada é chamada de **acoplamento**
+            - Com o acoplamento mede-se o quão **depentende o seu objeto é de outros objetos** do sistema
+            - A mesma discussão se aplica para **módulos**
+        </section>
+
+        <section>
+            <h3>Dependência e Acoplamento</h3>
+            <img src="images/types_dependencies.png">
+            <p><a href="http://rcardin.github.io/programming/oop/software-engineering/2017/04/10/dependency-dot.html" target="_blank">Referência</a></p>
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Reduzindo o Acoplamento
+
+            - Como as dependências de [`Posicao`](https://gist.github.com/berinhard/e171e5faaa01841548d1e2483434a86a) se caracterizam?
+            - Acoplamento interno VS acoplamento externo
+            - Conseguiríamos reduzir esses acoplamentos?
+            - Sugestão de [refatoração](https://gist.github.com/berinhard/a718f0ab07e83c3fc64d6b0dc00675c0)
+            - Mais pra frente vamos dar nome a esses bois aí...
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Acoplamento e Coesão
+
+            - Outra medida de qualidade de um objeto ou módulo é a sua **coesão**
+            - Coesão é uma medida sobre a **clareza quanto as responsabilidades** do objeto
+            - Em geral, **coesão** e **acoplamento** são correlacionados
+            - No caso da refatoração em `Posicao`, **aumentamos o seu acoplamento** e também sua **coesão**
+            - O ideal é sempre ter **alta coesão** e **baixo acoplamento**
+        </section>
+
+        <section>
+            <h3>Alta coesão e baixo acoplamento</h3>
+            <img width="50%" src="images/coesao_1.png">
+            <p><a href="https://enterprisecraftsmanship.com/2015/09/02/cohesion-coupling-difference/" target="_blank">Referência</a></p>
+        </section>
+
+        <section>
+            <h3>Alta coesão e alto acoplamento</h3>
+            <p><a href=""https://en.wikipedia.org/wiki/God_object target="_blank">God object</a> anti-pattern</p>
+            <img width="50%" src="images/coesao_2.png">
+            <p><a href="https://enterprisecraftsmanship.com/2015/09/02/cohesion-coupling-difference/" target="_blank">Referência</a></p>
+        </section>
+
+        <section>
+            <h3>Baixa coesão e alto acoplamento</h3>
+            <img width="50%" src="images/coesao_3.png">
+            <p><a href="https://enterprisecraftsmanship.com/2015/09/02/cohesion-coupling-difference/" target="_blank">Referência</a></p>
+        </section>
+
+        <section>
+            <h3>Baixa coesão e baixo acoplamento</h3>
+            <img width="50%" src="images/coesao_4.png">
+
+            <p><a href="https://enterprisecraftsmanship.com/2015/09/02/cohesion-coupling-difference/" target="_blank">Referência</a></p>
+        </section>
+
+        <section data-markdown>
+            ## Fim da Parte 1
+        </section>
+
+        <section data-markdown>
+            ## Parte 2
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Revisão rápida
+
+            - Objetos são compostos por **dados** e **comportamento** e são instâncias de classes
+            - O objeto possui um **estado** que deve sempre ser considerado válido
+            - **Encapsulamento** ao lado de **information hiding** nos ajudam a não violar os estados
+            - Dois indicadores sobre o design de um objeto são o seu **acoplamento** e a sua **coesão**
+            - Para distribuir responsabilidades, um objeto pode **depender** de outros
+            - O **tipo das depedências** impactam diretamente no design da aplicação
+            - Mas, além disso, a **como elas são usadas** também
+        </section>
+
+        <section data-markdown>
+            ## Discussão de Exemplo
+
+            Entregador de jornal cobrando o pagamento de um cliente
+            [Versão 001](https://gist.github.com/berinhard/24d1087b44867219b78ebb4207a33508)
+
+            [Referência](https://www2.ccs.neu.edu/research/demeter/demeter-method/LawOfDemeter/paper-boy/demeter.pdf)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários (parte 1)
+
+          - `Paperboy` está exposto a **mais informação do que ele precisaria saber** para desempenhar a sua função (receber o pagamento)
+          - `Paperboy` só "conhecia" `Customer`, mas agora também ele sabe que:
+            - `Customer` possui um atributo `wallet` que é uma instância de `Wallet`
+            - O objeto `Wallet` é quem guarda as informações de dinheiro
+            - Sabe como manipular a carteira para se pagar
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários (parte 2)
+
+          - Apesar de `Wallet` **não ser uma dependência** de `Paperboy`, agora há entre eles um **acoplamento muito alto**
+          - A implementação em `Paperboy` assume que um `Customer` **sempre tem uma carteira**.
+            - Qual a consequência de um `if` para checar se o usuário tem uma carteira?
+          - O **acoplamento só irá aumentar** porque a implementação do `if` expõe ainda mais informações sobre `Customer`.
+          - Exemplo clássico de um **má comunicação com as dependências influenciando negativamente o design**
+          - Vamos refatorar?
+        </section>
+
+        <section data-markdown>
+            ## Discussão da [refatoração 001](https://gist.github.com/berinhard/e88269e696bd664d290e117308c536a0)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Termos usados no código palavras mais próximo do **mundo real** (aka domínio)
+          - **Ubiquotous language** do Domain-Driven Desing
+          - `Paperboy` agora só se comunica com `Customer` através da sua **interface** de comportamento
+          - `Paperboy` está **isolado de mudanças internas** tanto na classe `Wallet` quanto `Customer`
+          - Estamos trocando **mensagens** e **não dados** (semântica)
+        </section>
+
+        <section data-markdown>
+            ## Discussão da [refatoração 002](https://gist.github.com/berinhard/40c216aeaff583b48fa8d2ad3745c93a)
+
+            O customer agora conta sempre com algumas moedas no bolso, não na carteira. Apesar disso, ele tem a nóia de ficar guardando moedas pra pegar seu ônibus e prefere pagar primeiro com o dinheiro mesmo.
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários e perguntas
+
+          - Estratégia de **Information hiding** provando-se mais uma vez nossa amiga!
+          - A classe `Customer` aumentou a sua complexidade?
+          - O sistema como um todo, aumentou a sua complexidade?
+          - Estamos proibidos de retornar a `Wallet` ou suas dependências a partir do `Customer`?
+          - Enxergam algum problema ou desvantagem nessa estratégia de **indireção**?
+            - Supondo que agora `Wallet` possua também um novo objeto chamado `IdDocument`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Law of Demeter
+
+          - **Um método de um objeto deve somente invocar métodos dos seguintes tipos de objetos:**
+          - *Métodos do própio objeto*
+          - *Objetos recebidos como parâmetro*
+          - *Instâncias de outras classes que foram criadas pelo próprio objeto*
+          - *Outros objetos que sejam atributos do objeto*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Boas aplicações da Lei de Demeter I
+
+          ```python
+          ### encadeamento de atributos
+          numero = customer.wallet.document.number
+          # vs
+          numero = customer.get_identity_number()  # poderia ser uma property
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Boas aplicações da Lei de Demeter II
+
+          ```python
+          ### variáveis temporárias
+          for customer in customers:
+              temp_wallet = customer.wallet
+              temp_doc = temp_wallet.document
+              print(temp_doc.number)
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Comentários
+
+          - Essa visão flexibiliza os objetos, agora **eles podem ser só "containers"**
+          - Objetos que **auxiliem e limitem** o número de dependências
+          - Nos ajuda a entender quando alguns tipos **design patterns** podem nos ser úteis
+          - A lei se torna necessária por um hábito de **programação voltada à manipulação de dados** e não de objetos
+        </section>
+
+        <section data-markdown>
+            *Procedural code **gets information** and then **makes decisions**. Object-oriented code **tells objects to do things***
+
+            \- Alec Sharp
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tell, don't ask
+
+          - Pensamento declarativo VS pensamento procedural
+          - Dados **não possuem semântica** e dizem respeito somente a **decisões de implementação**
+          - Declarativo == troca de **mensagens**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Por que mensagens e não métodos?
+
+          - Método é a descrição de algo e diz muito mais a respeito da **sua execução**
+          - Enviar uma mensagem se aproxima mais da **semântica de comportamento**
+          - Mensagem **explicita** os papéis de emissor e receptor
+          - Ter os papéis explícitos nos viabiliza **pensar em sua comunicação** antes de qualquer coisa
+          - Há uma [explicação histórica](http://baddotrobot.com/blog/2012/10/06/sending-messages-vs-method-invocation/) e baseada na evolução das linguagens de programação
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ## Vamos desenhar?
+        </section>
+
+        <!--
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Refinando a troca das mensagens
+
+          - **GRASP**: guias para definir a **responsabilidade dos objetos** dentro do sistema
+          - **SOLID**: 5 princípios de design focado na **implementação de objetos mais coesos**
+          - **Design Patterns**: padrões de projeto propondo **estruturas padrões** para refinarmos o design da aplicação
+          - **Domain-Driven Design**: foco em como utilizar a **linguagem de domínio** para determinar quais são nossos objetos, suas responsabilidades e mensagens que sabem processam
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### GRASP
+
+          - General Responsibility Assignment Software Patterns
+          - 9 padrões
+            - Creator
+            - Information Expert
+            - Low Coupling
+            - Controller
+            - High Cohesion
+            - Indirection
+            - Polymorphism
+            - Protected Variations
+            - Pure Fabrication
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Creator
+
+          - Dado dois objetos que se relacionam, esse padrão nos ajuda a definir quem tem a **responsabilidade de criação** das instâncias
+          - O objeto "Container" cria os objetos "contindos"
+          - ![Creator example](images/creator.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Information Expert
+
+          - A responsabilidade pautada em **quem possui a informação necessária** para realizá-la
+          - ![Creator example](images/creator.png)
+          - Quem calcula o preço da compra?
+          - Quem calcula o preço de um produto na compra?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Low Coupling
+
+          - Distribuir responsabilidades de forma que o **acoplamento permaneça baixo**
+          - Nossa refatoração do objeto `Paperboy` é um exemplo
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Controller
+
+          - Responsabilidade por **receber dados e mapeá-los** para camadas mais internas
+          - Em teoria, são responsabilidades de **roteamento**
+          - Objetivo principal é ter **um ponto de entrada que delega o processamento** para outros objetos
+          - Bons candidatos: Facade pattern ou **Caso de Usos**
+          - Views do Django são Controllers
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### High Coesion
+
+          - Distribuir responsabilidades de forma que a **coesão permaneça alta**
+          - Agrupar **responsabilidades relacionadas** em um único objeto
+          - Exemplo: Model manager VS Model do Django
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Indirection
+
+          - Como evitar o **acoplamento direto** entre 2 ou mais objetos?
+          - Indireção **introduz uma unidade que faça a comunicação** entre os objetos
+          - Exemplo: toda a dicussão que tivemos de `Wallet` com `Paperboy` e surgimento do método `pay_for_something` em `Customer`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polymorphism (em GRASP)
+
+          - Variar **implementação de responsabilidades** por tipo
+          - Mecanismo que viabiliza isso: Herança
+          - ![Polymorphism](images/poly_2.png)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Protected Variation
+
+          - Responsabilidades pautadas nos seus impactos no sistema por conta de mudanças futuras
+          - Partes com **maior probabilidade de mudança** ficam bem **encapsuladas**
+          - Objetos com **interfaces bem definidas** e semânticas
+          - Foco em viabilizar **flexibilidade** e **proteger dependências de mudanças internas**
+          - Viabiliza um **design mais estruturado**
+          - Exemplo: nossa refatoração de `Posicao`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Pure Fabrication
+
+          ![é fistaile](images/fistaile.gif)
+
+          [é fistaile](https://www.youtube.com/watch?v=KbONGYcRVrA)
+
+          loggers, db adapters, session controllers, etc
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### GRASP
+
+          - Definições de responsabilidades por **estruturas**
+          - Muito **atrelado a modelagem UML**: conhecer os objetos antes de implementá-los
+          - Definidos por Craig Larman, no livro "Applying UML and Patterns"
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### SOLID
+
+          - Diferente do **GRASP**, focado na **gestao de dependências** ao invés de modelagem
+          - Organizados por Uncle Bob e definidos em **Agile Software Development, Principles, Patterns and Practices**
+          - Princípios de Object-oriented **design**
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polymorphism - GoF
+
+          - **Estado compartilhado** é delicado
+          - Debug == Alice in the rabbit hole
+          - Evitem **ao máximo**, nem tudo é tão absoluto
+          - Círculo é uma `Forma`?
+          - Existe maneiras menos acopladas de se viabilizar polimorfismo
+          - COMPOSITION OVER INHERITANCE
+          - DUCK TYPE
+        </section>
+
+        --!>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
