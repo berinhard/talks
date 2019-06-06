@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Encapsulamento, Polimorfismo e Herança em Python</title>
+
+    <meta name="description" content="Encapsulamento, Polimorfismo e Herança em Python">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+        <section>
+          <h3>Encapsulamento, Polimorfismo e Herança em Python</h3>
+          <br>
+
+          <h3>Bernardo Fontes</h3>
+          <br>
+
+          <h4>59º Encontro do PUG-PE</h4>
+          <h4>Recife/PE</h4>
+          <h4>08 de Junho de 2019</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <img src="images/labcodes.png" alt="Labcodes"/>
+          <h3>
+            <p>aka berin</p>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://instagram.com/fontes.bernardo">instagram.com/fontes.bernardo</a></p>
+          </h3>
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ### Roteirinho
+
+          - Encapsulamento
+          - Information Hiding
+          - Polimorfismo
+          - Herança
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ### Encapsulamento
+
+          - Definição básica: mecanismo nas linguagens de promamação para **restringir o acesso direto aos dados** de um objeto
+          - Pelo histórico da nossa indústria, se tornou um conceito muito relacionado ao Java
+          - Em Java, o encapsuamento é **obrigatório**
+          - Exemplos inspirados no blogpost "[Encapsulation is not information hiding](https://www.javaworld.com/article/2075271/encapsulation-is-not-information-hiding.html)"
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ### Atributos públicos
+          ```java
+          public class Position {
+            public double latitude;
+            public double longitude;
+          }
+
+          // em uma outra parte do código
+
+          Position pos = new Position();
+          pos.latitude = 10.0;
+          pos.longitude = 50.0;
+          ```
+
+          - O que acontece se colocarmos 1000.0 como latitude?
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ### Avaliando estados
+
+          - Como o intervalo de valores válidos para latitude vai de -90 a 90 teremos problemas ao usarmos 1000
+          - O problema é o código permitir um **estado inválido** dentro da aplicação
+          - O estado é uma leitura **qualitativa do total de dados** de um objeto
+          - Se um dos dados do objeto, por exemplo o saldo em uma conta bancária, muda, o estado precisa ser **"reavaliado"**
+          - **Estados válidos** configuram os estados com os quais o sistema tem condições de lidar
+          - **Estados inválidos** são grandes causadores de bugs e falhas no software
+        </section>
+
+        <section data-markdown>
+          ### Atributos privados + métodos de acesso
+          ```java
+          public class Position {
+            private double latitude;
+            private double longitude;
+
+            public Position( double latitude, double longitude ) {
+              setLatitude( latitude );
+              setLongitude( longitude );
+            }
+            public void setLatitude( double latitude ) {
+              // Ensure -90 <= latitude <= 90 using modulo arithmetic.
+              // Code not shown.
+              // Then set instance variable.
+              this.latitude = latitude;
+            }
+            public void setLongitude( double longitude ) {
+              // Ensure -180 < longitude <= 180 using modulo arithmetic.
+              // Code not shown.
+              // Then set instance variable.
+              this.longitude = longitude;
+            }
+            public double getLatitude() {
+              return latitude;
+            }
+            public double getLongitude() {
+              return longitude;
+            }
+          }
+
+          // em outra parte do código
+          // *todas* as partes que usarem latitude e longitude vão quebrar
+          // no caso de java, não vamos nem conseguir compilar o código
+          pos.latitude = 10.0;
+          pos.longitude = 50.0;
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tá, mas e no Python?
+
+          - Python provê mecanismos de encapsulamento **mais elegantes e menos impositivos** sobre a interface dos objetos
+          - Podemos **postergar ao máximo** qualquer decisão de encapsulamento
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Sem encapsuamento
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+
+          p1 = Posicao(12.0123, 36.12313)
+          p1.lat = 20.8
+          p1.lng = 36.9
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Com encapsuamento pythônico
+
+          ```python
+          class Posicao():
+
+              def __init__(self, lat, lng):
+                  self.lat, self.lng = lat, lng
+
+              @property
+              def lat(self):
+                return self._lat
+
+              @lat.setter
+              def lat(self, value):
+                if not -90 <= value <= 90:
+                  raise ValueError("Latitude inválida")
+                self._lat = value
+
+              @property
+              def lng(self):
+                return self._lng
+
+              @lng.setter
+              def lng(self, value):
+                if not -180 <= value <= 180:
+                  raise ValueError("Longitude inválida")
+                self._lng = value
+
+
+          # O código abaixo continua funcionando sem problemas
+          p1 = Posicao(12.0123, 36.12313)
+          p1.lat = 20.8
+          p1.lng = 36.9
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Da visão geral de encapsulamento
+
+          - Limitada **aos dados** e a maneira como são expostos
+          - Atributos possuem **restrições**:
+            - `public`
+            - `protected`
+            - `private`
+          - Construções de **métodos de acesso** (`get` ou `set`) para modificar seus valores
+          - **Nem todas as linguagens** viabilizam esses 3 estados
+          - "Protected" em Python: `self._varname` como convenção
+          - "Private" em Python: `self.__varname`
+          - Maaaas.....
+        </section>
+
+        <section data-markdown>
+            *Never, ever use two leading underscores. This is annoyingly private. If name clashes are a concern, use explicit name mangling instead (e.g., _MyThing_blahblah). This is essentially the same thing as double-underscore, only it's transparent where double underscore obscures.*
+
+            [Ian Bicking - Paste Style Guide](https://paste.readthedocs.io/en/latest/StyleGuide.html)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Um outro exemplo...
+
+          ```python
+          class CalendarioEventos():
+
+              def __init__(self):
+                  self._eventos = []
+
+              @property
+              def eventos(self):
+                  return self._eventos
+
+
+          ####### em outra parte do código:
+
+          calendario = CalendarioEventos()
+          calendario.evento.append({
+              "nome": "59º Encontro PUG-PE",
+              "dia": date(2019, 6, 8)
+          })
+          calendario.evento.append({
+              "nome": "5ª Noite de Processing - Recife",
+              "dia": date(2019, 6, 26)
+          })
+          ```
+          - O que acontece se mudarmos o atributo `_eventos` de um `list` para um `set`?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Refinando o que é encapsulamento
+
+          - Só **encapsular dados** não implica necessariamente em ter um bom código OOP
+          - Melhorando a definição: *Mecanismo nas linguagens de promamação para **restringir o acesso direto aos dados** de um objeto através de **métodos que operem sobre eles***
+          - Mesmo com o encapsulamento sendo usado na classe `CalendarioEventos`, seus clientes sabem de seus **detalhes de implementação** como, por exemplo, de que `eventos` é uma lista.
+          - Não só isso, o cliente é quem está determinando **como os dados de um evento serão armazenados** já que ele modifica diretamente a estrutura de dados que os comporta
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Usando Informatino Hiding
+
+          ```python
+          class CalendarioEventos():
+
+              def __init__(self):
+                  self._eventos = set()
+
+              @property
+              def eventos(self):
+                  return [{"nome": e[0], "dia": e[1]} for e in self._eventos]  # agora é só uma cópia de _eventos
+
+              def adiciona_evento(self, nome, dia):
+                  self._eventos.add((nome, dia))
+
+              def __len__(self):
+                  return len(self._eventos)
+
+
+          ####### em outra parte do código:
+
+          calendario = CalendarioEventos()
+          calendario.adiciona_evento(
+              nome="59º Encontro PUG-PE",
+              dia=date(2019, 6, 8)
+          )
+          calendario.adiciona_evento(
+              nome="5ª Noite de Processing - Recife",
+              dia=date(2019, 6, 26)
+          )
+          ```
+          - O método `adiciona_evento` escondeu todos os detalhes de implementação de `CalendarioEventos`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+            ### Information Hiding
+
+            - Um código **baseado em dados** é, por definição, mais **rígido** porque suas integrações estão diretamente acoplados às **decisões de implementação** dos seus diversos objetos;
+            - Em contrapartida, um código **baseado em comportamento** é, por definição, mais **flexível** porque suas integrações dependem de **abstrações** e não em suas implementações concretas;
+            - Portanto, o pote de ouro OOP não é o encapsulamento por si só, mas sim a **troca de mensagens** através de métodos que funcionam como **mecanismos de proteção** da classe;
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Alan Kay (criador do termo OOP e da Smalltalk)
+
+          "OOP to me means only **messaging**, **local retention** and **protection** and **hiding of state-process**, and extreme **late-binding** of all things. It can be done in Smalltalk and in LISP. There are possibly other systems in which this is possible, but I'm not aware of them."
+
+          [Referência](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Late-binding???
+
+          - Mecanismos da linguagem que permitem de que o **método ou objeto** que esteja sendo chamado é **definido em tempo de execução**
+          - **Polimorfismo** é só uma maneira das maneiras atingir late-binding
+          - Por ser praticamente **a única** viável de se fazer em Java, nos parece que é a única
+          - Felizmente, Python nos provê outras maneiras...
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Python Data model
+
+          ```python
+          dados = [
+              "meu nome é bernardo",
+              ["valor 1", "valor 2"],
+              ("eu", "adoro", "tuplas"),
+              {"chave": "valor"},
+              {1, 2, 3, 4, 5, 5, 5, 5, 6, 1, 1, 1,},
+              range(10)
+          ]
+
+          for dado in dados:
+              print(f"Analisando o objeto {dado}")
+              num = len(dado)
+              print(f"O objeto possui {num} elementos.\n")
+          ```
+          - Será que conseguimos usar `len` com o nosso calendário de eventos?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### `__len__`
+
+          ```python
+          class CalendarioEventos():
+
+              def __init__(self):
+                  self._eventos = set()
+
+              @property
+              def eventos(self):
+                  return [{"nome": e[0], "dia": e[1]} for e in self._eventos]  # agora é só uma cópia de _eventos
+
+              def adiciona_evento(self, nome, dia):
+                  self._eventos.add((nome, dia))
+
+              def __len__(self):
+                  return len(self._eventos)
+
+
+          ####### em outra parte do código:
+
+          calendario = CalendarioEventos()
+          calendario.adiciona_evento(
+              nome="59º Encontro PUG-PE",
+              dia=date(2019, 6, 8)
+          )
+          calendario.adiciona_evento(
+              nome="5ª Noite de Processing - Recife",
+              dia=date(2019, 6, 26)
+          )
+
+          num = len(calendario)
+          print(f"Temos {num} eventos no nosso calendario")
+          ```
+          - O método `adiciona_evento` escondeu todos os detalhes de implementação de `CalendarioEventos`
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Duck typing
+
+          If it walks like a duck and it quacks like a duck, then it must be a duck
+          ```python
+          def adiciona_elementos(obj, elementos):
+              try:
+                for elem in elementos:
+                  obj.append(elem)
+              except AttributeError:
+                print(f"Objeto {obj} não implementa um método append")
+
+          class CalendarioEventos():
+
+              def __init__(self):
+                  self._eventos = set()
+
+              @property
+              def eventos(self):
+                  return [{"nome": e[0], "dia": e[1]} for e in self._eventos]  # agora é só uma cópia de _eventos
+
+              def adiciona_evento(self, nome, dia):
+                  self._eventos.add((nome, dia))
+
+              def __len__(self):
+                  return len(self._eventos)
+
+              def append(self, event_data):
+                  self.adiciona_evento(*event_data)
+
+          lista_simples = []
+          calendario = CalendarioEventos()
+          dict_simples = {}
+          eventos = [('Evento 1', date(2019, 1, 20)), ('Evento 2', date(2020, 3, 14))]
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Mas e o Polimorfismo?
+
+          - No polimorfismo, definimos uma **única classe** que determina uma **interface** com a qual o sistema vai interagir
+          - As partes do código devem saber interagir **somente** com os métodos definidos por essa interface
+          - Herança é **um mecanismo** para que classes possam implementar interfaces
+          - Herança **não é** um mecanismo para reaproveitamento de código
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Polimorfismo em Python
+
+          ```python
+          from abc import ABC, abstractmethod
+
+          class DBAccessInterface(ABC):
+
+            @abstractmethod
+            def get_by_id(self, id_):
+              pass
+
+
+          class JsonDB(DBAccessInterface):
+
+            def get_by_id(self, id_):
+               return self.json_data.get(id_)
+
+
+          class CsvDB(DBAccessInterface):
+
+            def get_by_id(self, id_):
+              for row in self.csv_data:
+                if row.id == id_:
+                  return row
+              return None
+
+          class TxtDB(DBAccessInterface):
+             """
+             Como essa classe não implementa a interface, não conseguimos instanciá-la
+             """
+          ```
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Princípio de Substituição de Liskov
+
+          - Proposto por Barbara Liskov, uma cientista da computação americana
+          - *Funções que usem ponteiros ou referências **para classes bases** devem ser capazes de utiizar **objetos das classes derivadas** sem precisar saber que está lidando com uma classe derivada*
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Discutindo um pouco de herança
+
+          ```
+          class Rect:
+
+            def __init__(self, w, h):
+              self.w = w
+              self.h = h
+
+            @property
+            def area(self):
+              return self.w * self.h
+
+            @property
+            def perimetro(self):
+              return self.w * 2 + self.h * 2
+
+          class Square(Rect):
+
+            def __init__(self, size):
+              self.w = size
+              self.h = size
+
+            @property
+            def h(self):
+              return self._h
+
+            @h.setter
+            def h(self, value):
+              self._h = value
+              self._w = value
+
+            @property
+            def w(self):
+              return self._h
+
+            @w.setter
+            def w(self, value):
+              self._h = value
+              self._w = value
+          ```
+          - Acham isso justo?
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### O que acontece nesse caso?
+
+          ```
+          def renderiza_rect(rect):
+              max_area = 1200
+
+              if rect.area &gt; max_area:
+                rect.w = 30
+                rect.h = 40
+
+              # lógica para renderizar
+          ```
+          - Acham isso justo?
+          - Problema causado por usar Herança como mecanismo para **reutilização de código** e não para **implementação de comportamento**
+          - Sabem onde rola **muito** isso? Django class based views
+        </section>
+
+        <section data-markdown class='fragments without_ul_style'>
+          ### Resumo
+
+          - Encapsulamento nos é útil para **proteger nosso objeto de estados inválidos**
+          - Python viabiliza que nos preocupemos com isso só **quando for necessário**
+          - Temos que usar **Information Hiding** para criar abstrações que escondam nossas implementações
+          - Essas abstrações definem a **interface** de um objeto
+          - Todo nosso código deve **confiar na interface dos objetos** e não nos seus detalhes de implementação
+          - **Interfaces bem definidas** nos permitem usar bastante **late-binding** em Python
+          - Polimorfismo é só **uma das maneiras** de atingir late-binding
+          - Cuidado com soluções por heranças e prefira **composição**
+        </section>
+
+        <section>
+          <h2>Obrigado!</h2>
+          <h3>
+            <br/>
+            <p>Bernardo Fontes (berin)</p>
+            <img src="images/labcodes.png" alt="Labcodes"/>
+            <p><a target="_blank" href="http://berinfontes.com/">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter.com/bbfontes</a></p>
+            <p><a target="_blank" href="https://github.com/berinhard">github.com/berinhard</a></p>
+            <p><a target="_blank" href="https://instagram.com/fontes.bernardo">instagram.com/fontes.bernardo</a></p>
+          </h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
