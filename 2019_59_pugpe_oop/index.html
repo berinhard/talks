@@ -289,7 +289,7 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Refinando o que é encapsulamento
 
-          - Só **encapsular dados** não implica necessariamente em ter um bom código OOP
+          - Só **encapsular o acesso aos dados** não implica necessariamente em ter um bom código OOP
           - Melhorando a definição: *Mecanismo nas linguagens de promamação para **restringir o acesso direto aos dados** de um objeto através de **métodos que operem sobre eles***
           - Mesmo com o encapsulamento sendo usado na classe `CalendarioEventos`, seus clientes sabem de seus **detalhes de implementação** como, por exemplo, de que `eventos` é uma lista.
           - Não só isso, o cliente é quem está determinando **como os dados de um evento serão armazenados** já que ele modifica diretamente a estrutura de dados que os comporta
@@ -304,15 +304,12 @@
               def __init__(self):
                   self._eventos = set()
 
-              @property
-              def eventos(self):
-                  return [{"nome": e[0], "dia": e[1]} for e in self._eventos]  # agora é só uma cópia de _eventos
-
               def adiciona_evento(self, nome, dia):
                   self._eventos.add((nome, dia))
 
-              def __len__(self):
-                  return len(self._eventos)
+              @property
+              def eventos(self):
+                  return [{"nome": e[0], "dia": e[1]} for e in self._eventos]  # agora é só uma cópia de _eventos
 
 
           ####### em outra parte do código:
@@ -331,11 +328,19 @@
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
-            ### Information Hiding
+            ### Benefícios de Information Hiding
 
             - Um código **baseado em dados** é, por definição, mais **rígido** porque suas integrações estão diretamente acoplados às **decisões de implementação** dos seus diversos objetos;
             - Em contrapartida, um código **baseado em comportamento** é, por definição, mais **flexível** porque suas integrações dependem de **abstrações** e não em suas implementações concretas;
             - Portanto, o pote de ouro OOP não é o encapsulamento por si só, mas sim a **troca de mensagens** através de métodos que funcionam como **mecanismos de proteção** da classe;
+        </section>
+
+        <section class="fragments without_ul_style" data-markdown>
+          ### Tell, don't ask
+
+          - Pensamento declarativo VS pensamento procedural
+          - Dados **não possuem semântica** e dizem respeito somente a **decisões de implementação**
+          - Declarativo == troca de **mensagens**
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
@@ -349,29 +354,33 @@
         <section class="fragments without_ul_style" data-markdown>
           ### Late-binding???
 
-          - Mecanismos da linguagem que permitem de que o **método ou objeto** que esteja sendo chamado é **definido em tempo de execução**
-          - **Polimorfismo** é só uma maneira das maneiras atingir late-binding
-          - Por ser praticamente **a única** viável de se fazer em Java, nos parece que é a única
-          - Felizmente, Python nos provê outras maneiras...
+          - Mecanismos da linguagem que permitem de que o **método ou objeto** que esteja sendo chamado seja **definido em tempo de execução**
+          - **Polimorfismo** é só uma das algumas maneiras atingir late-binding
+          - Por ser praticamente **a única maneira viável** de se fazer em Java, nos parece que é a única
+          - Felizmente, Python é uma linguagem mais orientada a objetos...
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
           ### Python Data model
 
           ```python
+          def print_info(dado):
+              print(f"Analisando o objeto {dado}")
+              num = len(dado)
+              print(f"O objeto possui {num} elementos.\n")
+
           dados = [
               "meu nome é bernardo",
               ["valor 1", "valor 2"],
               ("eu", "adoro", "tuplas"),
               {"chave": "valor"},
               {1, 2, 3, 4, 5, 5, 5, 5, 6, 1, 1, 1,},
-              range(10)
+              range(10),
+              42  # será que funciona?
           ]
 
           for dado in dados:
-              print(f"Analisando o objeto {dado}")
-              num = len(dado)
-              print(f"O objeto possui {num} elementos.\n")
+              print_info(dado)
           ```
           - Será que conseguimos usar `len` com o nosso calendário de eventos?
         </section>
@@ -411,7 +420,6 @@
           num = len(calendario)
           print(f"Temos {num} eventos no nosso calendario")
           ```
-          - O método `adiciona_evento` escondeu todos os detalhes de implementação de `CalendarioEventos`
         </section>
 
         <section class="fragments without_ul_style" data-markdown>
