@@ -1,0 +1,94 @@
+/**
+ * League theme for reveal.js.
+ *
+ * This was the default theme pre-3.0.0.
+ *
+ * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+// Include theme-specific fonts
+@import url(../../lib/font/montserrat/montserrat.css);
+
+// Override theme settings (see ../template/settings.scss)
+$backgroundColor: #ffffff;
+$mainFont: 'Montserrat', sans-serif;
+$mainFontSize: 30px;
+$headingFont: 'Montserrat', sans-serif;
+$mainColor: #243338;
+$linkColor: #00a8ac;
+$selectionBackgroundColor: #f05a54;
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+// Extra SCSS
+
+$primary: #f4594e;
+$secondary: #00a8ac;
+
+.reveal {
+
+  h1 {
+    font-size: 2.4em;
+    color: $primary;
+    font-weight: 700;
+  }
+
+  h2, h3, h4, h5, h6 {
+    color: $mainColor;
+  }
+
+  .bg-last-slide,
+  .bg-red-pattern,
+  .bg-green-pattern {
+    * { color: white; }
+  }
+
+  .bg-last-slide {
+    img {
+      border: 0;
+      box-shadow: none;
+      background: none;
+      max-height: 4em;
+    }
+  }
+
+  .slide-background.bg-slide1 {
+    background: url('../../../img/logo.png'), url('../../../img/overlay_labcodes.png'), url('../../../img/bg_slide1.png');
+    background-position: center, left bottom, 50%;
+    background-repeat: no-repeat;
+    background-size: 20%, 30%, cover;
+  }
+
+  .slide-background.bg-last-slide {
+    background: url('../../../img/overlay_labcodes.png'), url('../../../img/bg_green_pattern.png');
+    background-position: center, left bottom, 50%;
+    background-repeat: no-repeat;
+    background-size: 30%, cover;
+  }
+
+  .slide-background.bg-framed {
+    box-sizing: border-box;
+    border: 1.4em solid #eee;
+  }
+
+  .slide-background.bg-red-pattern {
+    background: url('../../../img/bg_red_pattern.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .slide-background.bg-green-pattern {
+    background: url('../../../img/bg_green_pattern.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+}

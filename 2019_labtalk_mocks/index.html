@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Mocks Pythônicos para Test-Driven Design | Bernardo Fontes</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/labcodes.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="bg-red-pattern">
+          <h1>Mocks Pythônicos para Test-Driven Design</h1>
+          <h2>Bernardo Fontes</h2>
+          <h3>Labtalks - 24/07/2019</h3>
+        </section>
+
+        <section class="bg-framed">
+          <h1>Olar!</h1>
+          <ul>
+              <li>Bernardo ou Berin</li>
+              <li>Python Developer</li>
+              <li>Creative Coder</li>
+              <li><a target="_blank" href="https://berinfontes.com/">berinfontes.com</a></li>
+          </ul>
+        </section>
+
+        <section data-markdown="slides.md"
+                data-separator="^\r?\n---\r?\n$"
+                data-separator-vertical="^\r?\n--\r?\n$"
+                data-separator-notes="^Note:"
+                data-charset="utf-8">
+            <!--
+                Note that Windows uses `\r\n` instead of `\n` as its linefeed character.
+                For a regex that supports all operating systems, use `\r?\n` instead of `\n`.
+            -->
+        </section>
+
+        <section class="bg-last-slide bg-red-pattern">
+          <h1>Obrigada!</h1>
+          <img src='/img/logo.png' />
+        </section>
+
+      </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true }
+        ]
+      });
+    </script>
+  </body>
+</html>
