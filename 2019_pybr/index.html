@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Desenhando com Python no Navegador</title>
+
+
+    <meta name="description" content="Desenhando com Python no Navegador">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+       <section>
+          <h3>Desenhando com Python no Navegador</h3>
+
+          <img width="40%" src="images/cover.png"/>
+          <h3><b>Bernardo Fontes</b></h3>
+
+          <h4>Ribeirão Preto / SP</h4>
+          <h4>25 de Outubro de 2019</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <br/>
+          <h3>
+            <p><a target="_blank" href="https://berinhard.github.io/sketches/">berinhard.github.io/sketches</a></p>
+            <p><a target="_blank" href="https://twitter.com/bbfontes">twitter - @bbfontes</a></p>
+            <p><a target="_blank" href="http://berinfontes.com/talks">berinfontes.com/talks</a></p>
+          </h3>
+          <img src="images/labcodes.png"/>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Programação Criativa
+            - Programar para a **expressão** ao invés de resolução de problemas
+            - Tem com música, vídeo, desenho, fotografia...
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Generative Art
+            - Objetos **criados com código**
+            - O **algoritmo como sistema autônomo** determina o comportamento da composição
+            - A pessoa controlando a máquina cria e programa os algoritmos e **controla sua randomicidade**
+            - Programação + **técnicas**
+        </section>
+
+        <section>
+          <h3>Georg Ness - Generative Computergrafik</h3>
+          <p>1965</p>
+          <img width="50%" src="images/georg_ness.jpg">
+          <p><a href="http://dada.compart-bremen.de/item/exhibition/164" target="_blank">23-Ecke (Polygon of 23 vertices)</a></p>
+        </section>
+
+        <section>
+          <h3>Frieder Nake</h3>
+          <p>1965</p>
+          <img width="50%" src="images/frieder_nake.png">
+          <p><a href=https://www.researchgate.net/figure/Frieder-Nake-13-9-65-Nr-2-Also-called-Homage-a-Paul-Klee-1965_fig2_221629559"" target="_blank">Hommage à Paul Klee</a></p>
+        </section>
+
+        <section>
+          <h3>Vera Molnár</h3>
+          <p>1968 / 1969</p>
+          <img width="60%" src="images/vera_molnar.jpeg">
+          <p><a href="https://digitalartmuseum.org/gallery/image/8692.html" target="_blank">Interruptions</a></p>
+        </section>
+
+        <section>
+          <h3>Lillian Schwartz</h3>
+          <p>1970</p>
+          <img width="70%" src="images/lillian_schwartz.jpeg">
+          <p><a href="http://charlesbroskoski.com/_/view.php?id=lillian-schwartz-1522631406" target="_blank">Pixillation, photographic film stills</a></p>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Hoje em dia...
+        </section>
+
+        <section>
+          <h3><a href="https://twitter.com/manoloidee/status/1044812813976375298">@manoloidee</a></h3>
+          <img width="60%" src="images/manoloidee.jpg">
+        </section>
+
+        <section>
+          <h3><a href="https://twitter.com/inconvergent/status/1049790571966078976">@inconvergent</a></h3>
+          <img width="60%" src="images/inconvergent.png">
+        </section>
+
+        <section>
+          <h3>Saskia Freeke</h3>
+          <h4><a href="https://twitter.com/sasj_nl/status/1031616097609502721">@sasj_nl</a></h4>
+          <img width="60%" src="images/sasj_nl.jpg">
+        </section>
+
+        <section>
+          <h3>Frederik Vanhoutte</h3>
+          <h4><a href="https://twitter.com/wblut/status/1020826297747017729">@wblut</a></h4>
+          <img width="50%" src="images/wblut.jpg">
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## O que tem em comum?
+            - Todos usam [Processing](https://processing.org/)
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Processing
+            - Uma IDE que usa Java para servir como um **<i>sketchbook</i>**
+            - Ideal para estudantes e artistas visuais por conta de sua **API simples e versátil**
+            - Possui um **modo Python** ([Jython](http://www.jython.org/) por baixo dos panos)
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Um exemplo
+            ```python
+# Author: Berin
+# Sketches repo: https://github.com/berinhard/sketches
+from random import choice
+
+WHITE = color(228, 228, 228, 200)
+RED = color(228, 12, 10, 200)
+BLACK = color(17, 17, 17)
+
+def setup():
+    size(900, 900)
+    noFill()
+    background(BLACK)
+
+def draw():
+    radius = random(20, 300)
+    x_positions = range(0, width, 20)
+    y_positions = range(0, height, 20)
+    x, y = choice(x_positions), choice(y_positions)
+
+    if random(1) < 0.5:
+      c = WHITE
+    else:
+      c = RED
+
+    stroke(c)
+    while radius > 20:
+      ellipse(x, y, radius, radius)
+      radius -= 20
+
+    if frameCount > 100:
+      noLoop()
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Incríve né!?
+            - Mas.....
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Problemas do Modo Python
+            - É necessário **ativá-lo manualmente** pela IDE do Processing
+            - Praticamente **preso à IDE** do Processing
+            - Não tem acesso as **libs Python instaladas no sistema**
+            - Ainda está no **Python 2.7**
+            - O Jython não possui **nenhum** roadmap para migrar pra Python 3
+        </section>
+
+        <section data-markdown >
+            ### Python 2.7 "acaba" em 2 meses
+
+            ![clock](images/clock.gif)
+
+            Será que temos alternativas?
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### 2 principais alternativas com limitações
+
+            - [Pesquisa](https://github.com/villares/Resources-for-teaching-programming/blob/master/README.md) do Alexandre Villares
+            - [p5py](https://github.com/p5py/p5)
+                - Python 3 puro
+                - API bastante diferente da API do Processing
+                - Reescrita ainda incompleta
+            - [BrythonIDE](https://esperanc.github.io/brythonide/) - Prof. Esperança - COPPE/UFRJ
+                - Roda no navegador
+                - Utiliza [Brython](https://brython.info/)
+                - Gargalo de performance
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Quem poderá nos ajudar?
+
+            ![clock](images/chapolin.gif)
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Python + p5.js
+            [![clock](images/pyp5js.png)](https://berinhard.github.io/pyp5js/)
+        </section>
+
+        <section>
+          <img width="70%" src="images/p5js.png">
+        </section>
+
+        <section data-markdown class="without_ul_style">
+            `$ pip install pyp5js`
+
+            `$ pyp5js serve`
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## API Básica
+            ```python
+from pyp5js import *
+from random import choice
+
+colors = [
+  (235, 235, 0),
+  (235, 0, 235),
+  (0, 235, 235),
+]
+
+
+def setup():
+  createCanvas(900, 900)
+  rectMode(CENTER)
+  background(27)
+
+
+def draw():
+  size = 20
+  for x in range(0, width + size, size):
+    for y in range(0, height + size, size):
+      fill(choice(colors))
+      if random(1) > 0.5:
+        ellipse(x, y, size, size)
+      else:
+        rect(x, y, size, size)
+
+  noLoop()
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### O que acontece embaixo dos panos?
+
+            - A interface web é uma abstração para a CLI
+            - A criação do sketch via form equivale ao comando `$ pyp5js new sketch_name`
+            - O diretório `~/sketchbook-pyp5js/sketch_name/` é criado com todo o código e arquivos necessários
+            - Ao acessar `/sketch/pybr_001/` a lib "compila" o código Python para código JS
+            - A compilação é através do comando `$ pyp5js transcrypt pybr_001`
+            - Dentro do diretório do sketch, os JS finais são colocados dentro do diretório `target`
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## API de Eventos
+            ```python
+from pyp5js import *
+from random import choice
+
+
+shape_type = 'RECT'
+shape_size = 30
+live_shapes = []
+
+
+def add_shape():
+  x, y = mouseX, mouseY
+  colors = [
+    (235, 235, 0),
+    (235, 0, 235),
+    (0, 235, 235),
+  ]
+  live_shapes.append((
+    shape_type,
+    x,
+    y,
+    shape_size,
+    choice(colors))
+  )
+
+
+def keyPressed():
+  global shape_type, shape_size
+
+  if key == 'c':
+    shape_type = 'CIRCLE'
+  elif key == 'r':
+    shape_type = 'RECT'
+  elif key == 'a':
+    shape_size += 5
+  elif key == 'x':
+    shape_size -= 5
+
+
+def mouseClicked():
+  add_shape()
+
+
+def mouseDragged():
+  add_shape()
+
+
+def setup():
+  createCanvas(900, 900)
+  rectMode(CENTER)
+
+
+def draw():
+  background(27)
+  for format, x, y, size, c in live_shapes:
+    noStroke()
+    fill(c)
+    if format == 'RECT':
+      rect(x, y, size, size)
+    elif format == 'CIRCLE':
+      ellipse(x, y, size, size)
+
+  x, y = mouseX, mouseY
+  noFill()
+  stroke(240)
+  if shape_type == 'RECT':
+    rect(x, y, shape_size, shape_size)
+  elif shape_type == 'CIRCLE':
+    ellipse(x, y, shape_size, shape_size)
+
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Manipulando o DOM
+            ```python
+from pyp5js import *
+
+
+add_library("p5.dom.js")
+
+
+rect_base_size = 30
+positions = []
+w_size, h_size = None, None
+
+def setup():
+  global w_size, h_size
+
+  createP("Hi! This is an example of how to use p5.dom.js with pyp5js")
+
+  # creates a container div
+  slider_div = createDiv()
+  slider_div.style("display", "block")
+
+  # creates the sliders
+  w_size = createSlider(0, 600, 100)
+  w_size.style('width', '50%')
+
+  h_size = createSlider(0, 600, 100)
+  h_size.style('width', '50%')
+
+  # adds the slider to the container div
+  slider_div.child(h_size)
+  slider_div.child(w_size)
+
+  createCanvas(600, 600)
+
+  # fixes initial grid positions
+  for x in range(-rect_base_size, width + rect_base_size, rect_base_size):
+    for y in range(-rect_base_size, height + rect_base_size, rect_base_size):
+      positions.append((x, y))
+
+  noFill()
+  strokeWeight(2)
+  rectMode(CENTER)
+
+
+def draw():
+  background(255)
+  for x, y in positions:
+    rect(x, y, w_size.value(), h_size.value())
+            ```
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Mas nem tudo são flores...
+
+            ![](images/chapolin_2.gif)
+
+            - No fundo, estamos usando JS e isso traz algumas questões
+            - As vezes o uso de memória não é otimizado
+            - Não ter toda a standard lib do Python
+            - Algumas [outras diferenças](https://transcrypt.org/docs/html/differences_cpython.html) do CPython
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Já vivemos no futuro
+
+            ![](images/astucia.gif)
+
+            - [Pyodide](https://github.com/iodide-project/pyodide): The Python scientific stack, compiled to [WebAssembly](https://webassembly.org/)
+            - Já existe uma [issue aberta](https://github.com/berinhard/pyp5js/issues/73) para migrar o pyp5js
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Call to Action!
+
+            - Usem, quebrem, desmontem o `pyp5js`
+            - Ajudem a melhorar a documentação
+            - Criem novos exemplos e abram PRs com eles
+            - Estarei presente nos Sprints
+        </section>
+
+        <section>
+          <p>No Garoa (São Paulo) toda última terça-feira do mês</p>
+          <img width="70%" src="images/ndp.png">
+        </section>
+
+        <section>
+          <p>Em Recife toda última quarta-feira do mês</p>
+          <img width="70%" src="images/ndp_recife.png">
+        </section>
+
+        <section>
+          <p><a href="https://groups.google.com/forum/#!forum/processing-brasil">processing-brasil@googlegroups.com</a></p>
+          <img src="images/group.png">
+        </section>
+
+        <section>
+          <h3>Obrigado!</h3>
+          <img width="50%" src="images/s_043.png">
+          <p><a target="_blank" href="https://berinfontes.com">berinfontes.com</a></p>
+          <p><a target="_blank" href="https://berinhard.github.io/sketches/">berinhard.github.io/sketches</a></p>
+          <p><a target="_blank" href="https://twitter.com/bbfontes">twitter - @bbfontes</a></p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
