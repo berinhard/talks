@@ -89,6 +89,7 @@
         <section data-markdown class="without_ul_style fragments">
             ## Programação Criativa
             - Programar para a **expressão** ao invés de resolução de problemas
+            - A **experimentação** precedendo a funcionalidade ou assertividade
             - Tem com música, vídeo, desenho, fotografia...
         </section>
 
@@ -231,12 +232,12 @@ def draw():
             - [Pesquisa](https://github.com/villares/Resources-for-teaching-programming/blob/master/README.md) do Alexandre Villares
             - [p5py](https://github.com/p5py/p5)
                 - Python 3 puro
-                - API bastante diferente da API do Processing
                 - Reescrita ainda incompleta
+                - API bastante diferente da API do Processing
             - [BrythonIDE](https://esperanc.github.io/brythonide/) - Prof. Esperança - COPPE/UFRJ
                 - Roda no navegador
                 - Utiliza [Brython](https://brython.info/)
-                - Gargalo de performance
+                - Tem questões de performance
         </section>
 
         <section data-markdown class="without_ul_style fragments">
@@ -275,16 +276,18 @@ colors = [
 
 def setup():
   createCanvas(900, 900)
-  rectMode(CENTER)
   background(27)
+  rectMode(CENTER)
 
 
 def draw():
   size = 20
-  for x in range(0, width + size, size):
-    for y in range(0, height + size, size):
-      fill(choice(colors))
-      if random(1) > 0.5:
+
+  for x in range(0, width + size, size):  # itera por colunas
+    for y in range(0, height + size, size):  # itera por linhas
+
+      fill(choice(colors))  # escolhe uma cor randomicamente
+      if random(1) > 0.5:   # condição para desenhar um retângulo ou círculo
         ellipse(x, y, size, size)
       else:
         rect(x, y, size, size)
