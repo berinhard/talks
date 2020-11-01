@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Criando Simetrias Pythônicas</title>
+
+
+    <meta name="description" content="Criando Simetrias Pythônicas">
+    <meta name="author" content="Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+       <section>
+          <h2>Criando Simetrias Pythônicas</h2>
+
+          <img width="40%" src="images/cover.png"/>
+          <h3><b>Bernardo Fontes</b></h3>
+
+          <h4></h4>
+          <h4>05 de Novembro de 2020</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <br/>
+          <h3>
+            <p><a target="_blank" href="https://berinfontes.com/">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://berinhard.github.io/sketches/">berinhard.github.io/sketches</a></p>
+            <p><a target="_blank" href="https://pietrobapthysthe.bandcamp.com/">live coder @ Pietro Bapthysthe</a></p>
+          </h3>
+        </section>
+
+        <section>
+            <h3>Visitem Recife!</h3>
+            <div style="display: block; vertical-aling:middle;">
+            <a href="https://twitter.com/pugpe/"><img width="30%" src="images/pugpe.jpg"></a>
+            <a href="https://labcodes.com.br/"><img width="30%" src="images/labcodes.png"></a>
+            <a href="https://www.vinta.com.br/"><img width="30%" style="margin-bottom: 65px" src="images/vinta.png"></a>
+            </div>
+        </section>
+
+        <section>
+            <h3>Visitem Olinda!</h3>
+            <p><img width="100%" src="images/olinda.jpg"></p>
+            <small>Casa em Olinda com detalhes de cobogós e azulejos</small>
+        </section>
+
+        <section>
+            <h3>Hoje vamos falar de azulejos</h3>
+            <p><img width="100%" src="images/azulejos.jpg"></p>
+            <small>Detalhes de parede externa de uma casa em Olinda</small>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Estudando as paredes
+            - Todo azulejo tem o mesmo desenho
+            - Paredes com combinações formais, lado a lado, dos azulejos
+            - A unidade do desenho se chama **módulo**
+            - O resultado da combinação de se chama **padrão**
+
+        </section>
+
+        <section>
+            <h3>Módulos</h3>
+            <p><img width="100%" src="images/modulos.jpg"></p>
+        </section>
+
+        <section>
+            <h3>Padrão</h3>
+            <p><img width="100%" src="images/padrao.jpg"></p>
+        </section>
+
+        <section>
+            <h3>Vamos experimentar</h3>
+            <p>Eis nosso módulo</p>
+            <p><img width="10%" src="images/fig_01.jpg"></p>
+            <p>Alguns padrões</p>
+            <img width="30%" src="images/fig_02_1.jpg">
+            <img width="30%" src="images/fig_02_2.jpg">
+            <img width="30%" src="images/fig_02_3.jpg">
+            <small>Ref. <a href="https://www.atractor.pt/mat/matematica_azulejos/matematica_dos_azulejos.html" target="_blank">Matemática dos Azulejos</a></small>
+        </section>
+
+        <section>
+            <h3>Vamos experimentar</h3>
+            <p>Padrão mais complexo</p>
+            <p><img width="50%" src="images/fig_03.png"></p>
+            <small>Casa em Furadouro, Portugal</small>
+        </section>
+
+        <section>
+            <h3>Obtendo Padrões</h3>
+            <p><b>Translação</b></p>
+            <img width="60%" src="images/translacao.jpg">
+            <small>Repetição do mesmo módulo paralelamente a si próprio</small>
+        </section>
+
+        <section>
+            <h3>Obtendo Padrões</h3>
+            <p><b>Alternância</b></p>
+            <img width="60%" src="images/alternancia.png">
+            <small>Alternância de módulos ou cores de um mesmo módulo (<a href="https://slideplayer.com.br/slide/394568/" target="_blank">referência</a>)</small>
+        </section>
+
+        <section>
+            <h3>Obtendo Padrões</h3>
+            <p><b>Rotação</b></p>
+            <img width="60%" src="images/rotacao.jpeg">
+            <small>Organização dos módulos com um movimento giratório em torno de um eixo</small>
+        </section>
+
+        <section>
+            <h3>Obtendo Padrões</h3>
+            <p><b>Simetria</b></p>
+            <img width="60%" src="images/simetria.jpg">
+            <small>Módulos espelhados a partir de um eixo imaginário (<a href="https://amatematicaandaporai.blogspot.com/2008/07/as-isometrias-e-azulejaria-portuguesa.html" target="_blank">referência</a>)</small>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## Vamos Programar!
+            - **Rotação** e **Simetria** em Python usando [Processing](https://processing.org/)
+            - Uma IDE que usa Java para servir como um **<i>sketchbook</i>**
+            - Ideal para estudantes e artistas visuais por conta de sua **API simples e versátil**
+            - Possui um **modo Python** ([Jython](http://www.jython.org/) por baixo dos panos)
+        </section>
+
+        <section>
+            <h3>Nosso módulo</h3>
+            <img width="60%" src="images/py_modulo.png">
+        </section>
+
+        <section data-markdown>
+            ## Show me the Code!
+        </section>
+
+        <section>
+          <h3>pyp5js</h3>
+          <img width="100%" src="images/pyp5js.png">
+          <p><small>Colabore com o <a href="https://berinhard.github.io/pyp5js/" target="_blank">projeto no Github</a></small></p>
+        </section>
+
+        <section>
+          <h3>Noite de Processing</h3>
+          <img width="50%" src="images/ndp.png">
+          <p><small><a href="https://garoa.net.br/wiki/Noite_de_Processing" target="_blank">Noites de Processing</a> toda última 3ª do mês</small></p>
+        </section>
+
+        <section>
+          <h3>Obrigado!</h3>
+          <img width="50%" src="images/thanks.png">
+          <p><a target="_blank" href="https://berinfontes.com">berinfontes.com</a></p>
+          <p><a target="_blank" href="https://berinhard.github.io/sketches/">berinhard.github.io/sketches</a></p>
+          <p><a target="_blank" href="https://twitter.com/bbfontes">twitter - @bbfontes</a></p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
