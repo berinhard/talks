@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Programação Criativa Musical</title>
+
+
+    <meta name="description" content="Programação Criativa Musical">
+    <meta name="author" content="berin | Bernardo Fontes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+    	if( window.location.search.match( /print-pdf/gi ) ) {
+    		var link = document.createElement( 'link' );
+    		link.rel = 'stylesheet';
+    		link.type = 'text/css';
+    		link.href = '../css/print/pdf.css';
+    		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    	}
+    </script>
+    <style type="text/css">
+      .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+        text-transform: none !important;
+      }
+      .reveal section img {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .reveal .progress span {
+        background: #FF0000 !important;
+      }
+
+      .without_ul_style > ul {
+        list-style-type: none;
+      }
+
+      .flex-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-63105879-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+      <!-- Any section element inside of this container is displayed as a slide -->
+
+       <section>
+          <h2>Programação Criativa Musical</h2>
+
+          <img width="40%" src="images/cover.png"/>
+          <h3><b>berin | Bernardo Fontes</b></h3>
+
+          <h4></h4>
+          <h4>25 de Fevereiro de 2021</h4>
+        </section>
+
+        <section>
+          <h2>Olar!</h2>
+          <br/>
+          <h3>
+            <p><a target="_blank" href="https://berinfontes.com">berinfontes.com</a></p>
+            <p><a target="_blank" href="https://berinfontes.com/talks">berinfontes.com/talks</a></p>
+            <p><a target="_blank" href="https://docs.google.com/document/d/1UI8YS1elxsAgzyxeFqI4tHmYwfZo3UdS8lNXqu_qLGU/edit?usp=sharing">Documento no Google Drive</a></p>
+            <div class="flex-container">
+              <a href="https://sites.usp.br/gaia/"><img style="margin-right: 10px" src="images/gaia.png"></a>
+              <a href="https://brasil.io/home/"><img style="margin-right: 10px" src="images/brasilio.png"></a>
+              <a href="https://www.python.org/psf-landing/"><img  src="images/psf.png"></a>
+            </div>
+          </h3>
+        </section>
+
+        <section>
+            <h3>Sketches</h3>
+            <p><a href=""></a></p>
+            <img width="60%" src="images/sketch.png">
+          <p><small><a href="https://berinhard.github.io/sketches/" target="_blank">berinhard.github.io/sketches</a></small></p>
+        </section>
+
+        <section>
+          <h3>pyp5js</h3>
+          <img width="100%" src="images/pyp5js.png">
+          <p><small>Colabore com o <a href="https://berinhard.github.io/pyp5js/" target="_blank">projeto no Github</a> | <a href="https://berinhard.github.io/pyp5js/pyodide/" target="_blank">Live demo</a></small></p>
+        </section>
+
+        <section>
+          <h3>Pietro Bapthysthe</h3>
+          <img width="60%" src="images/pb_compyled.jpg">
+          <p><small><a href="https://open.spotify.com/artist/6pz7aBPCQOkXBgWCq8tQG1" target="_blank">Spotify</a> | <a href="https://pietrobapthysthe.bandcamp.com/" target="_blank">Bandcamp</a> | <a href="https://archive.org/search.php?query=creator%3A%22Pietro+Bapthysthe%22" target="_blank">Internet Archive</a></small></p>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Minha proposta
+            - Visão geral de **ferramentas**, **comunidades** e **artistas-programadores**
+            - Mão**S** na massa com **FoxDot**
+            - Quem quiser, pode adiantar a **[instalação](https://foxdot.org/installation/)** (opcional)
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Programação Criativa para Som
+            - Muita **diversidade** tecnológica
+            - Cada ferramenta/biblioteca tem **influência na estética** final
+            - Pedra fundamental: **SuperCollider**
+        </section>
+
+        <section class="fragments without_ul_style">
+            <a href="https://supercollider.github.io/"><img width="40%" src="images/supercollider.jpg"></a>
+            <ul>
+              <li>Plataforma para <b>síntese de som</b> e <b>composição algorítmica</b></li>
+              <li><b>Software livre</b></li>
+              <li><b>scsynth</b>: servidor para processar o som em tempo real</li>
+              <li><b>sclang</b>: linguagem interpretada para operar o servidor</li>
+              <li><b>scide</b>: IDE com vários facilitadores</li>
+              <li><b>sc3-plugins</b>: repositório colaborativo de <i>UGens</i> (unit generator) criados pela comunidade</li>
+              <li>Utilizado por várias outras tecnologias para a prática de live coding</li>
+            </ul>
+        </section>
+
+        <section data-markdown>
+            ### Exemplo de código
+
+            ```
+            // modulate a sine frequency and a noise amplitude with another sine
+            // whose frequency depends on the horizontal mouse pointer position
+            // and pink noise depends on the vertical
+            {
+                    var x = SinOsc.ar(MouseX.kr(1, 100));
+                    var y = SinOsc.ar(MouseY.kr(1, 100));
+                    SinOsc.ar(300 * x + 800, 0, 0.1)
+                    +
+                    PinkNoise.ar(0.1 * y + 0.1)
+            }.play;
+            ```
+        </section>
+
+        <section class="fragments without_ul_style">
+            <p>
+              <a href="https://supercollider.github.io/"><img width="40%" src="images/supercollider.jpg"></a>
+            </p>
+            <p><b>Opiniões e visões</b></p>
+            <ul>
+              <li>Muito <b>verstátil</b> e <b>poderoso</b></li>
+              <li>Comunidade <b>ativa</b></li>
+              <li>Excelente para se explorar <b>timbres únicos</b></li>
+              <li>Linguagem de programação que utiliza <b>muito símbolos</b> e isso pode ser confuso</li>
+              <li>Operacional relativamente complexo para prática de live coding</li>
+              <li>Artistas-programadores: <a href="https://soundcloud.com/gilfuser">Gil Fuser</a> (São Paulo), <a href="https://bgo.la/">bgola</a> (Brasil/Berlim)</li>
+            </ul>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Em cima do SuperCollider
+            - SonicPi
+            - TidalCycles
+            - **FoxDot**
+        </section>
+
+        <section class="fragments without_ul_style">
+            <a href="https://sonic-pi.net/"><img width="20%" src="images/sonic-pi.png"></a>
+            <ul>
+              <li><b>Instalação</b> e <b>experimentação</b> são bem fáceis</li>
+              <li>Muito material e <b>tutoriais</b> de qualidade (<a href="https://sonic-pi.mehackit.org/">mehackit</a>!!!)</li>
+              <li>Fácil adaptação de <b>notações da teoria da música</b> para o código</li>
+              <li>Artistas-programadores: <a href="https://twitter.com/samaaron">Sam Aaron</a> (criador) e <a href="https://twitter.com/BitkidsS/">Bitkids</a></li>
+            </ul>
+        </section>
+
+        <section class="fragments without_ul_style">
+            <h3>Exemplo de código</h3>
+            <br/>
+            <a href="https://sonic-pi.net/"><img src="images/sample-sonic-pi.png"></a>
+        </section>
+
+        <section class="fragments without_ul_style">
+            <a href="https://tidalcycles.org/Welcome"><img width="40%" src="images/tidalcycles.png"></a>
+            <ul>
+              <li>Comunidade muito ativa e com excelente fórum (<a href="https://club.tidalcycles.org/"</a>Tidal Club</a>)</li>
+              <li><b>Linguagem minimalista</b> favorece muito a prática de live coding</li>
+              <li>Bastante fundamentado no uso de <b>samples</b></li>
+              <li>Escrito em <b>Haskel</b>, mas bem mais simplificado e acessível</li>
+              <li>Artistas-programadores: <a href="https://yaxu.org/">yaxu | Alex McLean</a> (criador), <a href="https://joenio.me/djalgoritmo/">djalgoritmo</a>, <a href="https://soundcloud.com/ghalestrilo">Ghales</a> e <a href="https://beise.bandcamp.com/">beise</a>.</li>
+            </ul>
+        </section>
+
+        <section data-markdown>
+            ### Exemplo de código
+
+            ```
+            d1 $ sound "bd sd:1"
+
+            d2 $ sound "hh hh hh hh"
+
+            d3 $ sound "arpy"
+            ```
+        </section>
+
+        <section class="fragments without_ul_style">
+            <a href="https://foxdot.org/"><img width="60%" src="images/foxdot.png"></a>
+            <ul>
+              <li>Escrito em <b>Python</b> ❤️ </li>
+              <li>Meio campo entre <b>minimalismo experimental</b> e <b>notação musical "clássica"</b></li>
+              <li>Já vem com um amplo conjunto de <b>sintetizadores</b> e <b>samples</b> próprios</li>
+              <li><b>Fácil extensão</b> e, por conta disso, existem vários forks do projeto</li>
+              <li>Artistas-programadores: <a href="https://github.com/Qirky">Qirky | Ryan Kirkbride</a> (criador), <a href="https://www.crashserver.fr">CrashServer</a> e <a href="https://pietrobapthysthe.bandcamp.com/">Pietro Bapthysthe</a></li>
+              <li><b>É o que vamos experimentar!</b></li>
+            </ul>
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ### Comunidades e Eventos
+            - [TOPLAP](https://toplap.org/) - organização de 2004 para promover o Live Coding
+            - Movimento das [Algoraves](https://algorave.com/)
+            - [Algorave Brasil](https://algoravebrasil.ml/)
+            - [CLiC](https://colectivo-de-livecoders.gitlab.io/) - Colectivo de Live Coders (Argentina)
+            - [flok.click.cf](https://flok.clic.cf/) - nó criado pelo CLiC utilizando o projeto [flok](https://github.com/munshkr/flok)
+        </section>
+
+        <section data-markdown class="without_ul_style fragments">
+            ## **Bora fazer um som!!!**
+        </section>
+
+        <section>
+          <h3>Obrigado!</h3>
+          <img width="50%" src="images/sketch.png">
+          <p>berin | Bernardo Fontes</p>
+          <p><a target="_blank" href="https://berinfontes.com">berinfontes.com</a></p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        // transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transition: 'zoom',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+        { src: 'lib/js/classList.js',
+          condition: function() { return !document.body.classList; } },
+        { src: '../plugin/markdown/marked.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: '../plugin/markdown/markdown.js',
+          condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+          callback: function() {
+            Array.prototype.forEach.call(
+            document.querySelectorAll('section.fragments > ul > li'),
+              function(ele){ ele.className = 'fragment roll-in'; });
+            } },
+        { src: '../plugin/highlight/highlight.js', async: true,
+          callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: '../plugin/zoom-js/zoom.js', async: true,
+          condition: function() { return !!document.body.classList; } },
+        { src: '../plugin/notes/notes.js', async: true,
+          condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
